@@ -1,0 +1,4 @@
+{
+    
+    "python.linting.pylintArgs": ["--generate-members=cv2.*"]
+}
