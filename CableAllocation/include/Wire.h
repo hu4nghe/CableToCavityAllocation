@@ -7,9 +7,11 @@ class Cable;
 class Wire
 {
 private:
-    AWG          _gauge;
+    const AWG    _gauge;
     const Cable* _parent;
 public:
     Wire() = default;
     Wire(const std::uint8_t& wire_gauge, const Cable* parent);
+
+    const AWG get_gauge() const { return _gauge; }
 };

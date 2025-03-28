@@ -49,7 +49,10 @@
         "stdexcept": "cpp",
         "streambuf": "cpp",
         "cinttypes": "cpp",
-        "typeinfo": "cpp"
+        "typeinfo": "cpp",
+        "optional": "cpp",
+        "iomanip": "cpp",
+        "unordered_set": "cpp"
     },
-    "cmake.sourceDirectory": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation"
+    "cmake.sourceDirectory": "/home/hhg10/project/CableAllocation",
 }

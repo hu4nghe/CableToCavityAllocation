@@ -6,7 +6,7 @@
 			[
 				{
 					"build" : ".",
-					"jsonFile" : "directory-.-Debug-f5ebdc15457944623624.json",
+					"jsonFile" : "directory-.-f5ebdc15457944623624.json",
 					"minimumCMakeVersion" : 
 					{
 						"string" : "3.5.0"
@@ -19,7 +19,7 @@
 					]
 				}
 			],
-			"name" : "Debug",
+			"name" : "",
 			"projects" : 
 			[
 				{
@@ -39,7 +39,7 @@
 				{
 					"directoryIndex" : 0,
 					"id" : "CableAllocation::@6890427a1f51a3e7e1df",
-					"jsonFile" : "target-CableAllocation-Debug-0fd0befa35e2ffc6374e.json",
+					"jsonFile" : "target-CableAllocation-31913704cd18a0e022a0.json",
 					"name" : "CableAllocation",
 					"projectIndex" : 0
 				}
@@ -49,12 +49,12 @@
 	"kind" : "codemodel",
 	"paths" : 
 	{
-		"build" : "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/build",
-		"source" : "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation"
+		"build" : "/home/hhg10/project/CableAllocation/build",
+		"source" : "/home/hhg10/project/CableAllocation"
 	},
 	"version" : 
 	{
 		"major" : 2,
-		"minor" : 4
+		"minor" : 6
 	}
 }
