@@ -55,4 +55,6 @@
         "unordered_set": "cpp"
     },
     "cmake.sourceDirectory": "/home/hhg10/project",
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "off",
 }

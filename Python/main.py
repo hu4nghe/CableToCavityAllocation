@@ -1,4 +1,5 @@
 from CavityDetection import DetecteCavity
+from pathlib import Path
 import cv2
 import os
 
@@ -22,8 +23,9 @@ def CallDetecteFunction(iDir, oDir):
                 print(f"Cavity({i}, {r}, {Pos[0]}.0,{Pos[1]}.0, true ),")
 
 if __name__ == "__main__":
-    iDir = "/home/hhg10/project/CavityDetection/Connectors"
-    oDir = "/home/hhg10/project/CavityDetection/DetectionResults"
+    root_path = Path(__file__).resolve().parent.parent
+    iDir = root_path/"Resources"/ "Connectors"
+    oDir = root_path/"Resources"/ "DetectionResults"
     
     CallDetecteFunction(iDir, oDir)
     print("Processing complete. Results saved to:", oDir)

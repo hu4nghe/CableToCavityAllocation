@@ -1,4 +1,5 @@
 Resources/demo
+Resources/DetectionResults/*.png
 build/
 lib/
 bin/
