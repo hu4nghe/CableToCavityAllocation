@@ -1,8 +1,17 @@
 [
 {
-  "directory": "/home/hhg10/project/CableAllocation/build",
-  "command": "/usr/bin/c++   -g -o CMakeFiles/CableAllocation.dir/main.cpp.o -c /home/hhg10/project/CableAllocation/main.cpp",
-  "file": "/home/hhg10/project/CableAllocation/main.cpp",
-  "output": "CMakeFiles/CableAllocation.dir/main.cpp.o"
+  "directory": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/build",
+  "command": "/usr/bin/c++  -I/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/include -g -std=gnu++23 -o CMakeFiles/CableAllocation.dir/src/Cable.cpp.o -c /home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Cable.cpp",
+  "file": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Cable.cpp"
+},
+{
+  "directory": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/build",
+  "command": "/usr/bin/c++  -I/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/include -g -std=gnu++23 -o CMakeFiles/CableAllocation.dir/src/Cavity.cpp.o -c /home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Cavity.cpp",
+  "file": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Cavity.cpp"
+},
+{
+  "directory": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/build",
+  "command": "/usr/bin/c++  -I/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/include -g -std=gnu++23 -o CMakeFiles/CableAllocation.dir/src/Wire.cpp.o -c /home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Wire.cpp",
+  "file": "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/src/Wire.cpp"
 }
 ]

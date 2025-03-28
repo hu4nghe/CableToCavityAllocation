@@ -1,2 +1,0 @@
-/usr/bin/ar qc libCableAllocation.a CMakeFiles/CableAllocation.dir/CableAllocation.cpp.o
-/usr/bin/ranlib libCableAllocation.a

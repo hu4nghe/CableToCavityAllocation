@@ -1,0 +1,12 @@
+{
+    "files.associations": {
+        "*.sig": "arduino-output",
+        "*.tcc": "cpp",
+        "algorithm": "cpp",
+        "iterator": "cpp",
+        "memory": "cpp",
+        "random": "cpp",
+        "functional": "cpp",
+        "cmath": "cpp"
+    }
+}

@@ -1,8 +1,0 @@
-[
-{
-  "directory": "/home/hhg10/project/build",
-  "command": "/usr/bin/c++   -g -o CMakeFiles/CableAllocation.dir/CableAllocation.cpp.o -c /home/hhg10/project/CableAllocation.cpp",
-  "file": "/home/hhg10/project/CableAllocation.cpp",
-  "output": "CMakeFiles/CableAllocation.dir/CableAllocation.cpp.o"
-}
-]

@@ -1,8 +1,12 @@
 file(REMOVE_RECURSE
-  "CMakeFiles/CableAllocation.dir/main.cpp.o"
-  "CMakeFiles/CableAllocation.dir/main.cpp.o.d"
-  "CableAllocation"
-  "CableAllocation.pdb"
+  "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/lib/libCableAllocation.a"
+  "/home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/lib/libCableAllocation.pdb"
+  "CMakeFiles/CableAllocation.dir/src/Cable.cpp.o"
+  "CMakeFiles/CableAllocation.dir/src/Cable.cpp.o.d"
+  "CMakeFiles/CableAllocation.dir/src/Cavity.cpp.o"
+  "CMakeFiles/CableAllocation.dir/src/Cavity.cpp.o.d"
+  "CMakeFiles/CableAllocation.dir/src/Wire.cpp.o"
+  "CMakeFiles/CableAllocation.dir/src/Wire.cpp.o.d"
 )
 
 # Per-language clean rules from dependency scanning.

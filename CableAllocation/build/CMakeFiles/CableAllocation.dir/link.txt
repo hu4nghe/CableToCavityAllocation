@@ -1,1 +1,2 @@
-/usr/bin/c++ -g CMakeFiles/CableAllocation.dir/main.cpp.o -o CableAllocation 
+/usr/bin/ar qc /home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/lib/libCableAllocation.a CMakeFiles/CableAllocation.dir/src/Cable.cpp.o CMakeFiles/CableAllocation.dir/src/Cavity.cpp.o CMakeFiles/CableAllocation.dir/src/Wire.cpp.o
+/usr/bin/ranlib /home/huanghe/Dassault/CableToCavityAllocation/CableAllocation/lib/libCableAllocation.a
