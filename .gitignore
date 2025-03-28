@@ -1,6 +1,6 @@
 Resources/demo
-Resources/DetectionResults/*.png
+Resources/DetecttionResults
 build/
 lib/
 bin/
-*.a
+Python/DSLyon/
