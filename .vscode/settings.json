@@ -54,5 +54,5 @@
         "iomanip": "cpp",
         "unordered_set": "cpp"
     },
-    "cmake.sourceDirectory": "/home/hhg10/project/CableAllocation",
+    "cmake.sourceDirectory": "/home/hhg10/project",
 }

@@ -1,2 +1,5 @@
 Resources/demo
-CableAllocation/build/
+build/
+lib/
+bin/
+*.a
