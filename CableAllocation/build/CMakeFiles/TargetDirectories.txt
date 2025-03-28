@@ -1,3 +1,0 @@
-/home/hhg10/project/CableAllocation/build/CMakeFiles/CableAllocation.dir
-/home/hhg10/project/CableAllocation/build/CMakeFiles/edit_cache.dir
-/home/hhg10/project/CableAllocation/build/CMakeFiles/rebuild_cache.dir

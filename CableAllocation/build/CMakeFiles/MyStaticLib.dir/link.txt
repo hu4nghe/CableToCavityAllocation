@@ -1,2 +1,0 @@
-/usr/bin/ar qc libMyStaticLib.a CMakeFiles/MyStaticLib.dir/src/Cavity.cpp.o
-/usr/bin/ranlib libMyStaticLib.a
