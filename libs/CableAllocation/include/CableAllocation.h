@@ -4,12 +4,13 @@
 #include "Cable.h"
 
 #include <vector>
-#include <unordered_map>
+#include <map>
+#include <unordered_set>
 
 class cable_allocator
 {
     private :
-        std::unordered_map<int, std::vector<int>> _adjacency_list;
+        std::map<int, std::unordered_set<int>> _adjacency_list;
 
     public :
     cable_allocator() = default;

@@ -17,7 +17,7 @@ def DetecteCavity(Img) :
 
 
     Cavities = []
-
+    count = 0 ;
     for DetectedCnt in Contours:
        Area = cv2.contourArea(DetectedCnt)
        (x,y), R = cv2.minEnclosingCircle(DetectedCnt)
@@ -30,16 +30,21 @@ def DetecteCavity(Img) :
     
 
        if (R > 10 and               
-           R < 50 and              
+           R < 40 and              
            Circularity > 0.7 and        
-           Area > 30):     
+           Area > 30): 
+        
+        count += 1;    
            
         Centre = (int(x), int(y))
         R = int(R)
         Cavities.append((Centre, R))
-        
-        #draw
-        cv2.circle(Img, Centre, R, (0,255,0), 2)
+    #draw   
+    for i, (Pos, r) in enumerate(Cavities, 0):
+        cv2.circle(Img, Pos, r, (0,255,0), 2)
+        text_pos = (Pos[0], Pos[1])
+        cv2.putText(Img, str(len(Cavities) - i), text_pos, 
+        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 2)
     
     return Img, Cavities
         

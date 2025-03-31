@@ -1,6 +1,8 @@
 #include "Cavity.h"
 #include "Wire.h"
+
 #include <cmath>
+#include <limits>
 
 Cavity::Cavity(int number, int gauge_size, double x, double y, bool is_available):
     _ID(number),
@@ -15,8 +17,9 @@ bool Cavity::operator==(const Cavity& others) const
 
 double Cavity::distance(const Cavity &others) const 
 {
-    return sqrt(pow(others._position.first,  _position.first) + 
-                pow(others._position.second, _position.second));
+    if(*this == others) return std::numeric_limits<double>::max();
+    else return sqrt(pow(others._position.first  - _position.first ,2) + 
+                     pow(others._position.second - _position.second,2));
 }
 
 bool Cavity::is_compatible(const Wire& wire) const 

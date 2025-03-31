@@ -19,8 +19,8 @@ def CallDetecteFunction(iDir, oDir):
             
             # Print summary
             print(f"{File}: Detected {len(Cavities)} Cavities")
-            for i, (Pos, r) in enumerate(Cavities, 1):
-                print(f"Cavity({i}, {r}, {Pos[0]}.0,{Pos[1]}.0, true ),")
+            for i, (Pos, r) in enumerate(Cavities, 0):
+                print(f"Cavity({len(Cavities) - i}, {r}, {Pos[0]}.0,{Pos[1]}.0, true ),")
 
 if __name__ == "__main__":
     root_path = Path(__file__).resolve().parent.parent
