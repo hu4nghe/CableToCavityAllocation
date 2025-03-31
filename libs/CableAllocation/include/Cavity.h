@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ElecUtility.h"
+#include "AWG.h"
 
 #include <utility>
 
@@ -8,14 +8,14 @@ class Wire;
 
 class Cavity
 {
-public:
+private:
     const int                _ID;
     const AWG                _gauge;
     
     std::pair<double,double> _position;
     bool                     _availability;
 
-
+public:
     Cavity(int, int, double, double, bool);
     
     bool   operator==(const Cavity&)  const;

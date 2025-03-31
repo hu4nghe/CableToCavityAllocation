@@ -7,8 +7,8 @@
 
 class Cable
 {
-    private:
+private:
     std::unordered_map<int, Wire> _wires;
-    public:
+public:
     Cable(std::vector<int> wire_gauges);
 };

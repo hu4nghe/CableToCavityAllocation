@@ -1,7 +1,4 @@
 #pragma once
-
-#include <cstdint>
-
 enum class AWG
 {
     AWGUnkown = -1,
