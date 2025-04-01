@@ -4,15 +4,24 @@
 #include <cmath>
 #include <limits>
 
-cavity::cavity(int number, int gauge_size, double x, double y, bool is_available):
-    _ID(number),
+
+cavity::cavity(const int& id, 
+               const int& cavity_gauge, 
+               const double& x, 
+               const double& y, 
+               const bool& is_available):
+    electronic_component_base(id, cavity_gauge),
     _position(x, y),
-    _gauge(static_cast<AWG>(gauge_size)),
     _availability(is_available){}
 
 bool cavity::operator==(const cavity& others) const
 {
     return others._ID == _ID;
+}
+
+bool cavity::operator<(const cavity &other) const
+{
+    return _ID < other._ID;
 }
 
 double cavity::distance(const cavity &others) const 

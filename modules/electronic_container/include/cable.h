@@ -1,14 +1,15 @@
+/**
+ * @file cable.h
+ * @author HUANG He (he.huang.intern@3ds.com)
+ * @brief The class that represent a cable, who includes multiples wires
+ * @version 1.0
+ * @date 2025-04-01
+ * 
+ * @copyright Dassault Systemes 2025
+ * 
+ */
 #pragma once
 
-#include "wire.h"
+#include "electronic_container_base.h"
 
-#include <unordered_map>
-#include <vector>
-
-class cable
-{
-private:
-    std::unordered_map<int, wire> _wires;
-public:
-    cable(std::vector<int> wire_gauges);
-};
+//class cable : public electronic_container_base<wire>{};

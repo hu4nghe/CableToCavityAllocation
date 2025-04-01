@@ -10,32 +10,40 @@
 #include <cmath>
 #include <print>
 #include <utility>
-
-#include <unordered_map>
-cable_allocator::cable_allocator(const std::vector<cavity>&& cavities,const std::vector<cable>&& cables)
-    : _cavity(std::move(cavities))
+#include <memory>
+/*
+std::vector<p_component<cavity>> convert_to_shared_ptr_vector(const std::vector<cavity>& cavities) 
 {
-    //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
-    double min_distance = std::numeric_limits<double>::max();
-    for(const auto& i : cavities)
-        for(const auto& j : cavities)
-            min_distance = j.distance(i) < min_distance ? j.distance(i) : min_distance;
-
-    //Trouver les cavités adjacentes 
-    const double epsilon = 0.3 * min_distance;
-    for(const auto& i : cavities)
-        for(const auto& j : cavities)
-            if(std::abs(j.distance(i) - min_distance) < epsilon)
-                _adjacency_list[i.get_ID()].insert(j.get_ID());
+    std::vector<p_component<cavity>> result;
+    for (auto& cavity : cavities) 
+    {
+        result.push_back(std::make_shared<cavity>(cavity));
+    }
+    return result;
 }
 
-void cable_allocator::print_list() const
+cable_allocator::cable_allocator(const std::vector<cavity>& cavities):
+    _connector(convert_to_shared_ptr_vector(cavities))
 {
-    for(auto& i : _adjacency_list)
-    {
-        std::print("cavity {} is adjacent to : ",i.first);
-        for(auto& j : i.second) 
-            std::print("{} ",j);
-        std::print("\n");
+   
+   
+}*/
+
+// Helper function implementation
+std::vector<std::shared_ptr<cavity>> convert_to_shared_ptr_vector(const std::vector<cavity>& cavities) {
+    std::vector<std::shared_ptr<cavity>> result;
+    result.reserve(cavities.size());
+    for (const auto& cav : cavities) {
+        // Either use direct construction:
+        result.emplace_back(new cavity(cav));
+        // Or if cavity is copyable:
+        // result.push_back(std::make_shared<cavity>(cav));
     }
+    return result;
+}
+
+cable_allocator::cable_allocator(const std::vector<cavity>& cavities)
+    : _connector(convert_to_shared_ptr_vector(cavities))
+{
+    // Constructor implementation
 }

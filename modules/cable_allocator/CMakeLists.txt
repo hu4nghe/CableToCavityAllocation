@@ -3,7 +3,7 @@ add_library(cable_allocator STATIC ${SOURCES})
 
 target_include_directories(cable_allocator 
     PUBLIC
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/interface>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 

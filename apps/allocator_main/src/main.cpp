@@ -86,8 +86,8 @@ int main()
         cavity(1, 11, 99.0,63.0, true )
 
     };
-    
-    cable_allocator allocator(std::move(cavities),std::vector<cable>());
+
+    cable_allocator allocator(cavities);
 
     allocator.print_list();
     return  0;

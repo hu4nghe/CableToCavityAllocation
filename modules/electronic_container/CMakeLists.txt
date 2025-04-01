@@ -4,6 +4,7 @@ add_library(electronic_container STATIC ${SOURCES})
 target_include_directories(electronic_container
     PUBLIC
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/interface>
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         $<INSTALL_INTERFACE:include>
 )
 

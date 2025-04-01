@@ -1,4 +1,4 @@
 #include "wire.h"
 
-wire::wire(const int& wire_gauge):
-    _gauge(static_cast<AWG>(wire_gauge)){}
+wire::wire(const int& id, const int& wire_gauge):
+    electronic_component_base(id, wire_gauge){}

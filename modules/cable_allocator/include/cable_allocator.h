@@ -15,15 +15,13 @@
 class cable_allocator
 {
 private :
-    std::vector<cavity> _cavity;
-
-    std::unordered_map<int, std::unordered_set<int>>              _adjacency_list;
-    std::unordered_map<int, std::unordered_map<int,cable_region>> _region_table;
+    
+    //std::unordered_map<int, std::unordered_map<int,cable_region>> _region_table;
+    connector _connector;
 
 public :
-    explicit cable_allocator(const std::vector<cavity>&&,const std::vector<cable>&&);
-    void     build_region_table();
+    cable_allocator() = delete;
+    cable_allocator(const std::vector<cavity>&);
+    void print_list(){ _connector.print_list(); }
 
-    //debug functions
-    void     print_list() const;
 };
