@@ -4,9 +4,9 @@
 
 #include <utility>
 
-class Wire;
+class wire;
 
-class Cavity
+class cavity
 {
 private:
     const int                _ID;
@@ -16,11 +16,11 @@ private:
     bool                     _availability;
 
 public:
-    Cavity(int, int, double, double, bool);
+    cavity(int, int, double, double, bool);
     
-    bool   operator==(const Cavity&)  const;
-    double distance(const Cavity&)    const;
-    bool   is_compatible(const Wire&) const;
+    bool   operator==(const cavity&)  const;
+    double distance(const cavity&)    const;
+    bool   is_compatible(const wire&) const;
 
     int    get_ID() const { return _ID; }
 };

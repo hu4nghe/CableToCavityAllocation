@@ -4,7 +4,7 @@
  * Un algorithme pour trouver tous les solotion possibles d'allocation des cables aux cavités
  * 
  */
-#include "CableAllocation.h"
+#include "cable_allocator.h"
 
 #include <limits>
 #include <cmath>
@@ -12,14 +12,7 @@
 #include <utility>
 
 #include <unordered_map>
-
-struct cable_region
-{
-    std::vector<int> _cavities;
-    std::vector<std::pair<int, int>> _segments;
-};
-
-explicit cable_allocator::cable_allocator(const std::vector<Cavity>&& cavities)
+cable_allocator::cable_allocator(const std::vector<cavity>&& cavities,const std::vector<cable>&& cables)
     : _cavity(std::move(cavities))
 {
     //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
@@ -40,7 +33,7 @@ void cable_allocator::print_list() const
 {
     for(auto& i : _adjacency_list)
     {
-        std::print("Cavity {} is adjacent to : ",i.first);
+        std::print("cavity {} is adjacent to : ",i.first);
         for(auto& j : i.second) 
             std::print("{} ",j);
         std::print("\n");

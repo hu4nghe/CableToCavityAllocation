@@ -2,17 +2,16 @@
 
 #include "AWG.h"
 
-class Cable;
+class cable;
 
-class Wire
+class wire
 {
 private:
     const AWG    _gauge = AWG::AWGUnkown;
-    const Cable* _parent;
     
 public:
-    Wire() = delete;
-    Wire(const int& wire_gauge, const Cable* parent);
+    wire() = delete;
+    wire(const int& wire_gauge);
 
     const AWG get_gauge() const { return _gauge; }
 };
