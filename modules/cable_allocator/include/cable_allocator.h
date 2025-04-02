@@ -18,12 +18,17 @@ class cable_allocator
 {
 private :
     
-    //std::unordered_map<int, std::unordered_map<int,cable_region>> _region_table;
-    connector _connector;
+    std::vector<std::vector<cable_region>> _region_table;
+    std::vector<cable>                     _cables;
+    connector                              _connector;
 
 public :
     cable_allocator() = delete;
-    cable_allocator(const std::vector<cavity>&);
+    cable_allocator(const std::vector<cavity>&, const std::vector<cable>& cables);
+
+    void generate_region_table();
+
     void print_list(){ _connector.print_list(); }
+    void print_region_list();
 
 };

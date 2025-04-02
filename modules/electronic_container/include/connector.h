@@ -30,6 +30,10 @@ public:
      */
     connector(const std::vector<cavity>& cavities);
 
+    std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG cable_gauge);
+
+    auto get_adjacency_list() const { return _adjacency_list;} 
+
     //debug functions
     /**
      * @brief print auto-generated adjacency list.

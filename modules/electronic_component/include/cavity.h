@@ -85,4 +85,6 @@ public:
      * @return Distance between two cavity, +∞ if send itself as argument.
      */
     double distance(const cavity& other) const;
+
+    bool is_available() const { return _availability; }
 };

@@ -12,7 +12,7 @@
 #include <print>
 
 connector::connector(const std::vector<cavity> &cavities) : 
-    electronic_container_base(convert_ptr_vector(cavities))
+    electronic_container_base(cavities)
 {
     for(auto &gauge_type : _container)
     {
@@ -31,6 +31,12 @@ connector::connector(const std::vector<cavity> &cavities) :
     }
 }
 
+std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG cable_gauge)
+{
+    if(_container.contains(cable_gauge)) return _container[cable_gauge];        
+    else return std::vector<p_component<cavity>>();
+}
+
 void connector::print_list() const
 {
     for(auto& i : _adjacency_list)
@@ -40,12 +46,4 @@ void connector::print_list() const
             std::print("{} ",j.get_ID());
         std::print("\n");
     }
-}
-
-std::vector<p_component<cavity>> connector::convert_ptr_vector(const std::vector<cavity> &cavities)
-{
-    std::vector<p_component<cavity>> ptr_vec;
-    for (auto& cav : cavities)
-        ptr_vec.emplace_back(std::make_shared<cavity>(std::move(cav)));
-    return ptr_vec;
 }

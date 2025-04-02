@@ -24,9 +24,10 @@ protected:
 public:
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
-    electronic_container_base(const std::vector<p_component<T>>& components)
+    electronic_container_base(const std::vector<T>& components)
     {
         for(auto& p : components)
-            _container[p->get_gauge()].push_back(p);
+            _container[p.get_gauge()].push_back(std::make_shared<T>(p));
     }
+
 };

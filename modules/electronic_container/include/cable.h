@@ -12,4 +12,13 @@
 
 #include "electronic_container_base.h"
 
-//class cable : public electronic_container_base<wire>{};
+class cable : public electronic_container_base<wire>
+{
+private: 
+    AWG _gauge;
+public:
+    cable(const std::vector<wire>& wires);
+
+    AWG get_gauge() const { return _gauge; }
+    std::size_t size() const { return _container.at(_gauge).size(); }
+};
