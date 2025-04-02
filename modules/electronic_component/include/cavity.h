@@ -23,6 +23,9 @@ private:
     bool                           _availability;
 
 public:
+
+    /// Constructors///
+
     /**
     * @brief Construct a new cavity::cavity object.
     * 
@@ -37,6 +40,23 @@ public:
            const double& x,
            const double& y , 
            const bool&   is_available);
+    
+    /**
+     * @brief Copy constructor for building adjacency list
+     * 
+     * @param other cavity object to copy
+     */
+    cavity(const cavity& other);
+
+    /**
+     * @brief Move constructor for initialization
+     * 
+     * @param other cavity object to move
+     */
+    explicit cavity(cavity&& other);
+    
+    ///Comparison operators for STL containers///
+    
     /**
      * @brief Compare gauge to other cavity.
      * 
@@ -46,7 +66,17 @@ public:
      */
     bool operator==(const cavity& other) const;
 
+    /**
+     * @brief Compare ID of two cavities
+     *        (Only for STL container use, do not call explicitly)
+     * 
+     * @param other Another cavity object.
+     * @return true if current cavity ID is smaller than other's.
+     * @return false if current cavity ID is bigger than other's.
+     */
     bool operator<(const cavity& other) const;
+
+    /// Useful tools ///
 
     /**
      * @brief Calculate distance between two cavities on the same connector.

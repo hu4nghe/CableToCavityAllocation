@@ -1,16 +1,18 @@
-#pragma once
 /**
- * 28/03/2025
- * HHG10 
- * Un algorithme pour trouver tous les solotion possibles d'allocation des cables aux cavités 
+ * @file cable_allocator.h
+ * @author HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * @version 1.0
+ * @date 2025-04-02
+ * 
+ * @copyright Dassault Systemes 2025
+ * 
  */
+#pragma once
+
 #include "cable_region.h"
 #include "electronic_container.h"
 #include "electronic_component.h"
-
-#include <vector>
-#include <unordered_map>
-#include <unordered_set>
 
 class cable_allocator
 {

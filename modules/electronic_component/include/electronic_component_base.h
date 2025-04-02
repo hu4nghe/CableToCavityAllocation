@@ -30,18 +30,35 @@ protected:
     const AWG _gauge;
     
 public:
-    // Instantiate a void component is NOT allowed.
-    electronic_component_base() = delete;
+
+    /// Constructors ///
 
     /**
-     * @brief Base class constructor for components.
+     * @brief Default constructor set attributs to unknwon status.
+     */
+    electronic_component_base();
+    /**
+     * @brief Base class constructor.
      * 
      * @param id Component's ID.
      * @param gauge Component's size in American Wire Gauge.
      */
-    electronic_component_base(const int& id, const int& gauge);
+    electronic_component_base(const int& id, 
+                              const int& gauge);
 
-   
+    /**
+     * @brief Base copy constructor.
+     * 
+     * @param other Another electronic_component_base object to copy
+     */
+    electronic_component_base(const electronic_component_base& other);
+
+    /**
+     * @brief Base move constructor
+     * 
+     * @param other Another electronic_component_base object to move.
+     */
+    explicit electronic_component_base(electronic_component_base&& other);
 
     // Getters
     const AWG get_gauge() const { return _gauge; }

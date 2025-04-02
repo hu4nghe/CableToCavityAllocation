@@ -1,30 +1,52 @@
+/**
+ * @file cavity.cpp
+ * @author HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * @version 1.0
+ * @date 2025-04-02
+ * 
+ * @copyright Dassault Systemes 2025
+ * 
+ */
 #include "cavity.h"
 #include "wire.h"
 
 #include <cmath>
 #include <limits>
 
-
+//Constructors
 cavity::cavity(const int& id, 
                const int& cavity_gauge, 
                const double& x, 
                const double& y, 
-               const bool& is_available):
+               const bool& is_available) :
     electronic_component_base(id, cavity_gauge),
     _position(x, y),
     _availability(is_available){}
 
+cavity::cavity(const cavity& other) :
+electronic_component_base(other),
+    _position(other._position),
+    _availability(other._availability){}
+
+cavity::cavity(cavity&& other):
+    _position(std::move(other._position)),
+    _availability(other._availability),
+    electronic_component_base(std::move(other)){}
+
+// Operators
 bool cavity::operator==(const cavity& others) const
 {
     return others._ID == _ID;
 }
 
-bool cavity::operator<(const cavity &other) const
+bool cavity::operator<(const cavity& other) const
 {
     return _ID < other._ID;
 }
 
-double cavity::distance(const cavity &others) const 
+// Useful tools
+double cavity::distance(const cavity& others) const 
 {
     if(*this == others) return std::numeric_limits<double>::max();
     else return sqrt(pow(others._position.first  - _position.first ,2) + 

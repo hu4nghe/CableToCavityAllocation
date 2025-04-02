@@ -21,14 +21,13 @@ class electronic_container_base
 protected:
     std::map<AWG, std::vector<p_component<T>>> _container;
 
-
 public:
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
     electronic_container_base(const std::vector<p_component<T>>& components)
     {
-        for(auto& p_comp : components)
-        _container[p_comp->get_gauge()].push_back(p_comp);
+        for(auto& p : components)
+            _container[p->get_gauge()].push_back(p);
     }
     
 };
