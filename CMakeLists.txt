@@ -15,3 +15,4 @@ add_subdirectory(modules/cable_allocator)
 
 # executable
 add_subdirectory(apps/allocator_main)
+add_subdirectory(apps/module_tester)

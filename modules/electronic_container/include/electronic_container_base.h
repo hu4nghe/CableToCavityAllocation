@@ -29,5 +29,4 @@ public:
         for(auto& p : components)
             _container[p->get_gauge()].push_back(p);
     }
-    
 };

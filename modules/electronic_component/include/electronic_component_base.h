@@ -63,4 +63,14 @@ public:
     // Getters
     const AWG get_gauge() const { return _gauge; }
     const int get_ID()    const { return _ID; }
+
+    /**
+     * @brief Check if two component can fit each other
+     *        (May add contact calculation in future.)
+     * 
+     * @param other Another electronic_component_base object.
+     * @return true If two components have the same gauge
+     * @return false If two components have differents gauges.
+     */
+    bool is_compatible(const electronic_component_base& other) const; 
 };

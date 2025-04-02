@@ -14,15 +14,15 @@
 connector::connector(const std::vector<cavity> &cavities) : 
     electronic_container_base(convert_ptr_vector(cavities))
 {
-    //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
     for(auto &gauge_type : _container)
     {
+        //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
         double min_distance = std::numeric_limits<double>::max();
         for(const auto& i : gauge_type.second)
             for(const auto& j : gauge_type.second)
                min_distance = j->distance(*i) < min_distance ? j->distance(*i) : min_distance;
 
-        //Trouver les cavités adjacentes 
+        //build adjacency list
         const double epsilon = 0.3 * min_distance;
         for(const auto& i : gauge_type.second)
             for(const auto& j : gauge_type.second)

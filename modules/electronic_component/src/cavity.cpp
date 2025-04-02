@@ -53,7 +53,3 @@ double cavity::distance(const cavity& others) const
                      pow(others._position.second - _position.second,2));
 }
 
-bool cavity::is_compatible(const wire& wire) const 
-{
-    return _gauge == wire.get_gauge();
-}

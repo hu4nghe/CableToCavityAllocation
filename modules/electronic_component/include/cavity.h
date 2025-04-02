@@ -85,13 +85,4 @@ public:
      * @return Distance between two cavity, +∞ if send itself as argument.
      */
     double distance(const cavity& other) const;
-
-    /**
-     * @brief check if a wire is compatible to the cavity.
-     * 
-     * @param wire The wire to check.
-     * @return true if the wire and the cavity have the same gauge.
-     * @return false if the wire and the cavity have differents gauges.
-     */
-    bool is_compatible(const wire& wire) const;
 };
