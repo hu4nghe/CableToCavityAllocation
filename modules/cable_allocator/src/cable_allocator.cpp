@@ -43,59 +43,56 @@ void cable_allocator::generate_region_table()
         return segments;
     };
 
+    // For every cables
     for(const auto& cable : _cables)
     {
-        for(const auto& wire_gauge_pair : cable._container)
+        for(const auto& [gauge, wires] : cable._container)
         {
-            const auto current_gauge = wire_gauge_pair.first;
-            const auto wires_in_current_gauge = wire_gauge_pair.second;
-            // Search only in compatibles cavities
-            auto compatible_cavities = _connector.get_compatible_cavitiy_list(current_gauge);
-
             std::unordered_set<std::string> logged_region;
             std::vector<cable_region> current_cable_regions;
 
-            for(const auto& start : compatible_cavities)
+            // Search only in compatibles cavities
+            for(const auto& compatible_cavity : _connector.get_compatible_cavitiy_list(gauge))
             {
                 std::vector<int> path;
                 std::unordered_set<int> visited;
-            
+                
+                // DFS core
                 std::function<void(cavity)> dfs = [&](cavity current) 
                 {
+                    // Log current node
                     visited.insert(current.get_ID());
                     path.push_back(current.get_ID());
-                    if (path.size() == cable.size(current_gauge)) 
+
+                    // Stop condition : A region is found
+                    if (path.size() == cable.size(gauge)) 
                     {
+                        // Check if it is not a duplicate 
                         auto key = generate_region_key(path);
                         if (!logged_region.count(key)) 
                         {
+                            // Save the region found
                             logged_region.insert(key);
                             auto segments = generate_region_segments(path);
                             auto valid_region = cable_region(path, segments);
                             current_cable_regions.push_back(valid_region);
                         }
-                    
-                        visited.erase(current.get_ID());
-                        path.pop_back();
-                        return;
                     }
-                
-                    // Search path in current cavity's adjacency_list
-                    auto adj_list = _connector.get_adjacency_list(current.get_ID());
-
-                    for (const auto& neighbor : adj_list) 
-                        if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
-                            dfs(neighbor);
-
+                    else // Continue to build the region with adjacent node.
+                        for (const auto& neighbor : _connector.get_adjacency_list(current.get_ID())) 
+                            if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
+                                dfs(neighbor);
+                    
+                    // Return to previous node
                     visited.erase(current.get_ID());
                     path.pop_back();
+                    return;
                 };
-                dfs(*start);
+
+                dfs(*compatible_cavity);
             }
             _region_table.push_back(current_cable_regions);
-
         }
-        
     }
 }
 

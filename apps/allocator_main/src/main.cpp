@@ -6,7 +6,7 @@ int main()
 {
     std::vector<cavity> cavities = 
     {
-        cavity(49, 16, 710.0,151.0, true ),
+        /*cavity(49, 16, 710.0,151.0, true ),
         cavity(48, 16, 644.0,151.0, true ),
         cavity(47, 16, 578.0,151.0, true ),
         cavity(46, 16, 512.0,151.0, true ),
@@ -33,10 +33,10 @@ int main()
         cavity(25, 22, 266.0,99.0, true ),
         cavity(24, 22, 233.0,99.0, true ),
         cavity(23, 22, 200.0,99.0, true ),
-        cavity(22, 22, 167.0,99.0, true ),
+        cavity(22, 22, 167.0,99.0, true ),*/
         cavity(21, 22, 134.0,99.0, true ),
         cavity(20, 22, 101.0,99.0, true ),
-        cavity(19, 22, 711.0,71.0, true ),
+        /*cavity(19, 22, 711.0,71.0, true ),
         cavity(18, 22, 678.0,71.0, true ),
         cavity(17, 22, 645.0,71.0, true ),
         cavity(16, 22, 612.0,71.0, true ),
@@ -52,7 +52,7 @@ int main()
         cavity(6, 22, 282.0,71.0, true ),
         cavity(5, 22, 249.0,71.0, true ),
         cavity(4, 22, 216.0,71.0, true ),
-        cavity(3, 22, 183.0,71.0, true ),
+        cavity(3, 22, 183.0,71.0, true ),*/
         cavity(2, 22, 151.0,71.0, true ),
         cavity(1, 22, 118.0,71.0, true )
     };
@@ -66,16 +66,12 @@ int main()
         wire(1,22),
         wire(2,22),
         wire(3,22),
-        wire(4,22),
-        wire(5,22),
-        wire(6,22),
-        wire(7,22)
     };
     
     cable cab1(1,c1);
     cable cab2(2,c2);
 
-    std::vector<cable> cable_vector{ cab2 };
+    std::vector<cable> cable_vector{ cab1,cab2 };
 
 
     cable_allocator allocator(cavities,cable_vector);
