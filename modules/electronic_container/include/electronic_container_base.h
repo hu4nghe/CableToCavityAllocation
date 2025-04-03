@@ -15,6 +15,8 @@
 #include <map>
 #include <vector>
 
+class cable_allocator;
+
 template <electronic_component_type T>
 class electronic_container_base
 {
@@ -22,6 +24,7 @@ protected:
     std::map<AWG, std::vector<p_component<T>>> _container;
 
 public:
+    friend class cable_allocator;
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
     electronic_container_base(const std::vector<T>& components)
@@ -29,5 +32,4 @@ public:
         for(auto& p : components)
             _container[p.get_gauge()].push_back(std::make_shared<T>(p));
     }
-
 };

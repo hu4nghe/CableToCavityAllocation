@@ -31,9 +31,9 @@ connector::connector(const std::vector<cavity> &cavities) :
     }
 }
 
-std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG cable_gauge)
+std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)
 {
-    if(_container.contains(cable_gauge)) return _container[cable_gauge];        
+    if(_container.contains(gauge)) return _container.at(gauge);        
     else return std::vector<p_component<cavity>>();
 }
 

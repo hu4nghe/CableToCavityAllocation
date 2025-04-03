@@ -13,6 +13,7 @@
 #include "electronic_component.h"
 
 #include "electronic_container_base.h"
+#include "cable.h"
 
 #include <set>
 
@@ -30,9 +31,9 @@ public:
      */
     connector(const std::vector<cavity>& cavities);
 
-    std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG cable_gauge);
+    std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
 
-    auto get_adjacency_list() const { return _adjacency_list;} 
+    auto get_adjacency_list(const int& ID) const { return _adjacency_list.at(ID);} 
 
     //debug functions
     /**

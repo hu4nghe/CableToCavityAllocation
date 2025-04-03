@@ -15,10 +15,11 @@
 class cable : public electronic_container_base<wire>
 {
 private: 
-    AWG _gauge;
+    int _ID;
 public:
-    cable(const std::vector<wire>& wires);
+    cable(const int& ID, const std::vector<wire>& wires);
 
-    AWG get_gauge() const { return _gauge; }
-    std::size_t size() const { return _container.at(_gauge).size(); }
+    int get_ID() const { return _ID; }
+
+    auto size(AWG gauge) const { return _container.at(gauge).size(); }
 };
