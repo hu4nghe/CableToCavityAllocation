@@ -19,6 +19,7 @@ class cable_allocator
 private :
     
     std::vector<std::vector<cable_region>> _region_table;
+    std::vector<std::vector<cable_region>> _solutions;
     std::vector<cable>                     _cables;
     connector                              _connector;
 
@@ -27,8 +28,10 @@ public :
     cable_allocator(const std::vector<cavity>&, const std::vector<cable>& cables);
 
     void generate_region_table();
+    void allocate_cables();
 
     void print_list(){ _connector.print_list(); }
     void print_region_list();
 
+    void print_solutions();
 };

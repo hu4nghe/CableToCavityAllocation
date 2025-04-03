@@ -27,6 +27,12 @@ public:
     friend class cable_allocator;
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
+    /**
+     * @brief Construct a new electronic container base object
+     * 
+     * @param components A vector contains all components. 
+     *                   The constructor will automatically classifie these component by their gauge.
+     */
     electronic_container_base(const std::vector<T>& components)
     {
         for(auto& p : components)

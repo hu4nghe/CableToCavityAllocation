@@ -37,6 +37,24 @@ std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG gaug
     else return std::vector<p_component<cavity>>();
 }
 
+std::set<int> connector::get_unavailable_index_pool(AWG gauge) const
+{
+    std::set<int> occupied_cavity_index_pool;
+    for(const auto& p_cavity :_container.at(gauge))
+        if(!p_cavity->is_available())
+            occupied_cavity_index_pool.insert(p_cavity->get_ID());
+
+    return occupied_cavity_index_pool;
+    
+}
+
+void connector::set_availability(const std::set<int>& cavity_index, const bool& new_status)
+{
+    for(auto& [gauge, cavity_list] : _container)
+        for(auto& cavity : cavity_list)
+            if(cavity_index.count(cavity->get_ID())) cavity->set_availability(new_status);
+}
+
 void connector::print_list() const
 {
     for(auto& i : _adjacency_list)

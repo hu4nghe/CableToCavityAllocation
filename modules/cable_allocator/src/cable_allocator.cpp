@@ -60,33 +60,39 @@ void cable_allocator::generate_region_table()
                 // DFS core
                 std::function<void(cavity)> dfs = [&](cavity current) 
                 {
-                    // Log current node
-                    visited.insert(current.get_ID());
-                    path.push_back(current.get_ID());
-
-                    // Stop condition : A region is found
-                    if (path.size() == cable.size(gauge)) 
+                    // Return to previous if current cavity is not available
+                    if(!current.is_available()) return;
+                    else
                     {
-                        // Check if it is not a duplicate 
-                        auto key = generate_region_key(path);
-                        if (!logged_region.count(key)) 
+                        // Log current node
+                        auto current_cavity_ID = current.get_ID();
+                        visited.insert(current_cavity_ID);
+                        path.push_back(current_cavity_ID);
+
+                        // Stop condition : A region is found
+                        if (path.size() == cable.size(gauge)) 
                         {
-                            // Save the region found
-                            logged_region.insert(key);
-                            auto segments = generate_region_segments(path);
-                            auto valid_region = cable_region(path, segments);
-                            current_cable_regions.push_back(valid_region);
+                            // Check if it is not a duplicate 
+                            auto key = generate_region_key(path);
+                            if (!logged_region.count(key)) 
+                            {
+                               // Save the region found
+                               logged_region.insert(key);
+                               auto segments = generate_region_segments(path);
+                               auto valid_region = cable_region(path, segments, gauge);
+                               current_cable_regions.push_back(valid_region);
+                            }
                         }
-                    }
-                    else // Continue to build the region with adjacent node.
-                        for (const auto& neighbor : _connector.get_adjacency_list(current.get_ID())) 
-                            if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
-                                dfs(neighbor);
+                        else // Continue to build the region with adjacent node.
+                            for (const auto& neighbor : _connector.get_adjacency_list(current_cavity_ID)) 
+                                if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
+                                    dfs(neighbor);
                     
-                    // Return to previous node
-                    visited.erase(current.get_ID());
-                    path.pop_back();
-                    return;
+                        // Return to previous node
+                        visited.erase(current_cavity_ID);
+                        path.pop_back();
+                        return;
+                    }
                 };
 
                 dfs(*compatible_cavity);
@@ -94,6 +100,45 @@ void cable_allocator::generate_region_table()
             _region_table.push_back(current_cable_regions);
         }
     }
+}
+
+void cable_allocator::allocate_cables() 
+{
+    std::vector<cable_region> current_solution;
+
+    std::function<void(int)> dfs = [&](int cable_index) 
+    {
+        if (cable_index == _cables.size()) 
+        {
+            _solutions.push_back(current_solution); // Store valid assignment
+            return;
+        }
+
+        const auto& regions = _region_table[cable_index];
+
+        for (const auto& region : regions) 
+        {
+            auto region_cavities = region.get_list();
+            auto gauge = region.get_gauge();
+
+            // Check if the region contains any unavailable cavities
+            if (region.has_unavailable_cavity(_connector.get_unavailable_index_pool(gauge)))
+                continue;
+
+            // Assign cable to this region
+            current_solution.push_back(region);
+            _connector.set_availability(region_cavities, false);
+
+            // Recur to assign the next cable
+            dfs(cable_index + 1);
+
+            // Backtrack
+            current_solution.pop_back();
+            _connector.set_availability(region_cavities, true);
+        }
+    };
+
+    dfs(0); 
 }
 
 void cable_allocator::print_region_list()
@@ -108,5 +153,22 @@ void cable_allocator::print_region_list()
                 std::print("{} ",cavity);
             std::print("\n");
         }
+    }
+}
+
+void cable_allocator::print_solutions()
+{
+    for(const auto& solution : _solutions)
+    {
+        std::print("Possible solution : \n");
+        for(const auto& regions : solution)
+        {
+            auto list = regions.get_list();
+            std::print("cable :\n");
+            for(auto& element : list)
+                std::print("{} ",element);
+            std::print("\n");
+        }
+        std::print("\n");
     }
 }

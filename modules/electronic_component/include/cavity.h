@@ -87,4 +87,6 @@ public:
     double distance(const cavity& other) const;
 
     bool is_available() const { return _availability; }
+    void set_availability(const bool& new_status) { _availability = new_status; }
+
 };

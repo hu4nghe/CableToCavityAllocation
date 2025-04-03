@@ -31,9 +31,37 @@ public:
      */
     connector(const std::vector<cavity>& cavities);
 
+    /**
+     * @brief Get the compatible cavitiy list object.
+     * 
+     * @param gauge cable gauge
+     * @return a vector that contains shared_ptr point to the cavity.
+     */
     std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
 
+    /**
+     * @brief Get the adjacency list object.
+     * 
+     * @param ID The ID of cavity that we want to know his adjacent nodes.
+     * @return A set which contains all adjacent nodes.
+     */
     auto get_adjacency_list(const int& ID) const { return _adjacency_list.at(ID);} 
+
+    /**
+     * @brief Get a set wich contains the unavailable cavities(occupied or reserved)'s index.
+     * 
+     * @param gauge cavity gauge type.
+     * @return set of index of unavailable cavities.
+     */
+    std::set<int> get_unavailable_index_pool(AWG gauge) const;
+
+    /**
+     * @brief Set some cavities's avaibility.
+     * 
+     * @param cavity_index cavities to set
+     * @param new_status value
+     */
+    void set_availability(const std::set<int> &cavity_index, const bool &new_status);
 
     //debug functions
     /**
