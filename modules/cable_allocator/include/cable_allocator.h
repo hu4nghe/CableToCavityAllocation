@@ -24,14 +24,15 @@ private :
     connector                              _connector;
 
 public :
+    // Dont initialize a void allocator !
     cable_allocator() = delete;
     cable_allocator(const std::vector<cavity>&, const std::vector<cable>& cables);
 
     void generate_region_table();
     void allocate_cables();
 
+    // For debug use only -- print the calculation result
     void print_list(){ _connector.print_list(); }
     void print_region_list();
-
     void print_solutions();
 };
