@@ -86,7 +86,19 @@ public:
      */
     double distance(const cavity& other) const;
 
+    /**
+     * @brief Availability getter.
+     * 
+     * @return true  if cavity is available.
+     * @return false if cavity is unavailable.
+     */
     bool is_available() const { return _availability; }
+
+    /**
+     * @brief Set cavity's availability.
+     * 
+     * @param new_status New availability status.
+     */
     void set_availability(const bool& new_status) { _availability = new_status; }
 
 };

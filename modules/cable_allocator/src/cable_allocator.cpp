@@ -12,13 +12,21 @@
 
 #include <unordered_set>
 #include <functional>
+
+// Headers for debug use output only, to remove before release.
 #include <print>
 #include <ranges>
+#include <fstream>
+#include <filesystem>
 
 cable_allocator::cable_allocator(const std::vector<cavity>& cavities, 
-                                 const std::vector<cable>& cables) :
+                                 const std::vector<cable>&  cables) :
     _connector(cavities),
-    _cables(cables){}
+    _cables(cables)
+    {
+        generate_region_table();
+        allocate_cables();
+    }
 
 void cable_allocator::generate_region_table()
 {
@@ -143,32 +151,36 @@ void cable_allocator::allocate_cables()
 
 void cable_allocator::print_region_list()
 {
+    std::ofstream log_file("cable_possible_region.txt");
     for(auto [cable, region_table] : std::views::zip(_cables,_region_table))
     {
-        std::print("possible choice for cable {}:\n",cable.get_ID());
+        std::print(log_file,"possible choice for cable {}:\n",cable.get_ID());
 
         for(auto& item : region_table)
         {
             for(auto& cavity : item.get_list())
-                std::print("{} ",cavity);
-            std::print("\n");
+                std::print(log_file,"{} ",cavity);
+            std::print(log_file,"\n");
         }
     }
+    log_file.close();
 }
 
 void cable_allocator::print_solutions()
 {
-    for(const auto& solution : _solutions)
+    std::ofstream log_file("cable_allocation_solution.txt");
+    for(auto const [i, solution] : std::views::enumerate(_solutions))
     {
-        std::print("Possible solution : \n");
-        for(const auto& regions : solution)
+        std::print(log_file, "Possible solution : {}\n", i+1 );
+        for(auto const [j, regions] : std::views::enumerate(solution))
         {
             auto list = regions.get_list();
-            std::print("cable :\n");
+            std::print(log_file,"cable {}:\n", j+1 );
             for(auto& element : list)
-                std::print("{} ",element);
-            std::print("\n");
+                std::print(log_file,"{} ",element);
+            std::print(log_file,"\n");
         }
-        std::print("\n");
+        std::print(log_file,"\n");
     }
+    log_file.close();
 }
