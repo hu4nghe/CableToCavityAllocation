@@ -24,12 +24,30 @@ private :
     connector                              _connector;
 
 public :
+
     // Dont initialize a void allocator !
     cable_allocator() = delete;
-    cable_allocator(const std::vector<cavity>&, const std::vector<cable>& cables);
+
+    /**
+     * @brief Construct a cable allocator with cavity and cable list
+     * 
+     * @param cavities Connector's cavity list 
+     * @param cables   Cable list
+     */
+    cable_allocator(const std::vector<cavity>& cavities, 
+                    const std::vector<cable>&  cables);
 
 private : 
+    
+    /**
+     * @brief Generate all possible regions for each cable.
+     * 
+     */
     void generate_region_table();
+    /**
+     * @brief Allocate cables to the connector.
+     * 
+     */
     void allocate_cables();
 
 public :

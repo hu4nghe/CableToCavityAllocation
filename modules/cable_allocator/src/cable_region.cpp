@@ -1,11 +1,11 @@
 #include "cable_region.h"
 
 
-cable_region::cable_region(const std::vector<int>&              index_list, 
-                           const std::set<std::pair<int, int>>& segments,
-                           const AWG&                           gauge) :
+cable_region::cable_region(const int&              cable_ID,
+                           const std::vector<int>& index_list, 
+                           const AWG&              gauge) :
+    _cable_ID(cable_ID),
     _cavity_index(std::set<int>(index_list.begin(),index_list.end())),
-    _segments(_segments),
     _gauge(gauge){}
 
 bool cable_region::has_unavailable_cavity(std::set<int> unavailable_pool) const 

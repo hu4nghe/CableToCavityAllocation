@@ -39,17 +39,6 @@ void cable_allocator::generate_region_table()
             key += std::to_string(ID);
         return key;
     };
-    // Generate segment of region for cross check
-    auto generate_region_segments = [&](std::vector<int> path)
-    {
-        std::set<std::pair<int, int>> segments;
-            for (const auto& i : path) 
-                for (const auto& j : path) 
-                    if(i == j) continue;
-                    else segments.insert(i < j ? std::make_pair(i, j) : std::make_pair(j, i));
-        
-        return segments;
-    };
 
     // For every cables
     for(const auto& cable : _cables)
@@ -86,8 +75,7 @@ void cable_allocator::generate_region_table()
                             {
                                // Save the region found
                                logged_region.insert(key);
-                               auto segments = generate_region_segments(path);
-                               auto valid_region = cable_region(path, segments, gauge);
+                               auto valid_region = cable_region(cable.get_ID(), path, gauge);
                                current_cable_regions.push_back(valid_region);
                             }
                         }
@@ -126,7 +114,7 @@ void cable_allocator::allocate_cables()
 
         for (const auto& region : regions) 
         {
-            auto region_cavities = region.get_list();
+            auto region_cavities = region.get_list(); 
             auto gauge = region.get_gauge();
 
             // Check if the region contains any unavailable cavities
