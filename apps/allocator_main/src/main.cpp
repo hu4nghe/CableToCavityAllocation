@@ -31,11 +31,11 @@ int main()
         cavity(27, 22, 332.0,99.0, true ),
         cavity(26, 22, 299.0,99.0, true ),
         cavity(25, 22, 266.0,99.0, true ),
-        cavity(24, 22, 233.0,99.0, true ),*/
-        cavity(23, 22, 200.0,99.0, true ),
+        cavity(24, 22, 233.0,99.0, true ),
+        cavity(23, 22, 200.0,99.0, true ),*/
         cavity(22, 22, 167.0,99.0, true ),
         cavity(21, 22, 134.0,99.0, true ),
-        cavity(20, 22, 101.0,99.0, false ),
+        cavity(20, 22, 101.0,99.0, true ),
         /*cavity(19, 22, 711.0,71.0, true ),
         cavity(18, 22, 678.0,71.0, true ),
         cavity(17, 22, 645.0,71.0, true ),
@@ -49,38 +49,42 @@ int main()
         cavity(9, 22, 381.0,71.0, true ),
         cavity(8, 22, 348.0,71.0, true ),
         cavity(7, 22, 315.0,71.0, true ),
-        cavity(6, 22, 282.0,71.0, true ),
+        cavity(6, 22, 282.0,71.0, true ),*/
         cavity(5, 22, 249.0,71.0, true ),
-        cavity(4, 22, 216.0,71.0, true ),*/
+        cavity(4, 22, 216.0,71.0, true ),
         cavity(3, 22, 183.0,71.0, true ),
-        cavity(2, 22, 151.0,71.0, false ),
+        cavity(2, 22, 151.0,71.0, true ),
         cavity(1, 22, 118.0,71.0, true )
     };
-    std::vector<wire> c1 =
+    std::vector<wire> c1 = //cable with 2 wires
     {
         wire(1,22),
         wire(2,22),
     };
-    std::vector<wire> c2 = 
+    
+    std::vector<wire> c2 = //cable with 3 wires
     {
         wire(3,22),
         wire(4,22),
         wire(5,22)
     };
     
-    cable cab1(1,c1);
+    
     cable cab2(2,c2);
+    
 
-    std::vector<cable> cable_vector{ cab1 };
+    std::vector<cable> cable_vector
+    { 
+        cable(1,c1),
+        
+        cable(2,c2),
 
+
+    };
 
     cable_allocator allocator(cavities,cable_vector);
-    //allocator.print_list();
-
-    allocator.generate_region_table();
-    //allocator.print_region_list();
-    
-    allocator.allocate_cables();
+    allocator.print_adjacency_list();
+    allocator.print_region_list();
     allocator.print_solutions();
     return  0;
 }
