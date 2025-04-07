@@ -19,16 +19,7 @@ public:
                  const AWG&                     gauge,
                  const std::vector<std::pair<int,int>>& index_list);
     
-    bool operator<(const cable_region& other) const 
-    {
-        if (_cable_ID != other._cable_ID)
-            return _cable_ID < other._cable_ID;
-        else if (_gauge != other._gauge)
-            return _gauge < other._gauge;
-        else
-            return _wire_layout < other._wire_layout; 
-    }
-
+    bool operator<(const cable_region& other) const;
     
     auto get_ID()     const { return _cable_ID; }
     auto get_layout() const { return _wire_layout; };

@@ -17,11 +17,10 @@
 class cable_allocator
 {
 private :
-    std::vector<std::vector<cable_region>> _solutions;
-    std::vector<cable>                     _cables;
+    std::vector<std::vector<cable_region>>     _solutions;
 
-    std::map<cable, std::set<cable_region>> _region_pool;
-    connector                              _connector;
+    std::map<cable, std::vector<cable_region>> _region_pool;
+    connector                                  _connector;
 
 public :
 
@@ -29,31 +28,15 @@ public :
     cable_allocator() = delete;
 
     /**
-     * @brief Construct a cable allocator with cavity and cable list
+     * @brief Construct a cable allocator with connector's cavity list
      * 
      * @param cavities Connector's cavity list 
-     * @param cables   Cable list
      */
-    cable_allocator(const std::vector<cavity>& cavities, 
-                    const std::vector<cable>&  cables);
+    cable_allocator(const std::vector<cavity>& cavities);
     
     bool add_cable(cable new_cable);
 
 private : 
-    
-    /**
-     * @brief Generate all possible regions for each cable.
-     * 
-     */
-    void generate_region_table();
-
-    /**
-     * @brief 
-     * 
-     * @param cable 
-     */
-    void generate_region_list(const cable& cable);
-
     /**
      * @brief Allocate cables to the connector.
      * 
@@ -62,7 +45,6 @@ private :
 
 public :
     // For debug use only -- print the calculation result
-    void print_adjacency_list(){ _connector.print_list(); }
-    void print_region_list();
-    void print_solutions();
+    void print_adjacency_list(){ _connector.print_adjacency_list(); }
+    void print_current_solutions();
 };

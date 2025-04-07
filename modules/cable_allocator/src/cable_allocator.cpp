@@ -18,18 +18,13 @@
 #include <ranges>
 #include <fstream>
 #include <filesystem>
+#include <iostream>
 
-cable_allocator::cable_allocator(const std::vector<cavity>& cavities, 
-                                 const std::vector<cable>&  cables) :
-    _connector(cavities),
-    _cables(cables)
-    {
-        generate_region_table();
-        allocate_cables();
-    }
+cable_allocator::cable_allocator(const std::vector<cavity>& cavities) :
+    _connector(cavities){}
+
 bool cable_allocator::add_cable(cable new_cable)
 {
- 
     _region_pool[new_cable];
     bool cable_added = false;
 
@@ -59,7 +54,7 @@ bool cable_allocator::add_cable(cable new_cable)
 
                     // When a valid region is found, save it to region pool.
                     if (path.size() == new_cable.size(gauge)) 
-                        _region_pool.at(new_cable).emplace(new_cable.get_ID(), gauge, path);
+                        _region_pool.at(new_cable).emplace_back(new_cable.get_ID(), gauge, path);
                     
                     else // Continue to build the region with adjacent node.
                         for (const auto& neighbor : _connector.get_adjacency_list(current_cavity_ID)) 
@@ -77,15 +72,30 @@ bool cable_allocator::add_cable(cable new_cable)
             cable_added = dfs(dfs, *compatible_cavity, 0);
         }
     }
-    return cable_added;
-}
 
-void cable_allocator::generate_region_table()
-{
-   for(auto& cable : _cables)
-   {
-        add_cable(cable);
-   }
+    //print results : 
+    for(const auto& [cable, regions] : _region_pool)
+    {
+        std::print("possible choice for current cable ({}):\n",cable.get_ID());
+        for(const auto& [i, region] : std::views::enumerate(regions))
+        {
+            std::print("Allocation {} :\n", i + 1);
+            for (const auto& [wire, cavity] : region.get_layout())
+            {
+                std::print("wire {} : cavity {}\n", wire, cavity);
+            }
+            std::print("\n");
+        }
+    }
+    std::print("Chose a allocation to continue.\n");
+    int choice = 0;
+    std::cin>>choice;
+    std::print("Allocation {} is validated.\n\n", choice);
+
+    auto cavity_map = _region_pool.at(new_cable)[choice -1].get_layout();
+    auto locked_cavities = cavity_map | std::views::values | std::ranges::to<std::set>();
+    _connector.set_availability(locked_cavities, false);
+    return cable_added;
 }
 
 void cable_allocator::allocate_cables() 
@@ -128,40 +138,9 @@ void cable_allocator::allocate_cables()
     dfs(0); */
 }
 
-void cable_allocator::print_region_list()
+
+
+void cable_allocator::print_current_solutions()
 {
-    std::ofstream log_file("cable_possible_region.txt");
-    for(auto [cable, cavity_map] : _region_pool)
-    {
-        std::print(log_file,"possible choice for cable {}:\n",cable.get_ID());
-
-        for(auto& region : cavity_map)
-        {
-            auto layout = region.get_layout(); 
-            for(auto& [wire, cavity] : layout)
-                std::print(log_file,"wire {} : cavity {}\n", wire, cavity);
-
-            std::print(log_file,"\n");
-        }
-    }
-    log_file.close();
-}
-
-void cable_allocator::print_solutions()
-{
-    /*std::ofstream log_file("cable_allocation_solution.txt");
-    for(auto const [i, solution] : std::views::enumerate(_solutions))
-    {
-        std::print(log_file, "Possible solution : {}\n", i+1 );
-        for(auto const [j, regions] : std::views::enumerate(solution))
-        {
-            auto list = regions.get_layout();
-            std::print(log_file,"cable {}:\n", j+1 );
-            for(auto& [wire, cavity] : list)
-                std::print(log_file,"wire } : cable : {} ", wire, cavity);
-            std::print(log_file,"\n");
-        }
-        std::print(log_file,"\n");
-    }
-    log_file.close();*/
+    _connector.print_current_connector_status();
 }

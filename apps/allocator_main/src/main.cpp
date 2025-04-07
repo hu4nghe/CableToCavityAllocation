@@ -71,20 +71,14 @@ int main()
     
     
     cable cab2(2,c2);
-    
-
-    std::vector<cable> cable_vector
-    { 
-        cable(1,c1),
-        
-        //cable(2,c2),
 
 
-    };
+    cable_allocator allocator(cavities);
 
-    cable_allocator allocator(cavities,cable_vector);
-    allocator.print_adjacency_list();
-    allocator.print_region_list();
-    allocator.print_solutions();
+    allocator.add_cable(cab2);
+
+    //allocator.print_adjacency_list();
+    //allocator.print_region_list();
+    allocator.print_current_solutions();
     return  0;
 }

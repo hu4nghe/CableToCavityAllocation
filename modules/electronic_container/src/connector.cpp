@@ -55,7 +55,7 @@ void connector::set_availability(const std::set<int>& cavity_index, const bool& 
             if(cavity_index.count(cavity->get_ID())) cavity->set_availability(new_status);
 }
 
-void connector::print_list() const
+void connector::print_adjacency_list() const
 {
     for(auto& i : _adjacency_list)
     {
@@ -63,5 +63,18 @@ void connector::print_list() const
         for(auto& j : i.second) 
             std::print("{} ",j.get_ID());
         std::print("\n");
+    }
+}
+
+void connector::print_current_connector_status() const
+{
+    for(const auto [gauge, cavities] : _container)
+    {
+        std::print("Gauge {} :\n",static_cast<int>(gauge));
+        for(const auto& cavity : cavities)
+        {
+            auto status_str = cavity->is_available() ? "available" : "unavailable\n";
+            std::print("Cavity N.{} : {}", cavity->get_ID(), status_str);
+        }
     }
 }

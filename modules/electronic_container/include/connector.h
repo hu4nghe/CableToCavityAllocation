@@ -20,7 +20,6 @@
 class connector : public electronic_container_base<cavity>
 {
 private:
-
     std::map<int, std::set<cavity>> _adjacency_list;
 
 public:
@@ -68,15 +67,8 @@ public:
      * @brief print auto-generated adjacency list.
      * 
      */
-    void print_list() const;
+    void print_adjacency_list() const;
 
-private: //internal tools
-    /**
-     * @brief Convert a electronic_component_base vector into a p_component vector.
-     *        The new vector will take the ownership of object vector.
-     * 
-     * @param cavities Cavity object vector.
-     * @return Cavity Object shared_ptr vector.
-     */
-    std::vector<p_component<cavity>> convert_ptr_vector(const std::vector<cavity>& cavities);
+    void print_current_connector_status() const;
+   
 };

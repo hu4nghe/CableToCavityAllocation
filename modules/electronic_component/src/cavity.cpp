@@ -25,7 +25,7 @@ cavity::cavity(const int& id,
     _availability(is_available){}
 
 cavity::cavity(const cavity& other) :
-electronic_component_base(other),
+    electronic_component_base(other),
     _position(other._position),
     _availability(other._availability){}
 
