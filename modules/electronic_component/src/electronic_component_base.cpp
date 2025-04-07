@@ -8,6 +8,10 @@ electronic_component_base::electronic_component_base(electronic_component_base &
     _ID(other._ID),
     _gauge(other._gauge){}
 
+bool electronic_component_base::operator<(const electronic_component_base &other) const
+{
+    return _ID < other._ID;
+}
 
 electronic_component_base::electronic_component_base() :
     _ID(0),

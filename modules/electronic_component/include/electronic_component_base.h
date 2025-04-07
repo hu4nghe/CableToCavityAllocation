@@ -60,6 +60,9 @@ public:
      */
     explicit electronic_component_base(electronic_component_base&& other);
 
+    bool operator<(const electronic_component_base& other) const; 
+    
+
     // Getters
     const AWG get_gauge() const { return _gauge; }
     const int get_ID()    const { return _ID; }

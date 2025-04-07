@@ -19,6 +19,11 @@ private:
 public:
     cable(const int& ID, const std::vector<wire>& wires);
 
+    bool operator<(const cable& other) const 
+    {
+        return _ID < other._ID;
+    }
+
     int get_ID() const { return _ID; }
 
     auto size(AWG gauge) const { return _container.at(gauge).size(); }

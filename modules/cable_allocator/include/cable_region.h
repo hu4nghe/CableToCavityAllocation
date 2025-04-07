@@ -4,24 +4,35 @@
 #include "cable.h"
 
 #include <vector>
-#include <set>
 #include <map>
+#include <set>
 #include <utility>
 
 class cable_region
 {
 private :
-    int                            _cable_ID;
-    std::set<int>                  _cavity_index;
-    AWG                            _gauge;
+    int                _cable_ID;
+    AWG                _gauge;
+    std::map<int, int> _wire_layout;
 public:
-    cable_region(const int&              cable_ID,
-                 const std::vector<int>& index_list, 
-                 const AWG&              gauge);
+    cable_region(const int&                             cable_ID,
+                 const AWG&                     gauge,
+                 const std::vector<std::pair<int,int>>& index_list);
     
-    auto get_list()  const { return _cavity_index; };
-    auto get_gauge() const { return _gauge; }
+    bool operator<(const cable_region& other) const 
+    {
+        if (_cable_ID != other._cable_ID)
+            return _cable_ID < other._cable_ID;
+        else if (_gauge != other._gauge)
+            return _gauge < other._gauge;
+        else
+            return _wire_layout < other._wire_layout; 
+    }
 
+    
+    auto get_ID()     const { return _cable_ID; }
+    auto get_layout() const { return _wire_layout; };
+    auto get_gauge()  const { return _gauge; }
 
-    bool has_unavailable_cavity(std::set<int> unavailable_pool) const;
+    bool has_unavailable_cavity(const std::set<int>& unavailable_pool) const;
 };

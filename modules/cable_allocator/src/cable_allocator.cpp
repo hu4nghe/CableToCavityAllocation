@@ -27,79 +27,70 @@ cable_allocator::cable_allocator(const std::vector<cavity>& cavities,
         generate_region_table();
         allocate_cables();
     }
+bool cable_allocator::add_cable(cable new_cable)
+{
+ 
+    _region_pool[new_cable];
+    bool cable_added = false;
+
+    for(const auto& [gauge, wires] : new_cable._container)
+    {
+        // Search only in compatibles cavities
+        for(const auto& compatible_cavity : _connector.get_compatible_cavitiy_list(gauge))
+        {
+            std::vector<std::pair<int,int>> path;
+            std::unordered_set<int>         visited;
+                
+            auto dfs = 
+            [&](auto&& self, 
+                const cavity& current, 
+                int wire_index) -> bool
+            {
+                // Return to previous if current cavity is not available
+                if(!current.is_available()) return false;
+                else
+                {
+                    // Log the searching path in wire - cavity mapping.
+                    auto current_cavity_ID = current.get_ID();
+                    auto current_wire_ID   = wires[wire_index]->get_ID();
+                    visited.insert(current_cavity_ID);
+                    path.emplace_back(current_wire_ID,
+                                      current_cavity_ID);
+
+                    // When a valid region is found, save it to region pool.
+                    if (path.size() == new_cable.size(gauge)) 
+                        _region_pool.at(new_cable).emplace(new_cable.get_ID(), gauge, path);
+                    
+                    else // Continue to build the region with adjacent node.
+                        for (const auto& neighbor : _connector.get_adjacency_list(current_cavity_ID)) 
+                            if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
+                                if(self(self, neighbor, wire_index + 1)) return true;
+                    
+                    // Return to previous node
+                    visited.erase(current_cavity_ID);
+                    path.pop_back();
+                    wire_index--;
+
+                    return false;
+                }
+            };
+            cable_added = dfs(dfs, *compatible_cavity, 0);
+        }
+    }
+    return cable_added;
+}
 
 void cable_allocator::generate_region_table()
 {
-    // Log the cavity combination.
-    auto generate_region_key = [&](std::vector<int> path)
-    {
-        std::sort(path.begin(), path.end());
-        std::string key;
-        for(const auto& ID : path)
-            key += std::to_string(ID);
-        return key;
-    };
-
-    // For every cables
-    for(const auto& cable : _cables)
-    {
-        for(const auto& [gauge, wires] : cable._container)
-        {
-            std::unordered_set<std::string> logged_region;
-            std::vector<cable_region> current_cable_regions;
-
-            // Search only in compatibles cavities
-            for(const auto& compatible_cavity : _connector.get_compatible_cavitiy_list(gauge))
-            {
-                std::vector<int> path;
-                std::unordered_set<int> visited;
-                
-                // DFS core
-                std::function<void(cavity)> dfs = [&](cavity current) 
-                {
-                    // Return to previous if current cavity is not available
-                    if(!current.is_available()) return;
-                    else
-                    {
-                        // Log current node
-                        auto current_cavity_ID = current.get_ID();
-                        visited.insert(current_cavity_ID);
-                        path.push_back(current_cavity_ID);
-
-                        // Stop condition : A region is found
-                        if (path.size() == cable.size(gauge)) 
-                        {
-                            // Check if it is not a duplicate 
-                            auto key = generate_region_key(path);
-                            if (!logged_region.count(key)) 
-                            {
-                               // Save the region found
-                               logged_region.insert(key);
-                               auto valid_region = cable_region(cable.get_ID(), path, gauge);
-                               current_cable_regions.push_back(valid_region);
-                            }
-                        }
-                        else // Continue to build the region with adjacent node.
-                            for (const auto& neighbor : _connector.get_adjacency_list(current_cavity_ID)) 
-                                if (neighbor.is_available() && !visited.count(neighbor.get_ID())) 
-                                    dfs(neighbor);
-                    
-                        // Return to previous node
-                        visited.erase(current_cavity_ID);
-                        path.pop_back();
-                        return;
-                    }
-                };
-
-                dfs(*compatible_cavity);
-            }
-            _region_table.push_back(current_cable_regions);
-        }
-    }
+   for(auto& cable : _cables)
+   {
+        add_cable(cable);
+   }
 }
 
 void cable_allocator::allocate_cables() 
 {
+    /*
     std::vector<cable_region> current_solution;
 
     std::function<void(int)> dfs = [&](int cable_index) 
@@ -134,20 +125,22 @@ void cable_allocator::allocate_cables()
         }
     };
 
-    dfs(0); 
+    dfs(0); */
 }
 
 void cable_allocator::print_region_list()
 {
     std::ofstream log_file("cable_possible_region.txt");
-    for(auto [cable, region_table] : std::views::zip(_cables,_region_table))
+    for(auto [cable, cavity_map] : _region_pool)
     {
         std::print(log_file,"possible choice for cable {}:\n",cable.get_ID());
 
-        for(auto& item : region_table)
+        for(auto& region : cavity_map)
         {
-            for(auto& cavity : item.get_list())
-                std::print(log_file,"{} ",cavity);
+            auto layout = region.get_layout(); 
+            for(auto& [wire, cavity] : layout)
+                std::print(log_file,"wire {} : cavity {}\n", wire, cavity);
+
             std::print(log_file,"\n");
         }
     }
@@ -156,19 +149,19 @@ void cable_allocator::print_region_list()
 
 void cable_allocator::print_solutions()
 {
-    std::ofstream log_file("cable_allocation_solution.txt");
+    /*std::ofstream log_file("cable_allocation_solution.txt");
     for(auto const [i, solution] : std::views::enumerate(_solutions))
     {
         std::print(log_file, "Possible solution : {}\n", i+1 );
         for(auto const [j, regions] : std::views::enumerate(solution))
         {
-            auto list = regions.get_list();
+            auto list = regions.get_layout();
             std::print(log_file,"cable {}:\n", j+1 );
-            for(auto& element : list)
-                std::print(log_file,"{} ",element);
+            for(auto& [wire, cavity] : list)
+                std::print(log_file,"wire } : cable : {} ", wire, cavity);
             std::print(log_file,"\n");
         }
         std::print(log_file,"\n");
     }
-    log_file.close();
+    log_file.close();*/
 }

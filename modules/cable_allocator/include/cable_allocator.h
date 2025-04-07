@@ -17,10 +17,10 @@
 class cable_allocator
 {
 private :
-    
-    std::vector<std::vector<cable_region>> _region_table;
     std::vector<std::vector<cable_region>> _solutions;
     std::vector<cable>                     _cables;
+
+    std::map<cable, std::set<cable_region>> _region_pool;
     connector                              _connector;
 
 public :
@@ -36,6 +36,8 @@ public :
      */
     cable_allocator(const std::vector<cavity>& cavities, 
                     const std::vector<cable>&  cables);
+    
+    bool add_cable(cable new_cable);
 
 private : 
     
@@ -44,6 +46,14 @@ private :
      * 
      */
     void generate_region_table();
+
+    /**
+     * @brief 
+     * 
+     * @param cable 
+     */
+    void generate_region_list(const cable& cable);
+
     /**
      * @brief Allocate cables to the connector.
      * 
