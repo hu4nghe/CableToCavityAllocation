@@ -22,10 +22,6 @@ cavity::cavity(const int& id,
     electronic_component_base(id, cavity_gauge),
     _position(x, y){}
 
-cavity::cavity(const cavity& other) :
-    electronic_component_base(other),
-    _position(other._position){}
-
 cavity::cavity(cavity&& other):
     _position(std::move(other._position)),
     electronic_component_base(std::move(other)){}

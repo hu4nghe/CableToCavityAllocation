@@ -24,4 +24,5 @@ public:
      */
     wire(const int& id, 
          const int& wire_gauge);
+    
 };

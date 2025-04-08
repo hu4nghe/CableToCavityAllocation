@@ -20,8 +20,8 @@
 #include <filesystem>
 #include <iostream>
 
-cable_allocator::cable_allocator(const std::vector<cavity>& cavities) :
-    _connector(cavities){}
+cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
+    _connector(std::move(cavities)){}
 
 void cable_allocator::add_cable(cable new_cable)
 {
@@ -89,7 +89,7 @@ void cable_allocator::add_cable(cable new_cable)
     std::print("Chose a allocation to continue.\n");
     int choice = 0;
     std::cin>>choice;
-    std::print("Allocation {} is validated.\n\n", choice);
+    std::print("Cable added with allocation {}.\n\n", choice);
 
     auto connected_idx = _region_pool.at(new_cable)[choice -1].get_layout();
     connect(connected_idx);

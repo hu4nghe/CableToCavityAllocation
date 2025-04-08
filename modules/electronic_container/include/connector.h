@@ -29,7 +29,7 @@ public:
      * 
      * @param cavities Vector of all cavities of current connector.
      */
-    connector(const std::vector<cavity>& cavities);
+    connector(std::vector<cavity>&& cavities);
 
     /**
      * @brief Get the compatible cavitiy list object.

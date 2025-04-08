@@ -33,26 +33,18 @@ public:
     * @param cavity_gauge American Wire Gauge.
     * @param x x coordinate.
     * @param y y coordinate.
-    * @param is_available Cavity's avaibility.
     */
     cavity(const int&    id,
            const int&    cavity_gauge, 
            const double& x,
            const double& y);
-    
-    /**
-     * @brief Copy constructor for building adjacency list
-     * 
-     * @param other cavity object to copy
-     */
-    cavity(const cavity& other);
 
     /**
      * @brief Move constructor for initialization
      * 
      * @param other cavity object to move
      */
-    explicit cavity(cavity&& other);
+    cavity(cavity&& other);
     
     /// Operators ///
     

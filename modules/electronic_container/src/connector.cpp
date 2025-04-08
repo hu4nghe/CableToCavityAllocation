@@ -12,8 +12,8 @@
 #include <print>
 #include <ranges>
 
-connector::connector(const std::vector<cavity> &cavities) : 
-    electronic_container_base(cavities)
+connector::connector(std::vector<cavity>&& cavities) : 
+    electronic_container_base(std::move(cavities))
 {
     for(auto &[gauge, cavities] : _container)
     {

@@ -37,10 +37,10 @@ public:
      * @param components A vector contains all components. 
      *                   The constructor will automatically classifie these component by their gauge.
      */
-    electronic_container_base(const std::vector<T>& components)
+    electronic_container_base(std::vector<T>&& components)
     {
         for(auto& p : components)
-            _container[p.get_gauge()].push_back(std::make_shared<T>(p));
+            _container[p.get_gauge()].push_back(std::make_shared<T>(std::move(p)));
     }
 
     p_component<T> get_Component(const int& ID) const

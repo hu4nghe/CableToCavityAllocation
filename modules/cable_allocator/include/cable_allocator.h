@@ -32,7 +32,7 @@ public :
      * 
      * @param cavities Connector's cavity list 
      */
-    cable_allocator(const std::vector<cavity>& cavities);
+    cable_allocator(std::vector<cavity>&& cavities);
     
     void add_cable(cable new_cable);
 

@@ -60,12 +60,9 @@ public:
     electronic_component_base(const int& id, 
                               const int& gauge);
 
-    /**
-     * @brief Base copy constructor.
-     * 
-     * @param other Another electronic_component_base object to copy.
-     */
-    electronic_component_base(const electronic_component_base& other);
+    // All component is managed by container, you can NEVER copy a component.
+    electronic_component_base(const electronic_component_base& other) = delete;
+    electronic_component_base& operator=(const electronic_component_base& other) = delete;
 
     /**
      * @brief Base move constructor.

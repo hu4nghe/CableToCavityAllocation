@@ -1,9 +1,5 @@
 #include "electronic_component_base.h"
 
-electronic_component_base::electronic_component_base(const electronic_component_base &other) :
-    _ID(other._ID),
-    _gauge(other._gauge){}
-
 electronic_component_base::electronic_component_base(electronic_component_base &&other) : 
     _ID(other._ID),
     _gauge(other._gauge){}
