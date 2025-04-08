@@ -10,24 +10,28 @@
  */
 #include "connector.h"
 #include <print>
+#include <ranges>
 
 connector::connector(const std::vector<cavity> &cavities) : 
     electronic_container_base(cavities)
 {
-    for(auto &gauge_type : _container)
+    for(auto &[gauge, cavities] : _container)
     {
         //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
         double min_distance = std::numeric_limits<double>::max();
-        for(const auto& i : gauge_type.second)
-            for(const auto& j : gauge_type.second)
-               min_distance = j->distance(*i) < min_distance ? j->distance(*i) : min_distance;
+        for(const auto& i : cavities)
+            for(const auto& j : cavities)
+                min_distance = 
+                    j->distance(*i) < min_distance ? 
+                        j->distance(*i) : 
+                        min_distance;
 
         //build adjacency list
         const double epsilon = 0.3 * min_distance;
-        for(const auto& i : gauge_type.second)
-            for(const auto& j : gauge_type.second)
+        for(const auto& i : cavities)
+            for(const auto& j : cavities)
                 if(std::abs(j->distance(*i) - min_distance) < epsilon)
-                    _adjacency_list[i->get_ID()].insert(*j);
+                    _adjacency_list[i->get_ID()].insert(j->get_ID());
     }
 }
 
@@ -48,20 +52,13 @@ std::set<int> connector::get_unavailable_index_pool(AWG gauge) const
     
 }
 
-void connector::set_availability(const std::set<int>& cavity_index, const bool& new_status)
-{
-    for(auto& [gauge, cavity_list] : _container)
-        for(auto& cavity : cavity_list)
-            if(cavity_index.count(cavity->get_ID())) cavity->set_availability(new_status);
-}
-
 void connector::print_adjacency_list() const
 {
     for(auto& i : _adjacency_list)
     {
         std::print("cavity {} is adjacent to : ",i.first);
         for(auto& j : i.second) 
-            std::print("{} ",j.get_ID());
+            std::print("{} ",j);
         std::print("\n");
     }
 }
@@ -73,8 +70,12 @@ void connector::print_current_connector_status() const
         std::print("Gauge {} :\n",static_cast<int>(gauge));
         for(const auto& cavity : cavities)
         {
-            auto status_str = cavity->is_available() ? "available" : "unavailable\n";
-            std::print("Cavity N.{} : {}", cavity->get_ID(), status_str);
+            auto status_str = 
+                cavity->is_available() ? 
+                    std::format("available") :                                          
+                    std::format("unavailable (connected to wire {})",
+                                                      cavity->get_wire()->get_ID());
+            std::print("Cavity {:<3}  {}\n", cavity->get_ID(), status_str);
         }
     }
 }

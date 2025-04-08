@@ -5,7 +5,7 @@
 
 int main()
 {
-    cavity c1(1,20,5,5,true);
+    cavity c1(1,20,5,5);
     wire w1(1,20);
 
     std::print("the result is : {}\n",c1.is_compatible(w1));

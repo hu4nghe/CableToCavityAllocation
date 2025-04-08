@@ -11,16 +11,16 @@
 #pragma once
 
 #include "electronic_component_base.h"
+#include "wire.h"
 
 #include <utility>
-
-class wire;
 
 class cavity : public electronic_component_base
 {
 private:
+
     const std::pair<double,double> _position;
-    bool                           _availability;
+    std::weak_ptr<wire>            _connected_wire;
 
 public:
 
@@ -38,8 +38,7 @@ public:
     cavity(const int&    id,
            const int&    cavity_gauge, 
            const double& x,
-           const double& y , 
-           const bool&   is_available);
+           const double& y);
     
     /**
      * @brief Copy constructor for building adjacency list
@@ -55,7 +54,7 @@ public:
      */
     explicit cavity(cavity&& other);
     
-    ///Comparison operators for STL containers///
+    /// Operators ///
     
     /**
      * @brief Compare gauge to other cavity.
@@ -76,7 +75,7 @@ public:
      */
     bool operator<(const cavity& other) const;
 
-    /// Useful tools ///
+    /// tools ///
 
     /**
      * @brief Calculate distance between two cavities on the same connector.
@@ -87,18 +86,24 @@ public:
     double distance(const cavity& other) const;
 
     /**
-     * @brief Availability getter.
+     * @brief Connect with a wire.
      * 
-     * @return true  if cavity is available.
-     * @return false if cavity is unavailable.
+     * @param target_wire a shared_ptr to target wire.
      */
-    bool is_available() const { return _availability; }
+    void connect(p_component<wire> target_wire);
 
     /**
-     * @brief Set cavity's availability.
+     * @brief Disconnect 
      * 
-     * @param new_status New availability status.
      */
-    void set_availability(const bool& new_status) { _availability = new_status; }
+    void disconnect();
 
+    /**
+     * @brief Returns availability of current component.
+     * 
+     * @return true if component is available.
+     * @return false if component is unavailable.
+     */
+    bool is_available() const;
+    auto get_wire() const { return _connected_wire.lock(); }
 };

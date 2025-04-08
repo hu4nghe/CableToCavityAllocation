@@ -18,20 +18,16 @@
 cavity::cavity(const int& id, 
                const int& cavity_gauge, 
                const double& x, 
-               const double& y, 
-               const bool& is_available) :
+               const double& y) :
     electronic_component_base(id, cavity_gauge),
-    _position(x, y),
-    _availability(is_available){}
+    _position(x, y){}
 
 cavity::cavity(const cavity& other) :
     electronic_component_base(other),
-    _position(other._position),
-    _availability(other._availability){}
+    _position(other._position){}
 
 cavity::cavity(cavity&& other):
     _position(std::move(other._position)),
-    _availability(other._availability),
     electronic_component_base(std::move(other)){}
 
 // Operators
@@ -53,3 +49,18 @@ double cavity::distance(const cavity& others) const
                      pow(others._position.second - _position.second,2));
 }
 
+void cavity::connect(p_component<wire> target_wire) 
+{
+    disconnect();
+    _connected_wire = target_wire;
+}
+
+void cavity::disconnect()
+{
+   _connected_wire.reset();
+}
+
+bool cavity::is_available() const
+{
+    return _connected_wire.expired();
+}

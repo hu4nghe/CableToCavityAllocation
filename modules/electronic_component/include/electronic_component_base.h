@@ -10,6 +10,18 @@
  */
 #pragma once
 
+#include <memory>
+#include <type_traits>
+
+class electronic_component_base;
+
+template <typename T>
+concept electronic_component_type = 
+    std::is_base_of_v<electronic_component_base,T>;
+
+template <electronic_component_type T>
+using p_component = std::shared_ptr<T>;
+
 // Americal wire gauge enum
 enum class AWG
 {
@@ -23,12 +35,13 @@ enum class AWG
     AWG22 = 22
 };
 
-class electronic_component_base 
+class electronic_component_base: public std::enable_shared_from_this<electronic_component_base>
 {
 protected:
+
     const int _ID;
     const AWG _gauge;
-    
+
 public:
 
     /// Constructors ///
@@ -37,6 +50,7 @@ public:
      * @brief Default constructor set attributs to unknwon status.
      */
     electronic_component_base();
+
     /**
      * @brief Base class constructor.
      * 
@@ -49,31 +63,40 @@ public:
     /**
      * @brief Base copy constructor.
      * 
-     * @param other Another electronic_component_base object to copy
+     * @param other Another electronic_component_base object to copy.
      */
     electronic_component_base(const electronic_component_base& other);
 
     /**
-     * @brief Base move constructor
+     * @brief Base move constructor.
      * 
      * @param other Another electronic_component_base object to move.
      */
     explicit electronic_component_base(electronic_component_base&& other);
-
-    bool operator<(const electronic_component_base& other) const; 
     
+    /**
+     * @brief Overrided operator< for std::set/std::map
+     * 
+     * @param other Another electronic component
+     * @return true if current object's ID is inferior than the other's.
+     * @return false if if current object's ID is superior than the other's.
+     */
+    bool operator<(const electronic_component_base& other) const; 
 
-    // Getters
+    /// Getters ///
+    
     const AWG get_gauge() const { return _gauge; }
     const int get_ID()    const { return _ID; }
 
+    /// tools ///
+
     /**
-     * @brief Check if two component can fit each other
+     * @brief Check if two component can fit each other.
      *        (May add contact calculation in future.)
      * 
      * @param other Another electronic_component_base object.
-     * @return true If two components have the same gauge
-     * @return false If two components have differents gauges.
+     * @return true if two components have the same gauge.
+     * @return false if two components have differents gauges.
      */
     bool is_compatible(const electronic_component_base& other) const; 
 };

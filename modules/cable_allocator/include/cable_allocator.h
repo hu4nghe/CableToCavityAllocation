@@ -34,7 +34,7 @@ public :
      */
     cable_allocator(const std::vector<cavity>& cavities);
     
-    bool add_cable(cable new_cable);
+    void add_cable(cable new_cable);
 
 private : 
     /**
@@ -42,6 +42,9 @@ private :
      * 
      */
     void allocate_cables();
+
+    void connect(std::map<int, int> connections);
+    
 
 public :
     // For debug use only -- print the calculation result

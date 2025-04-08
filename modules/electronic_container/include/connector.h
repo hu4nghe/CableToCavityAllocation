@@ -20,7 +20,8 @@
 class connector : public electronic_container_base<cavity>
 {
 private:
-    std::map<int, std::set<cavity>> _adjacency_list;
+
+    std::map<int, std::set<int>> _adjacency_list;
 
 public:
     /**
@@ -53,14 +54,6 @@ public:
      * @return set of index of unavailable cavities.
      */
     std::set<int> get_unavailable_index_pool(AWG gauge) const;
-
-    /**
-     * @brief Set some cavities's avaibility.
-     * 
-     * @param cavity_index cavities to set
-     * @param new_status value
-     */
-    void set_availability(const std::set<int> &cavity_index, const bool &new_status);
 
     //debug functions
     /**

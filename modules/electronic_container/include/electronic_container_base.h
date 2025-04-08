@@ -21,12 +21,16 @@ template <electronic_component_type T>
 class electronic_container_base
 {
 protected:
+
     std::map<AWG, std::vector<p_component<T>>> _container;
 
 public:
+
     friend class cable_allocator;
+
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
+    
     /**
      * @brief Construct a new electronic container base object
      * 
@@ -37,5 +41,14 @@ public:
     {
         for(auto& p : components)
             _container[p.get_gauge()].push_back(std::make_shared<T>(p));
+    }
+
+    p_component<T> get_Component(const int& ID) const
+    {
+        for(auto& [gauge, components] : _container )
+            for(auto& component : components)
+                if(component->get_ID() == ID)
+                    return component;
+        return nullptr;
     }
 };
