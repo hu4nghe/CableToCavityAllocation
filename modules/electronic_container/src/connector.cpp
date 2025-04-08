@@ -73,8 +73,7 @@ void connector::print_current_connector_status() const
             auto status_str = 
                 cavity->is_available() ? 
                     std::format("available") :                                          
-                    std::format("unavailable (connected to wire {})",
-                                                      cavity->get_wire()->get_ID());
+                    std::format("unavailable (connected to wire {})", cavity->get_wire()->get_ID());
             std::print("Cavity {:<3}  {}\n", cavity->get_ID(), status_str);
         }
     }

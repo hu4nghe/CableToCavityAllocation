@@ -17,7 +17,7 @@ class cable : public electronic_container_base<wire>
 private: 
     int _ID;
 public:
-    cable(const int& ID, std::vector<wire>&& wires);
+    cable(int ID, std::vector<wire>&& wires);
 
     bool operator<(const cable& other) const;
 

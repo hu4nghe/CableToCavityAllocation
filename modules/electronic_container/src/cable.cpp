@@ -1,6 +1,6 @@
 #include "cable.h"
 
-cable::cable(const int &ID, std::vector<wire>&& wires):
+cable::cable(int ID, std::vector<wire>&& wires):
     _ID(ID),
     electronic_container_base(std::move(wires)){}
 
