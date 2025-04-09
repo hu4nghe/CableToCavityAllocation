@@ -23,7 +23,7 @@
 cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
     _connector(std::move(cavities)){}
 
-void cable_allocator::add_cable(cable new_cable)
+bool cable_allocator::add_cable(cable new_cable)
 {
     _region_pool[new_cable];
 
@@ -37,103 +37,65 @@ void cable_allocator::add_cable(cable new_cable)
                 
             auto dfs = 
             [&](auto&& self, 
-                const cavity& current, 
-                int wire_index) -> bool
+                int cavity_ID, 
+                int wire_index) -> void
             {
-                // Return to previous if current cavity is not available
-                if(!current.is_available()) return false;
-                else
+                if (_connector.is_available(cavity_ID))
                 {
-                    // Log the searching path in wire - cavity mapping.
-                    auto current_cavity_ID = current.get_ID();
-                    auto current_wire_ID   = wires[wire_index]->get_ID();
-                    visited.insert(current_cavity_ID);
-                    path.emplace_back(current_wire_ID,
-                                      current_cavity_ID);
-
-                    // When a valid region is found, save it to region pool.
+                    // Log the cavity_ID path
+                    auto current_wire_ID = wires[wire_index]->get_ID();
+                    visited.insert(cavity_ID);
+                    path.emplace_back(current_wire_ID, cavity_ID);
+                
+                    // Save valid complete regions
                     if (path.size() == new_cable.size(gauge)) 
                         _region_pool.at(new_cable).emplace_back(new_cable.get_ID(), gauge, path);
-                    
-                    else // Continue to build the region with adjacent node.
-                        for (const auto& neighbor : _connector.get_adjacency_list(current_cavity_ID)) 
-                            if (_connector.get_Component(neighbor)->is_available() && !visited.count(neighbor)) 
-                                if(self(self, *(_connector.get_Component(neighbor)), wire_index + 1)) return true;
-                    
-                    // Return to previous node
-                    visited.erase(current_cavity_ID);
+                    else // Continue searching through available neighbors
+                        for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID)) 
+                            if (_connector.is_available(neighbor) && !visited.count(neighbor)) 
+                                self(self, neighbor, wire_index + 1);
+                    // Backtrack
+                    visited.erase(cavity_ID);
                     path.pop_back();
-                    wire_index--;
-
-                    return false;
                 }
+                else return; // Skip unavailable cavities
             };
-            dfs(dfs, *compatible_cavity, 0);
+            dfs(dfs,compatible_cavity->get_ID(), 0);
         }
     }
 
-    //print results : 
-    const auto& regions = _region_pool.at(new_cable);
+    const auto& valid_alloactions = _region_pool.at(new_cable);
 
-    std::print("possible choice for current cable ({}):\n",new_cable.get_ID());
-    for(const auto& [i, region] : std::views::enumerate(regions))
+    if(valid_alloactions.empty())
     {
-        std::print("Allocation {} :\n", i + 1);
-
-        for (const auto& [wire, cavity] : region.get_layout())
-            std::print("wire {} : cavity {}\n", wire, cavity);
-        
-        std::print("\n");
+        std::print("No valid allocation found for cable {}.\n",new_cable.get_ID());
+        _region_pool.erase(new_cable);
+        return false;
     }
-        
-    std::print("Chose a allocation to continue.\n");
-    int choice = 0;
-    std::cin>>choice;
-    std::print("Cable added with allocation {}.\n\n", choice);
-
-    auto connected_idx = _region_pool.at(new_cable)[choice -1].get_layout();
-    connect(connected_idx);
-}
-
-void cable_allocator::allocate_cables() 
-{
-    /*
-    std::vector<cable_region> current_solution;
-
-    std::function<void(int)> dfs = [&](int cable_index) 
+    else
     {
-        if (cable_index == _cables.size()) 
+         //print results : 
+
+        std::print("possible choice for cavity_ID cable ({}):\n",new_cable.get_ID());
+        for(const auto& [i, allocation] : std::views::enumerate(valid_alloactions))
         {
-            _solutions.push_back(current_solution); // Store valid assignment
-            return;
+            std::print("Allocation {} :\n", i + 1);
+            for (const auto& [wire, cavity] : allocation.get_layout())
+                std::print("wire {} : cavity {}\n", wire, cavity);
+            std::print("\n");
         }
 
-        const auto& regions = _region_table[cable_index];
+        int choice = input(0, valid_alloactions.size(), "Chose a allocation to continue." );
 
-        for (const auto& region : regions) 
-        {
-            auto region_cavities = region.get_list(); 
-            auto gauge = region.get_gauge();
-
-            // Check if the region contains any unavailable cavities
-            if (region.has_unavailable_cavity(_connector.get_unavailable_index_pool(gauge)))
-                continue;
-
-            // Assign cable to this region
-            current_solution.push_back(region);
-            _connector.set_availability(region_cavities, false);
-
-            // Recur to assign the next cable
-            dfs(cable_index + 1);
-
-            // Backtrack
-            current_solution.pop_back();
-            _connector.set_availability(region_cavities, true);
-        }
-    };
-
-    dfs(0); */
+        std::print("Cable added with allocation {}.\n", choice);
+        auto connected_idx = valid_alloactions[choice -1].get_layout();
+        connect(connected_idx);
+        return true;
+    }
+    
 }
+
+
 
 void cable_allocator::connect(std::map<int, int> connections)
 {
@@ -142,7 +104,55 @@ void cable_allocator::connect(std::map<int, int> connections)
             _connector.get_Component(cavity_idx)->connect(cable.get_Component(wire_idx));
 }
 
-void cable_allocator::print_current_solutions()
+void cable_allocator::console_intereaction()
 {
-    _connector.print_current_connector_status();
+    int wire_idx = 1;
+    int cable_idx = 1;
+    while(true)
+    {
+        std::vector<wire> wires;
+        /*int gauge = 0;
+        std::print("Please specify AWG of cable : \n");
+        std::cin>>gauge;*/
+        auto msg = std::format("Please specify the number of wires");
+        int nb_wires = input(0, size(), msg);
+        for(int i = 0; i < nb_wires; i++)
+            wires.emplace_back(wire_idx++,22);
+        
+        cable cab(cable_idx++,std::move(wires));
+        if(add_cable(cab))
+            _connector.print_current_connector_status();
+        else 
+        {
+            cable_idx--;
+            wire_idx -= nb_wires;
+        }
+    }
+}
+int cable_allocator::input(int lower, int upper, const std::string& msg) const
+{
+    std::print("{}\n", msg);
+    int input = 0;
+    while(true)
+    {
+        if(std::cin >> input)
+            if(input > lower && input < upper) 
+                return input;
+            else
+                std::print("Value out of range. Try again.\n");
+        else  
+            std::print("Invalid input, try again.\n");
+        
+        std::cin.clear();
+        std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+    }
+}
+
+size_t cable_allocator::size() const
+{
+    std::size_t size = 0;
+    for(const auto& [_, cavities] : _connector._container)
+        for(const auto& cavity : cavities)
+            if(cavity->is_available()) size++;
+    return size;
 }

@@ -59,24 +59,6 @@ int main()
     cavities.emplace_back(1, 22, 118.0,71.0);
 
     cable_allocator allocator(std::move(cavities));
-
-    int wire_idx = 1;
-    int cable_idx = 1;
-    while(true)
-    {
-        std::vector<wire> wires;
-        int nb_wires = 0;
-        /*int gauge = 0;
-        std::print("Please specify AWG of cable : \n");
-        std::cin>>gauge;*/
-        std::print("Please specify the number of wires : \n");
-        std::cin>>nb_wires;
-        for(int i = 0; i < nb_wires; i++)
-            wires.emplace_back(wire_idx++,22);
-        
-        cable cab(cable_idx++,std::move(wires));
-        allocator.add_cable(cab);
-        allocator.print_current_solutions();
-    }
+    allocator.console_intereaction();
     return  0;
 }

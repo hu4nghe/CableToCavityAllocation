@@ -55,6 +55,8 @@ public:
      */
     std::set<int> get_unavailable_index_pool(AWG gauge) const;
 
+    bool is_available(const int& ID) { return get_Component(ID)->is_available(); }
+
     //debug functions
     /**
      * @brief print auto-generated adjacency list.
