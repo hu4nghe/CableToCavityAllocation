@@ -19,10 +19,8 @@ public:
     /**
      * @brief Construct a new wire object
      * 
-     * @param id wire's id
+     * @param ID wire's ID
      * @param wire_gauge wire's size in American Wire Gauge.
      */
-    wire(const int& id, 
-         const int& wire_gauge);
-    
+    wire(int ID, int wire_gauge);
 };

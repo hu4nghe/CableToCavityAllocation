@@ -1,11 +1,14 @@
 /**
  * @file cavity.h
- * @author HUANG He (he.huang.intern@3ds.com)
- * @brief The class that represent cavities on connector
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * The class that represent cavities on connector
  * @version 1.0
  * @date 2025-04-01
  * 
- * @copyright Dassault Systemes 2025
+ * @copyright 
+ * Dassault Systemes 2025
  * 
  */
 #pragma once
@@ -24,20 +27,15 @@ private:
 
 public:
 
-    /// Constructors///
-
     /**
-    * @brief Construct a new cavity::cavity object.
+    * @brief Construct a new cavity object.
     * 
-    * @param id Cavity ID on the connector.
+    * @param ID Cavity ID on the connector.
     * @param cavity_gauge American Wire Gauge.
     * @param x x coordinate.
     * @param y y coordinate.
     */
-    cavity(const int&    id,
-           const int&    cavity_gauge, 
-           const double& x,
-           const double& y);
+    cavity(int ID, int cavity_gauge, double x, double y);
 
     /**
      * @brief Move constructor for initialization
@@ -45,8 +43,6 @@ public:
      * @param other cavity object to move
      */
     cavity(cavity&& other);
-    
-    /// Operators ///
     
     /**
      * @brief Compare gauge to other cavity.
@@ -67,25 +63,24 @@ public:
      */
     bool operator<(const cavity& other) const;
 
-    /// tools ///
 
     /**
      * @brief Calculate distance between two cavities on the same connector.
      * 
      * @param other Another cavity object.
-     * @return Distance between two cavity, +∞ if send itself as argument.
+     * @return double Distance between two cavity, +∞ if send itself as argument.
      */
     double distance(const cavity& other) const;
 
     /**
-     * @brief Connect with a wire.
+     * @brief Connect the cavity to a wire.
      * 
      * @param target_wire a shared_ptr to target wire.
      */
     void connect(p_component<wire> target_wire);
 
     /**
-     * @brief Disconnect 
+     * @brief Disconnect the cavity from the wire.
      * 
      */
     void disconnect();
@@ -97,5 +92,11 @@ public:
      * @return false if component is unavailable.
      */
     bool is_available() const;
+
+    /**
+     * @brief Get the wire object which the cavity is connected.
+     * 
+     * @return shared_ptr to the connected wire.
+     */
     auto get_wire() const { return _connected_wire.lock(); }
 };

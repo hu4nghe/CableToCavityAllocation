@@ -13,6 +13,8 @@
 #include <memory>
 #include <type_traits>
 
+
+
 class electronic_component_base;
 
 template <typename T>
@@ -44,8 +46,6 @@ protected:
 
 public:
 
-    /// Constructors ///
-
     /**
      * @brief Default constructor set attributs to unknwon status.
      */
@@ -57,10 +57,12 @@ public:
      * @param id Component's ID.
      * @param gauge Component's size in American Wire Gauge.
      */
-    electronic_component_base(const int& id, 
-                              const int& gauge);
+    electronic_component_base(const int& ID, const int& gauge);
 
-    // All component is managed by container, you can NEVER copy a component.
+    /**
+     * All component is unique, identified with ID.
+     * You can NEVER copy a component.
+     */
     electronic_component_base(const electronic_component_base& other) = delete;
     electronic_component_base& operator=(const electronic_component_base& other) = delete;
 
@@ -80,12 +82,19 @@ public:
      */
     bool operator<(const electronic_component_base& other) const; 
 
-    /// Getters ///
-    
-    const AWG get_gauge() const { return _gauge; }
-    const int get_ID()    const { return _ID; }
+    /**
+     * @brief Get the ID of the component.
+     * 
+     * @return int ID of the component.
+     */
+    const AWG get_gauge() const;
 
-    /// tools ///
+    /**
+     * @brief Get the ID of the component.
+     * 
+     * @return int ID of the component.
+     */
+    const int get_ID() const;
 
     /**
      * @brief Check if two component can fit each other.
