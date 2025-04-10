@@ -1,8 +1,8 @@
 #include "cable.h"
 
 cable::cable(int ID, std::vector<wire>&& wires):
-    _ID(ID),
-    electronic_container_base(std::move(wires)){}
+    electronic_container_base(std::move(wires)),
+    _ID(ID){}
 
 bool cable::operator<(const cable &other) const
 {

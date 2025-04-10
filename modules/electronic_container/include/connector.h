@@ -10,12 +10,10 @@
  */
 #pragma once
 
-#include "electronic_component.h"
-
-#include "electronic_container_base.h"
 #include "cable.h"
 
 #include <set>
+#include <map>
 
 class connector : public electronic_container_base<cavity>
 {
@@ -30,6 +28,8 @@ public:
      * @param cavities Vector of all cavities of current connector.
      */
     connector(std::vector<cavity>&& cavities);
+
+    void build_adjacency_list();
 
     /**
      * @brief Get the compatible cavitiy list object.

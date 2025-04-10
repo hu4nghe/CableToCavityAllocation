@@ -21,12 +21,16 @@ class electronic_container_base
 {
 protected:
 
-    std::vector<p_component<T>> _components;
+    std::vector<p_component<T>> _container;
 
 public:
     friend class cable_allocator;
 
-    // Instantiate a void container is NOT allowed.
+    /**
+     * @brief Default constructor for electronic_container_base.
+     * 
+     * This constructor is deleted to prevent instantiation without components.
+     */
     electronic_container_base() = delete;
 
     /**
@@ -37,7 +41,7 @@ public:
     electronic_container_base(std::vector<T>&& components)
     {
         for (auto& p : components)
-            _components.push_back(std::make_shared<T>(std::move(p)));
+            _container.push_back(std::make_shared<T>(std::move(p)));
     }
 
     /**
@@ -48,7 +52,7 @@ public:
      */
     p_component<T> get_Component(const int& ID) const
     {
-        for (const auto& component : _components)
+        for (const auto& component : _container)
             if (component->get_ID() == ID)
                 return component;
         
