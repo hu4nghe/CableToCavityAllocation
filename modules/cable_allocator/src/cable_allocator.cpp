@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Implementation of the cable_allocator class.          
- * @version 1.0
- * @date 2025-04-02
+ * @version 1.1
+ * @date 2025-04-10
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -14,23 +14,34 @@
 #include "cable_allocator.h"
 
 #include <unordered_set>
-#include <functional>
-#include <numeric>
-
-// Headers for debug use output only, to remove before release.
-#include <print>
-#include <ranges>
-#include <fstream>
-#include <filesystem>
 #include <iostream>
+#include <print>
+#include <sstream>
+#include <ranges>
 
 cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
     _connector(std::move(cavities)){}
 
 bool cable_allocator::add_cable(cable new_cable)
 {
+    // Log the cavity combination.
+    /*
+    auto generate_region_key = [&](std::vector<std::pair<int,int>> path)
+    {
+        // Sort the path based on cavity ID to avoid duplicates.
+        std::sort(path.begin(), path.end(), [](const auto& a, const auto& b) 
+                                            {
+                                                return a.second < b.second; 
+                                            });
+        std::string key;
+        for(const auto& ID : path)
+            key += std::to_string(ID.second);
+        return key;
+    };*/
+
     _region_pool[new_cable];
 
+    //std::unordered_set<std::string> logged_region;
     for(const auto& cavity : _connector._container)
     {
         std::vector<std::pair<int, int>> path;
@@ -40,25 +51,30 @@ bool cable_allocator::add_cable(cable new_cable)
             int cavity_ID,                 
             int wire_index) -> void
         {
-            // Check if the cavity is compatible with the wire
+            if(!_connector.is_available(cavity_ID)) return;
+            std::print("current wire index: {}, new_cable._container.size : {}\n", wire_index,new_cable._container.size());
+
             auto wire   = new_cable._container[wire_index];
             auto cavity = _connector.get_Component(cavity_ID);
-
-            if (!cavity->is_compatible(*wire))
-                return;
             
+            // Check if the cavity is compatible with the wire
+            if (!cavity->is_compatible(*wire)) return;
             // Log the searching path
             visited.insert(cavity_ID);
             path.emplace_back(wire->get_ID(), cavity_ID);
 
             // Save valid complete regions
             if (path.size() == new_cable.size())
+            {
+                /*auto key = generate_region_key(path);
+                if (logged_region.count(key)) return;
+                
+                logged_region.insert(key);*/
                 _region_pool.at(new_cable).emplace_back(path);
-            
-        
+            }
             else // Continue searching through available neighbors
                 for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
-                    if (_connector.is_available(neighbor) && !visited.count(neighbor))
+                    if (!visited.count(neighbor))
                         self(self, neighbor, wire_index + 1);
         
             // Backtrack
@@ -92,10 +108,10 @@ bool cable_allocator::finalize_allocation(const cable& new_cable)
         std::print("\n");
     }
 
-    int choice = input(0, valid_allocations.size(), "Choose an allocation to continue.");
-    std::print("Cable added with allocation {}.\n", choice);
+    int choice = input(1, valid_allocations.size(), "Choose an allocation to continue.");
 
     connect(valid_allocations[choice - 1].get_layout());
+    std::print("Cable added with allocation {}.\n", choice);
     return true;
 }
 
@@ -117,10 +133,14 @@ void cable_allocator::console_interaction()
         std::string input_line;
 
         std::print("Enter groups of data (gauge number_of_wires), or type 'end' to finish:\n");
-
+        
         while (true)
         {
             std::getline(std::cin, input_line);
+            
+            // Skip empty lines
+            if (input_line.empty())
+                continue;
 
             // Check if the user wants to end the input
             if (input_line == "end")
@@ -132,6 +152,7 @@ void cable_allocator::console_interaction()
             if (!(iss >> gauge >> num_wires))
             {
                 std::print("Invalid input. Please enter two integers (gauge number_of_wires) or 'end'.\n");
+                
                 continue;
             }
 
@@ -139,13 +160,6 @@ void cable_allocator::console_interaction()
             for (int i = 0; i < num_wires; ++i)
                 wires.emplace_back(wire_idx++, gauge);
             
-        }
-
-        // If no wires were added, skip this iteration
-        if (wires.empty())
-        {
-            std::print("No wires specified. Try again.\n");
-            continue;
         }
 
         // Create a cable with the specified wires
@@ -172,7 +186,7 @@ int cable_allocator::input(int lower, int upper, const std::string& msg) const
     while(true)
     {
         if(std::cin >> input)
-            if(input > lower && input < upper) 
+            if(input >= lower && input <= upper) 
                 return input;
             else
                 std::print("Value out of range. Try again.\n");

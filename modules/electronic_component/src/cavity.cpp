@@ -3,9 +3,9 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * cavity object implementation.
- * @version 1.0
- * @date 2025-04-02
+ * Implementation of the cavity class
+ * @version 1.1
+ * @date 2025-04-10
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -17,13 +17,13 @@
 #include <cmath>
 #include <limits>
 
-cavity::cavity(int ID, int cavity_gauge, double x, double y):
+cavity::cavity(int ID, int cavity_gauge, double x, double y) :
     electronic_component_base(ID, cavity_gauge),
     _position(x, y){}
 
-cavity::cavity(cavity &&other) : 
-    _position(std::move(other._position)),
-    electronic_component_base(std::move(other)) {}
+cavity::cavity(cavity&& other) : 
+    electronic_component_base(std::move(other)),
+    _position(std::move(other._position)){}
 
 bool cavity::operator==(const cavity& others) const
 {
@@ -58,4 +58,9 @@ void cavity::disconnect()
 bool cavity::is_available() const
 {
     return _connected_wire.expired();
+}
+
+std::shared_ptr<wire> cavity::get_wire() const
+{ 
+    return _connected_wire.lock(); 
 }

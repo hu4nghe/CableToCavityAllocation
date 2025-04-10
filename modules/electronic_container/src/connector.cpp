@@ -3,9 +3,9 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * The class that represent a connector, who includes multiples cavities.
- * @version 1.0
- * @date 2025-04-02
+ * Implementation of the connector class.
+ * @version 1.1
+ * @date 2025-04-10
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -74,7 +74,6 @@ void connector::build_adjacency_list()
                     double epsilon = 0.1 * min_distance;
                     if (std::abs(current_distance - min_distance) < epsilon) 
                         _adjacency_list[i->get_ID()].insert(j->get_ID());
-                    
                 } 
                 else 
                 {
@@ -84,7 +83,6 @@ void connector::build_adjacency_list()
                     
                     if (std::abs(current_distance - min_distance) < epsilon) 
                         _adjacency_list[i->get_ID()].insert(j->get_ID());
-                    
                 }
             }
 }

@@ -1,11 +1,14 @@
 /**
  * @file electronic_component_base.h
- * @author HUANG He (he.huang.intern@3ds.com)
- * @brief Electronic components(wire and cavity) base class
- * @version 1.0
- * @date 2025-04-01
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * Electronic components(wire and cavity) base class
+ * @version 1.1
+ * @date 2025-04-10
  * 
- * @copyright Dassault Systemes 2025
+ * @copyright 
+ * Dassault Systemes 2025
  * 
  */
 #pragma once
@@ -13,18 +16,28 @@
 #include <memory>
 #include <type_traits>
 
-
-
 class electronic_component_base;
 
+/**
+ * @brief electronic component type concept
+ * 
+ * @tparam T Type to check
+ */
 template <typename T>
-concept electronic_component_type = 
-    std::is_base_of_v<electronic_component_base,T>;
+concept electronic_component_type = std::is_base_of_v<electronic_component_base,T>;
 
+/**
+ * @brief shared_ptr type for electronic components.
+ * 
+ * @tparam T electronic component type
+ */
 template <electronic_component_type T>
 using p_component = std::shared_ptr<T>;
 
-// Americal wire gauge enum
+/**
+ * @brief American Wire Gauge enum class.
+ * 
+ */
 enum class AWG
 {
     AWGUnkown = -1,

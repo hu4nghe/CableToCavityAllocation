@@ -1,3 +1,15 @@
+/**
+ * @file cable_region.h
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief A set of possible connections for a cable.
+ * @version 1.1
+ * @date 2025-04-10
+ * 
+ * @copyright 
+ * Dassault Systemes 2025
+ * 
+ */
 #pragma once
 
 #include "electronic_component.h"

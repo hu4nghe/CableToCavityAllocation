@@ -3,20 +3,18 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * Header file for the cable_allocator class, which manages cable allocation and connections.
- * @version 1.0
- * @date 2025-04-02
+ * Allocator who manages cable connections.
+ * @version 1.1
+ * @date 2025-04-10
  * 
  * @copyright 
  * Dassault Systemes 2025
  */
-
 #pragma once
 
 #include "cable_region.h"
 #include "electronic_container.h"
 #include "electronic_component.h"
-#include <tuple>
 
 /**
  * @class cable_allocator
@@ -25,17 +23,12 @@
 class cable_allocator
 {
 private:
-    /**
-     * @brief Stores the mapping of cables to their respective regions.
-     */
-    std::map<cable, std::vector<cable_region>> _region_pool;
 
-    /**
-     * @brief Connector object used for managing connections.
-     */
-    connector _connector;
+    std::map<cable, std::vector<cable_region>> _region_pool;
+    connector                                  _connector;
 
 public:
+
     /**
      * @brief Deleted default constructor to prevent uninitialized allocators.
      */
@@ -54,6 +47,7 @@ public:
     void console_interaction();
 
 private:
+
     /**
      * @brief Establishes connections based on the provided mapping.
      * 
@@ -95,7 +89,8 @@ private:
      */
     size_t size() const;
 
-public:
+public://debug
+
     /**
      * @brief Prints the adjacency list for debugging purposes.
      * 

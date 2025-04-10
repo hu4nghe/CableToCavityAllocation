@@ -1,11 +1,14 @@
 /**
  * @file electronic_container_base.h
- * @author HUANG He (he.huang.intern@3ds.com)
- * @brief Electronic containers(cable and connector) base class
- * @version 1.0
- * @date 2025-04-01
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * Electronic containers(cable and connector) base class
+ * @version 1.1
+ * @date 2025-04-10
  * 
- * @copyright Dassault Systemes 2025
+ * @copyright 
+ * Dassault Systemes 2025
  * 
  */
 #pragma once

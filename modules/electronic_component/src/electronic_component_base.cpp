@@ -1,3 +1,16 @@
+/**
+ * @file electronic_component_base.cpp
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * Implementation of the electronic_component_base class
+ * @version 1.1
+ * @date 2025-04-10
+ * 
+ * @copyright 
+ * Dassault Systemes 2025
+ * 
+ */
 #include "electronic_component_base.h"
 
 electronic_component_base::electronic_component_base() : 

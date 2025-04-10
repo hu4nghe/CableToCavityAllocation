@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent cavities on connector
- * @version 1.0
- * @date 2025-04-01
+ * @version 1.1
+ * @date 2025-04-10
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -63,7 +63,6 @@ public:
      */
     bool operator<(const cavity& other) const;
 
-
     /**
      * @brief Calculate distance between two cavities on the same connector.
      * 
@@ -98,5 +97,5 @@ public:
      * 
      * @return shared_ptr to the connected wire.
      */
-    auto get_wire() const { return _connected_wire.lock(); }
+    std::shared_ptr<wire> get_wire() const;
 };
