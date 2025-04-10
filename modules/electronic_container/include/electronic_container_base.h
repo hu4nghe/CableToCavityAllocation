@@ -12,7 +12,6 @@
 
 #include "electronic_component.h"
 
-#include <map>
 #include <vector>
 
 class cable_allocator;
@@ -22,33 +21,37 @@ class electronic_container_base
 {
 protected:
 
-    std::map<AWG, std::vector<p_component<T>>> _container;
+    std::vector<p_component<T>> _components;
 
 public:
-
     friend class cable_allocator;
 
     // Instantiate a void container is NOT allowed.
     electronic_container_base() = delete;
-    
+
     /**
      * @brief Construct a new electronic container base object
      * 
-     * @param components A vector contains all components. 
-     *                   The constructor will automatically classifie these component by their gauge.
+     * @param components A vector containing all components. 
      */
     electronic_container_base(std::vector<T>&& components)
     {
-        for(auto& p : components)
-            _container[p.get_gauge()].push_back(std::make_shared<T>(std::move(p)));
+        for (auto& p : components)
+            _components.push_back(std::make_shared<T>(std::move(p)));
     }
 
+    /**
+     * @brief Get a component by its ID.
+     * 
+     * @param ID The ID of the component to retrieve.
+     * @return A shared pointer to the component, or nullptr if not found.
+     */
     p_component<T> get_Component(const int& ID) const
     {
-        for(auto& [gauge, components] : _container )
-            for(auto& component : components)
-                if(component->get_ID() == ID)
-                    return component;
+        for (const auto& component : _components)
+            if (component->get_ID() == ID)
+                return component;
+        
         return nullptr;
     }
 };

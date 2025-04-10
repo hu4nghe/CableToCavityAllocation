@@ -59,6 +59,6 @@ int main()
     cavities.emplace_back(1, 22, 118.0,71.0);
 
     cable_allocator allocator(std::move(cavities));
-    allocator.console_intereaction();
+    allocator.console_interaction();
     return  0;
 }

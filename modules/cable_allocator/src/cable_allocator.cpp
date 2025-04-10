@@ -2,6 +2,7 @@
  * @file cable_allocator.cpp
  * @author HUANG He (he.huang.intern@3ds.com)
  * @brief 
+ * Implementation of the cable_allocator class.          
  * @version 1.0
  * @date 2025-04-02
  * 
@@ -12,6 +13,7 @@
 
 #include <unordered_set>
 #include <functional>
+#include <numeric>
 
 // Headers for debug use output only, to remove before release.
 #include <print>
@@ -26,76 +28,75 @@ cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
 bool cable_allocator::add_cable(cable new_cable)
 {
     _region_pool[new_cable];
-
+ 
     for(const auto& [gauge, wires] : new_cable._container)
-    {
-        // Search only in compatibles cavities
-        for(const auto& compatible_cavity : _connector.get_compatible_cavitiy_list(gauge))
+    {       
+        for (const auto& compatible_cavity : _connector.get_compatible_cavitiy_list(gauge))
         {
-            std::vector<std::pair<int,int>> path;
-            std::unordered_set<int>         visited;
-                
-            auto dfs = 
-            [&](auto&& self, 
-                int cavity_ID, 
+            std::vector<std::pair<int, int>> path;
+            std::unordered_set<int> visited;
+
+            auto dfs =             
+            [&](auto&& self,                 
+                int cavity_ID,                 
                 int wire_index) -> void
             {
-                if (_connector.is_available(cavity_ID))
-                {
-                    // Log the cavity_ID path
-                    auto current_wire_ID = wires[wire_index]->get_ID();
-                    visited.insert(cavity_ID);
-                    path.emplace_back(current_wire_ID, cavity_ID);
+                if (!_connector.is_available(cavity_ID)) return;
+
+                // Log the cavity_ID path
+                auto wire_ID = wires[wire_index]->get_ID();
+                visited.insert(cavity_ID);
+                path.emplace_back(wire_ID, cavity_ID);
+
+                // Save valid complete regions
+                if (path.size() == new_cable.size(gauge))
+                    _region_pool.at(new_cable).emplace_back(new_cable.get_ID(), gauge, path);
                 
-                    // Save valid complete regions
-                    if (path.size() == new_cable.size(gauge)) 
-                        _region_pool.at(new_cable).emplace_back(new_cable.get_ID(), gauge, path);
-                    else // Continue searching through available neighbors
-                        for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID)) 
-                            if (_connector.is_available(neighbor) && !visited.count(neighbor)) 
-                                self(self, neighbor, wire_index + 1);
-                    // Backtrack
-                    visited.erase(cavity_ID);
-                    path.pop_back();
-                }
-                else return; // Skip unavailable cavities
+                else // Continue searching through available neighbors
+                    for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
+                        if (_connector.is_available(neighbor) && !visited.count(neighbor))
+                            self(self, neighbor, wire_index + 1);
+                
+                // Backtrack
+                visited.erase(cavity_ID);
+                path.pop_back();
             };
-            dfs(dfs,compatible_cavity->get_ID(), 0);
+            // Start DFS from the compatible cavity
+            dfs(dfs, compatible_cavity->get_ID(), 0);
         }
     }
 
-    const auto& valid_alloactions = _region_pool.at(new_cable);
+    return finalize_allocation(new_cable);
+}
 
-    if(valid_alloactions.empty())
+bool cable_allocator::finalize_allocation(const cable& new_cable)
+{
+    const auto& valid_allocations = _region_pool.at(new_cable);
+
+    if (valid_allocations.empty())
     {
-        std::print("No valid allocation found for cable {}.\n",new_cable.get_ID());
+        std::print("No valid allocation found for cable {}.\n", new_cable.get_ID());
         _region_pool.erase(new_cable);
         return false;
     }
-    else
+
+    std::print("Possible choices for cable ({}):\n", new_cable.get_ID());
+    for (const auto& [i, allocation] : std::views::enumerate(valid_allocations))
     {
-         //print results : 
-
-        std::print("possible choice for cavity_ID cable ({}):\n",new_cable.get_ID());
-        for(const auto& [i, allocation] : std::views::enumerate(valid_alloactions))
+        std::print("Allocation {}:\n", i + 1);
+        for (const auto& [wire, cavity] : allocation.get_layout())
         {
-            std::print("Allocation {} :\n", i + 1);
-            for (const auto& [wire, cavity] : allocation.get_layout())
-                std::print("wire {} : cavity {}\n", wire, cavity);
-            std::print("\n");
+            std::print("Wire {} -> Cavity {}\n", wire, cavity);
         }
-
-        int choice = input(0, valid_alloactions.size(), "Chose a allocation to continue." );
-
-        std::print("Cable added with allocation {}.\n", choice);
-        auto connected_idx = valid_alloactions[choice -1].get_layout();
-        connect(connected_idx);
-        return true;
+        std::print("\n");
     }
-    
+
+    int choice = input(0, valid_allocations.size(), "Choose an allocation to continue.");
+    std::print("Cable added with allocation {}.\n", choice);
+
+    connect(valid_allocations[choice - 1].get_layout());
+    return true;
 }
-
-
 
 void cable_allocator::connect(std::map<int, int> connections)
 {
@@ -104,7 +105,7 @@ void cable_allocator::connect(std::map<int, int> connections)
             _connector.get_Component(cavity_idx)->connect(cable.get_Component(wire_idx));
 }
 
-void cable_allocator::console_intereaction()
+void cable_allocator::console_interaction()
 {
     int wire_idx = 1;
     int cable_idx = 1;
@@ -150,9 +151,21 @@ int cable_allocator::input(int lower, int upper, const std::string& msg) const
 
 size_t cable_allocator::size() const
 {
-    std::size_t size = 0;
-    for(const auto& [_, cavities] : _connector._container)
-        for(const auto& cavity : cavities)
-            if(cavity->is_available()) size++;
-    return size;
+    return std::accumulate(_connector._container.begin(), 
+                           _connector._container.end(), 
+                           0,
+                           [](size_t total, const auto& pair) 
+                           {
+                               return total + std::count_if(pair.second.begin(), 
+                                                            pair.second.end(),
+                                                            [](const auto& cavity) 
+                                                            {
+                                                                return cavity->is_available();
+                                                            });
+                           });
+}
+
+void cable_allocator::print_adjacency_list() const
+{
+    _connector.print_adjacency_list();
 }

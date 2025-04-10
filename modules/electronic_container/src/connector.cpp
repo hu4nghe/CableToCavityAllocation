@@ -9,30 +9,49 @@
  * 
  */
 #include "connector.h"
+
 #include <print>
 #include <ranges>
 
 connector::connector(std::vector<cavity>&& cavities) : 
     electronic_container_base(std::move(cavities))
 {
-    for(auto &[gauge, cavities] : _container)
-    {
-        //Calculer la distance entre les cavities, inutile si on connaît déjà ce chiffre.
-        double min_distance = std::numeric_limits<double>::max();
-        for(const auto& i : cavities)
-            for(const auto& j : cavities)
-                min_distance = 
-                    j->distance(*i) < min_distance ? 
-                        j->distance(*i) : 
-                        min_distance;
+    // Clear the existing adjacency list
+    _adjacency_list.clear();
 
-        //build adjacency list
-        const double epsilon = 0.3 * min_distance;
-        for(const auto& i : cavities)
-            for(const auto& j : cavities)
-                if(std::abs(j->distance(*i) - min_distance) < epsilon)
-                    _adjacency_list[i->get_ID()].insert(j->get_ID());
-    }
+    // Flatten all cavities into a single vector with their gauge
+    std::vector<std::pair<AWG, p_component<cavity>>> all_cavities;
+    for (const auto& [gauge, cavities] : _container)
+        for (const auto& cavity : cavities)
+            all_cavities.emplace_back(gauge, cavity);
+
+    // Calculate the minimum distance for each pair of gauges
+    std::map<std::pair<AWG, AWG>, double> min_dists;
+    for (const auto& [gauge1, cavities1] : _container)
+        for (const auto& [gauge2, cavities2] : _container)
+        {
+            double min_dist = std::numeric_limits<double>::max();
+
+            for (const auto& cavity1 : cavities1)
+                for (const auto& cavity2 : cavities2)
+                    if (cavity1 != cavity2)
+                        min_dist = std::min(min_dist, cavity1->distance(*cavity2));
+                    
+            min_dists[{gauge1, gauge2}] = min_dist;
+        }
+    
+    // Build the adjacency list with a tolerance (epsilon) for each pair of gauges
+    for (const auto& [gauge1, cavities1] : _container)
+        for (const auto& cavity1 : cavities1)
+            for (const auto& [gauge2, cavities2] : _container)
+                for (const auto& cavity2 : cavities2)
+                    if (cavity1 != cavity2)
+                    {
+                        auto key = std::make_pair(gauge1, gauge2);
+                        double epsilon = 0.3 * min_dists[key];
+                        if (std::abs(cavity1->distance(*cavity2) - min_dists[key]) < epsilon)
+                            _adjacency_list[cavity1->get_ID()].insert(cavity2->get_ID());
+                    }
 }
 
 std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)
