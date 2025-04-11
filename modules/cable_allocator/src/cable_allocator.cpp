@@ -24,24 +24,8 @@ cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
 
 bool cable_allocator::add_cable(cable new_cable)
 {
-    // Log the cavity combination.
-    /*
-    auto generate_region_key = [&](std::vector<std::pair<int,int>> path)
-    {
-        // Sort the path based on cavity ID to avoid duplicates.
-        std::sort(path.begin(), path.end(), [](const auto& a, const auto& b) 
-                                            {
-                                                return a.second < b.second; 
-                                            });
-        std::string key;
-        for(const auto& ID : path)
-            key += std::to_string(ID.second);
-        return key;
-    };*/
-
     _region_pool[new_cable];
 
-    //std::unordered_set<std::string> logged_region;
     for(const auto& cavity : _connector._container)
     {
         std::vector<std::pair<int, int>> path;
@@ -51,8 +35,8 @@ bool cable_allocator::add_cable(cable new_cable)
             int cavity_ID,                 
             int wire_index) -> void
         {
-            if(!_connector.is_available(cavity_ID)) return;
-            std::print("current wire index: {}, new_cable._container.size : {}\n", wire_index,new_cable._container.size());
+            if(!_connector.is_available(cavity_ID) ||
+               !wire_index >= new_cable.size()) return;
 
             auto wire   = new_cable._container[wire_index];
             auto cavity = _connector.get_Component(cavity_ID);
@@ -65,13 +49,7 @@ bool cable_allocator::add_cable(cable new_cable)
 
             // Save valid complete regions
             if (path.size() == new_cable.size())
-            {
-                /*auto key = generate_region_key(path);
-                if (logged_region.count(key)) return;
-                
-                logged_region.insert(key);*/
                 _region_pool.at(new_cable).emplace_back(path);
-            }
             else // Continue searching through available neighbors
                 for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
                     if (!visited.count(neighbor))
