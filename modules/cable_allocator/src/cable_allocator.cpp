@@ -12,6 +12,7 @@
  * 
  */
 #include "cable_allocator.h"
+#include "csv_parser.h"
 
 #include <unordered_set>
 #include <iostream>
@@ -239,4 +240,15 @@ void cable_allocator::generate_solution()
     };
 
     dfs(0); 
+}
+
+void cable_allocator::read_cable_datas()
+{
+    csv_parser parser;
+    auto cables = parser.parse_cable("cable.csv");
+    for(const auto& cable : cables)
+    {
+        _region_pool[cable];
+    }
+    generate_solution();
 }

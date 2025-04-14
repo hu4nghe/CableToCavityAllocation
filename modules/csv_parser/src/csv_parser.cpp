@@ -1,6 +1,8 @@
 #include "csv_parser.h"
 
 #include <fstream>
+#include <sstream>
+#include "cable.h"
 
 std::tuple<int, int, double, double> csv_parser::parse_line(std::string_view line) const
 {
@@ -31,4 +33,42 @@ std::vector<cavity> csv_parser::input_parser(const std::string &filename)
         data.emplace_back(std::make_from_tuple<cavity>(parse_line(line)));
 
     return std::move(data);
+}
+std::vector<cable> csv_parser::parse_cable(const std::string& filename) 
+{
+    std::vector<cable> cables;
+    std::ifstream file(filename);
+    
+    std::string line;
+    while (std::getline(file, line)) 
+    {
+
+        // 移除行尾的换行符和空格
+        line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
+        line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
+        line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
+
+        std::istringstream iss(line);
+        std::string token;
+
+        int cable_id = std::stoi(token);
+
+        while (std::getline(iss, token, ',')) 
+        {
+            std::vector<wire> wires;
+            size_t colon_pos = token.find(':');
+            if (colon_pos != std::string::npos) 
+            {
+                auto gauge = std::stoi(token.substr(0, colon_pos));
+                auto wire_count = std::stoi(token.substr(colon_pos + 1));
+                for(auto i = 0; i < wire_count; ++i) 
+                {
+                    wires.emplace_back(i, gauge);
+                }
+                cables.emplace_back(cable_id, wires);
+            }
+        }
+    }
+
+    return cables;
 }
