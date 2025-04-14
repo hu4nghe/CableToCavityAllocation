@@ -101,11 +101,11 @@ std::set<int> connector::get_adjacency_list(const int &ID) const
     return _adjacency_list.at(ID);
 } 
 
-std::set<int> connector::get_unavailable_index_pool(AWG gauge) const
+std::set<int> connector::get_unavailable_index_pool() const
 {
     std::set<int> occupied_cavity_index_pool;
     for (const auto& cavity : _container)
-        if (cavity->get_gauge() == gauge && !cavity->is_available())
+        if (!cavity->is_available())
             occupied_cavity_index_pool.insert(cavity->get_ID());
     return occupied_cavity_index_pool;
 }

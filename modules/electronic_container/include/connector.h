@@ -56,7 +56,7 @@ public:
      * @param gauge cavity gauge type.
      * @return set of index of unavailable cavities.
      */
-    std::set<int> get_unavailable_index_pool(AWG gauge) const;
+    std::set<int> get_unavailable_index_pool() const;
 
     /**
      * @brief Check if the cavity is available.

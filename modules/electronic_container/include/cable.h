@@ -52,4 +52,5 @@ public:
      * @return The size of the cable
      */
     auto size() const { return _container.size(); }
+
 };

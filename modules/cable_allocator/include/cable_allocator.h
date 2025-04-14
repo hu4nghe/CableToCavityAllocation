@@ -24,6 +24,7 @@ class cable_allocator
 {
 private:
 
+    std::vector<std::vector<cable_region>>     _solutions;   
     std::map<cable, std::vector<cable_region>> _region_pool;
     connector                                  _connector;
 
@@ -59,6 +60,7 @@ private:
      * @param connections A map where keys and values represent connection points.
      */
     void connect(std::map<int, int> connections);
+    void disconnect(std::map<int, int> connections);
 
     /**
      * @brief Adds a new cable to the region pool.

@@ -19,6 +19,7 @@
 #include <sstream>
 #include <ranges>
 #include <fstream>
+#include <functional>
 
 cable_allocator::cable_allocator(std::vector<cavity> &&cavities) : _connector(std::move(cavities)) {}
 
@@ -98,6 +99,13 @@ void cable_allocator::connect(std::map<int, int> connections)
     for(const auto& [wire_idx, cavity_idx] : connections)
         for(auto& [cable, _] : _region_pool)
             _connector.get_Component(cavity_idx)->connect(cable.get_Component(wire_idx));
+}
+
+void cable_allocator::disconnect(std::map<int, int> connections)
+{
+    for(const auto& [_, cavity_idx] : connections)
+        for(auto& [cable, _] : _region_pool)
+            _connector.get_Component(cavity_idx)->disconnect();
 }
 
 void cable_allocator::console_interaction()
@@ -192,4 +200,43 @@ void cable_allocator::print_adjacency_list() const
 
 void cable_allocator::generate_solution()
 {
+    std::vector<cable_region> current_solution;
+
+    std::function<void(int)> dfs = [&](const auto& cable_index) 
+    {
+        if (cable_index == _region_pool.size()) 
+        {
+            _solutions.push_back(current_solution); // Store valid assignment
+            return;
+        }
+
+        const auto& regions = std::find_if(_region_pool.begin(), 
+                                           _region_pool.end(), 
+                                           [&](const auto& pair) 
+                                           {
+                                               return pair.first.get_ID() == cable_index;
+                                           }) -> second;
+
+        for (const auto& region : regions) 
+        {
+            auto region_layout = region.get_layout();
+
+            // Check if the region contains any unavailable cavities
+            if (region.has_unavailable_cavity(_connector.get_unavailable_index_pool()))
+                continue;
+
+            // Assign cable to this region
+            current_solution.push_back(region);
+            connect(region_layout);
+
+            // Recur to assign the next cable
+            dfs(cable_index + 1);
+
+            // Backtrack
+            current_solution.pop_back();
+            disconnect(region_layout);
+        }
+    };
+
+    dfs(0); 
 }
