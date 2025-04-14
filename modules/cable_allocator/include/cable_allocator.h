@@ -46,6 +46,7 @@ public:
      */
     void console_interaction();
 
+    void generate_solution();
 private:
 
     std::tuple<int, int, double, double> parse_line(std::string_view line) const;

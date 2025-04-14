@@ -155,6 +155,7 @@ void cable_allocator::console_interaction()
     }
 }
 
+
 int cable_allocator::input(int lower, int upper, const std::string& msg) const
 {
     std::print("{}\n", msg);
@@ -187,4 +188,8 @@ size_t cable_allocator::size() const
 void cable_allocator::print_adjacency_list() const
 {
     _connector.print_adjacency_list();
+}
+
+void cable_allocator::generate_solution()
+{
 }
