@@ -26,7 +26,14 @@ cable_allocator::cable_allocator(const std::vector<std::tuple<int, int, double, 
     _connector(
         cavities | 
         std::views::transform([](const auto& tup){ return std::make_from_tuple<cavity>(tup); }) | 
-        std::ranges::to<std::vector>()){}
+        std::ranges::to<std::vector>())
+        {
+            for(auto& element : _connector._container)
+            {
+                std::print("Cavity ID: {}\n", element->get_ID());   
+                std::print("Cavity Size: {}\n\n", static_cast<int>(element->get_gauge()));
+            }
+        }
 
 std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires)
 {

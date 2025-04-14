@@ -4,7 +4,7 @@
 
 namespace py = pybind11;
 
-PYBIND11_MODULE(cable_allocator, m) 
+PYBIND11_MODULE(cable_allocator_pybind11, m) 
 {
     m.doc() = "Python bindings for the cable_allocator class";
 
