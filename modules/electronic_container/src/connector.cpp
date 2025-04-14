@@ -138,3 +138,13 @@ void connector::print_current_connector_status() const
     }
     
 }
+
+auto connector::size() const
+{
+     return std::count_if(_container.begin(), 
+                          _container.end(),
+                         [](const auto& cavity) 
+                         {
+                             return cavity->is_available();
+                         });
+}
