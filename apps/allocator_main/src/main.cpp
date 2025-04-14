@@ -1,11 +1,6 @@
 #include "cable_allocator.h"
 #include "csv_parser.h"
 
-#include <vector>
-#include <print>
-#include <utility>
-#include <iostream>
-
 int main()
 {
     csv_parser parser;

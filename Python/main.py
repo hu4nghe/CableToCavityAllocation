@@ -1,43 +1,91 @@
 from CavityDetection import DetecteCavity
 from pathlib import Path
 import cv2
-import os
+import sys
+from PyQt6.QtWidgets import (QApplication, QMainWindow, QLabel, QPushButton, 
+                           QVBoxLayout, QWidget, QFileDialog)
+from PyQt6.QtGui import QImage, QPixmap
+from PyQt6.QtCore import Qt
 
-def CallDetecteFunction(iDir, oDir):
-    os.makedirs(oDir, exist_ok=True)
-    for File in os.listdir(iDir):
-        if File.lower().endswith('.png'):
-            # Read Img
-            ImgPath = os.path.join(iDir, File)
-            Img = cv2.imread(ImgPath)
+class CavityDetectorGUI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.root_path = Path(__file__).resolve().parent.parent
+        self.initUI()
+        
+    def initUI(self):
+        self.setWindowTitle('Cavity Detector')
+        self.setGeometry(100, 100, 800, 600)
+
+        # Create central widget and layout
+        central_widget = QWidget()
+        self.setCentralWidget(central_widget)
+        layout = QVBoxLayout(central_widget)
+
+        # Create buttons
+        self.select_btn = QPushButton('Select Connector Image', self)
+        self.select_btn.clicked.connect(self.select_image)
+        layout.addWidget(self.select_btn)
+
+        # Create image display label
+        self.image_label = QLabel(self)
+        self.image_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        layout.addWidget(self.image_label)
+
+    def select_image(self):
+        file_name, _ = QFileDialog.getOpenFileName(
+            self,
+            "Select Connector Image",
+            str(self.root_path/"Resources"/"Connectors"),
+            "Images (*.png *.jpg)"
+        )
+        
+        if file_name:
+            # Process image
+            img = cv2.imread(file_name)
+            result_img, cavities = DetecteCavity(img)
             
-            ResImg, Cavities = DetecteCavity(Img)
+            # Save detection results to CSV
+            output_csv = self.root_path/"bin"/"cavities.csv"
+            output_csv.parent.mkdir(exist_ok=True)
             
-            # Save results
-            output_path = os.path.join(oDir, f"Cavity_detected_{File}")
-            cv2.imwrite(output_path, ResImg)
-            
-            # Print summary
-            print(f"{File}: Detected {len(Cavities)} Cavities")
-            for i, (Pos, r) in enumerate(Cavities, 0):
-                # Default gauge value
-                gauge = None
-                
-                # Determine gauge based on radius
-                if r == 11:
-                    gauge = 22
-                elif r == 22 or r == 23:
-                    gauge = 16
-                else:
-                    print(f"Warning: Unknown radius {r}, cannot determine gauge")
-                    continue
+            with open(output_csv, 'w') as f:
+                for i, (pos, r) in enumerate(cavities, 1):
+                    # Determine gauge based on radius
+                    if r == 11:
+                        gauge = 22
+                    elif r == 22 or r == 23:
+                        gauge = 16
+                    else:
+                        print(f"Warning: Unknown radius {r}, skipping cavity")
+                        continue
                     
-                print(f"{len(Cavities) - i},{gauge},{Pos[0]}.0,{Pos[1]}.0,")
+                    f.write(f"{i},{gauge},{pos[0]:.1f},{pos[1]:.1f}\n")
+            
+            # Display result image
+            height, width, channel = result_img.shape
+            bytes_per_line = 3 * width
+            
+            # Convert BGR to RGB for Qt
+            rgb_image = cv2.cvtColor(result_img, cv2.COLOR_BGR2RGB)
+            qt_image = QImage(rgb_image.data, width, height, 
+                            bytes_per_line, QImage.Format.Format_RGB888)
+            
+            # Scale image to fit window while maintaining aspect ratio
+            scaled_pixmap = QPixmap.fromImage(qt_image).scaled(
+                self.image_label.size(), 
+                Qt.AspectRatioMode.KeepAspectRatio,
+                Qt.TransformationMode.SmoothTransformation
+            )
+            
+            self.image_label.setPixmap(scaled_pixmap)
+            print(f"Detection results saved to: {output_csv}")
+
+def main():
+    app = QApplication(sys.argv)
+    gui = CavityDetectorGUI()
+    gui.show()
+    sys.exit(app.exec())
 
 if __name__ == "__main__":
-    root_path = Path(__file__).resolve().parent.parent
-    iDir = root_path/"Resources"/ "Connectors"
-    oDir = root_path/"Resources"/ "DetectionResults"
-    
-    CallDetecteFunction(iDir, oDir)
-    print("Processing complete. Results saved to:", oDir)
+    main()
