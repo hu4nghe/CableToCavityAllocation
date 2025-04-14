@@ -48,6 +48,10 @@ public:
 
 private:
 
+    std::tuple<int, int, double, double> parse_line(std::string_view line) const;
+
+    void input_parser(const std::string& filename);
+
     /**
      * @brief Establishes connections based on the provided mapping.
      * 

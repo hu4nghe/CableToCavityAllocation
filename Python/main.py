@@ -20,7 +20,19 @@ def CallDetecteFunction(iDir, oDir):
             # Print summary
             print(f"{File}: Detected {len(Cavities)} Cavities")
             for i, (Pos, r) in enumerate(Cavities, 0):
-                print(f"cavity({len(Cavities) - i}, {r}, {Pos[0]}.0,{Pos[1]}.0, true ),")
+                # Default gauge value
+                gauge = None
+                
+                # Determine gauge based on radius
+                if r == 11:
+                    gauge = 22
+                elif r == 22 or r == 23:
+                    gauge = 16
+                else:
+                    print(f"Warning: Unknown radius {r}, cannot determine gauge")
+                    continue
+                    
+                print(f"{len(Cavities) - i},{gauge},{Pos[0]}.0,{Pos[1]}.0,")
 
 if __name__ == "__main__":
     root_path = Path(__file__).resolve().parent.parent

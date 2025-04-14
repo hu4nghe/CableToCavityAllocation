@@ -12,6 +12,7 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 add_subdirectory(modules/electronic_component)
 add_subdirectory(modules/electronic_container)
 add_subdirectory(modules/cable_allocator)
+add_subdirectory(modules/csv_parser)
 
 # executable
 add_subdirectory(apps/allocator_main)

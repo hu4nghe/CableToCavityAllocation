@@ -18,9 +18,9 @@
 #include <print>
 #include <sstream>
 #include <ranges>
+#include <fstream>
 
-cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
-    _connector(std::move(cavities)){}
+cable_allocator::cable_allocator(std::vector<cavity> &&cavities) : _connector(std::move(cavities)) {}
 
 bool cable_allocator::add_cable(cable new_cable)
 {
@@ -145,9 +145,7 @@ void cable_allocator::console_interaction()
 
         // Attempt to add the cable
         if (add_cable(cab))
-        {
             _connector.print_current_connector_status();
-        }
         else
         {
             std::print("Failed to add cable. Rolling back.\n");
