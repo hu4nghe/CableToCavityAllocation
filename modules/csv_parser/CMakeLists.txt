@@ -10,4 +10,5 @@ target_include_directories(csv_parser
 target_link_libraries(csv_parser
     PUBLIC
         electronic_component
+        electronic_container
 )

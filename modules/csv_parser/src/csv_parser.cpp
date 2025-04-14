@@ -50,6 +50,9 @@ std::vector<cable> csv_parser::parse_cable(const std::string& filename)
 
         std::istringstream iss(line);
         std::string token;
+        if (!std::getline(iss, token, ',')) {
+            continue; // 跳过格式错误的行
+        }
 
         int cable_id = std::stoi(token);
 
@@ -65,7 +68,7 @@ std::vector<cable> csv_parser::parse_cable(const std::string& filename)
                 {
                     wires.emplace_back(i, gauge);
                 }
-                cables.emplace_back(cable_id, wires);
+                cables.emplace_back(cable_id, std::move(wires));
             }
         }
     }

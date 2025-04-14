@@ -107,4 +107,6 @@ public://debug
      * This method is intended for debug use only and prints the calculation result.
      */
     void print_adjacency_list() const;
+
+    void print_solutions() const;
 };

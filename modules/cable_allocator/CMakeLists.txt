@@ -46,6 +46,7 @@ target_link_libraries(cable_allocator
     PUBLIC
         electronic_container
         electronic_component
+        csv_parser
 )
 
 # Enable testing

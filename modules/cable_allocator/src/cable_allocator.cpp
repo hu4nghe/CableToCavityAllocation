@@ -199,6 +199,25 @@ void cable_allocator::print_adjacency_list() const
     _connector.print_adjacency_list();
 }
 
+void cable_allocator::print_solutions() const
+{
+    std::ofstream log_file("cable_allocation_solution.txt");
+    for(auto const [i, solution] : std::views::enumerate(_solutions))
+    {
+        std::print(log_file, "Possible solution : {}\n", i+1 );
+        for(auto const [j, regions] : std::views::enumerate(solution))
+        {
+            auto list = regions.get_layout();
+            std::print(log_file,"cable {}:\n", j+1 );
+            for(const auto& [_,cavity] : list)
+                std::print(log_file,"{} ",cavity);
+            std::print(log_file,"\n");
+        }
+        std::print(log_file,"\n");
+    }
+    log_file.close();
+}
+
 void cable_allocator::generate_solution()
 {
     std::vector<cable_region> current_solution;
@@ -239,7 +258,7 @@ void cable_allocator::generate_solution()
         }
     };
 
-    dfs(0); 
+    dfs(1); 
 }
 
 void cable_allocator::read_cable_datas()

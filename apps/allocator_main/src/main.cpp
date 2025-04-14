@@ -5,6 +5,7 @@ int main()
 {
     csv_parser parser;
     cable_allocator allocator(parser.input_parser("cavities.csv"));
-    allocator.console_interaction();
+    allocator.read_cable_datas();
+    allocator.print_solutions();
     return  0;
 }
