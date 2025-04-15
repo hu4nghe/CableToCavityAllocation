@@ -13,6 +13,7 @@
  */
 #include "cable_allocator.h"
 
+#include <cmath>
 #include <unordered_set>
 #include <iostream>
 #include <print>
@@ -21,19 +22,19 @@
 #include <fstream>
 #include <functional>
 
-
 cable_allocator::cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavities) :
     _connector(
         cavities | 
         std::views::transform([](const auto& tup){ return std::make_from_tuple<cavity>(tup); }) | 
-        std::ranges::to<std::vector>())
-        {
-            for(auto& element : _connector._container)
-            {
-                std::print("Cavity ID: {}\n", element->get_ID());   
-                std::print("Cavity Size: {}\n\n", static_cast<int>(element->get_gauge()));
-            }
-        }
+        std::ranges::to<std::vector>()){}
+
+
+// Helper function to update the circle when a new cavity is added
+void update_circle(std::pair<double, double>& center, double& radius, const cavity& cav)
+{
+    double dist = cav.distance(center);
+    
+}
 
 std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires)
 {
@@ -45,10 +46,13 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
 
     _region_pool[new_cable];
 
-    for(const auto& cavity : _connector._container)
+    for(const auto& cavity_head : _connector._container)
     {
         std::vector<std::pair<int, int>> path;
         std::unordered_set<int> visited;
+        std::pair<double, double> center;
+        double radius{};
+        
         auto dfs =  
         [&](auto&& self,                 
             int cavity_ID,                 
@@ -66,9 +70,19 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
             visited.insert(cavity_ID);
             path.emplace_back(wire->get_ID(), cavity_ID);
 
+            double dist = cavity->distance(center);
+            auto old_raius = radius;
+            auto old_center = center;
+            if (dist > radius)
+            {
+                radius = cavity_head->distance(*cavity) / 2.0;
+                center = cavity_head->generate_center(*cavity);
+            }
+
+
             // Save valid complete regions
             if (path.size() == new_cable.size())
-                _region_pool.at(new_cable).emplace_back(path);
+                _region_pool.at(new_cable).emplace_back(path, radius);
             else // Continue searching through available neighbors
                 for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
                     if (!visited.count(neighbor))
@@ -77,9 +91,13 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
             // Backtrack
             visited.erase(cavity_ID);
             path.pop_back();
+            radius = old_raius;
+            center = old_center;    
         };
-        dfs(dfs, cavity->get_ID(), 0); 
+        dfs(dfs, cavity_head->get_ID(), 0); 
     }
+    
+    // Result sender
     std::vector<std::tuple<int,int>> result;
 
     for(const auto& allocations : _region_pool.at(new_cable))

@@ -71,6 +71,10 @@ public:
      */
     double distance(const cavity& other) const;
 
+    double distance(const std::pair<double,double>& point) const;
+
+    std::pair<double,double> generate_center(const cavity& other) const;
+
     /**
      * @brief Connect the cavity to a wire.
      * 
