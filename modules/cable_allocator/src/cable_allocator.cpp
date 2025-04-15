@@ -61,25 +61,44 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
             if(!_connector.is_available(cavity_ID) ||
                !wire_index >= new_cable.size()) return;
 
-            auto wire   = new_cable._container[wire_index];
-            auto cavity = _connector.get_Component(cavity_ID);
+            auto current_wire   = new_cable._container[wire_index];
+            auto current_cavity = _connector.get_Component(cavity_ID);
             
             // Check if the cavity is compatible with the wire
-            if (!cavity->is_compatible(*wire)) return;
+            if (!current_cavity->is_compatible(*current_wire)) return;
             // Log the searching path
             visited.insert(cavity_ID);
-            path.emplace_back(wire->get_ID(), cavity_ID);
+            path.emplace_back(current_wire->get_ID(), cavity_ID);
 
-            double dist = cavity->distance(center);
             auto old_raius = radius;
             auto old_center = center;
-            if (dist > radius)
+
+            double max_dist{};
+            std::pair<p_component<cavity>, 
+                      p_component<cavity>> furtherst_cavity;
+            for(const auto& [_, i] : path)
             {
-                radius = cavity_head->distance(*cavity) / 2.0;
-                center = cavity_head->generate_center(*cavity);
+                auto selected_cavity_i = _connector.get_Component(i);
+                for(const auto& [_, j] : path)
+                {
+                    auto selected_cavity_j =_connector.get_Component(j);
+                    double current_dist{};
+                    if( i == j ) 
+                        current_dist = 0;
+                    else
+                        current_dist = selected_cavity_i->distance(*selected_cavity_j);
+
+                    if( current_dist >= max_dist)
+                    {
+                        max_dist = current_dist;
+                        furtherst_cavity = std::make_pair(selected_cavity_i, selected_cavity_j);
+                    }
+                }
             }
-
-
+            if(furtherst_cavity.first == furtherst_cavity.second) radius = 0;
+            radius = furtherst_cavity.first->distance(*furtherst_cavity.second) / 2.0;
+            center = furtherst_cavity.first->generate_center(*furtherst_cavity.second);
+            
             // Save valid complete regions
             if (path.size() == new_cable.size())
                 _region_pool.at(new_cable).emplace_back(path, radius);
