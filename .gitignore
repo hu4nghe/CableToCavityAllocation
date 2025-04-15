@@ -4,5 +4,6 @@ build/
 lib/
 bin/
 Python/DSLyon/
+Python/PCHome/
 Python/__pycache__/
 .vscode/

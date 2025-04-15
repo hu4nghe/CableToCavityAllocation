@@ -23,6 +23,7 @@ class cable_region
 private:
 
     std::map<int, int> _wire_layout;
+    double             _score;
 
 public:
 
@@ -32,7 +33,7 @@ public:
      * @param cable_ID ID of the cable.
      * @param connections A vector of pairs representing wire-cavity connections.
      */
-    cable_region(const std::vector<std::pair<int,int>>& connections);
+    cable_region(const std::vector<std::pair<int,int>>& connections, double& score);
     
     /**
      * @brief Compare two cable regions based on their cable ID and wire layout.
@@ -56,6 +57,11 @@ public:
      * @return std::map<int, int> wire layout.
      */
     std::map<int, int> get_layout() const; 
+
+    auto get_score() const -> double
+    {
+        return _score;
+    }
 
    
 };

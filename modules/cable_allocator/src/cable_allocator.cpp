@@ -26,10 +26,13 @@ bool cable_allocator::add_cable(cable new_cable)
 {
     _region_pool[new_cable];
 
-    for(const auto& cavity : _connector._container)
+    for(const auto& cavity_head : _connector._container)
     {
         std::vector<std::pair<int, int>> path;
         std::unordered_set<int> visited;
+        std::pair<double, double> center;
+        double radius{};
+        
         auto dfs =  
         [&](auto&& self,                 
             int cavity_ID,                 
@@ -47,9 +50,20 @@ bool cable_allocator::add_cable(cable new_cable)
             visited.insert(cavity_ID);
             path.emplace_back(wire->get_ID(), cavity_ID);
 
+            double dist = cavity->distance(center);
+            auto old_raius = radius;
+            auto old_center = center;
+            if (dist > radius)
+            {
+                if(cavity == cavity_head) radius = 0;
+                else radius = cavity_head->distance(*cavity) / 2.0;
+                center = cavity_head->generate_center(*cavity);
+            }
+
+
             // Save valid complete regions
             if (path.size() == new_cable.size())
-                _region_pool.at(new_cable).emplace_back(path);
+                _region_pool.at(new_cable).emplace_back(path, radius);
             else // Continue searching through available neighbors
                 for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
                     if (!visited.count(neighbor))
@@ -58,8 +72,10 @@ bool cable_allocator::add_cable(cable new_cable)
             // Backtrack
             visited.erase(cavity_ID);
             path.pop_back();
+            radius = old_raius;
+            center = old_center;    
         };
-        dfs(dfs, cavity->get_ID(), 0); 
+        dfs(dfs, cavity_head->get_ID(), 0); 
     }
     
     return finalize_allocation(new_cable);
@@ -79,7 +95,7 @@ bool cable_allocator::finalize_allocation(const cable& new_cable)
     std::print("Possible choices for cable ({}):\n", new_cable.get_ID());
     for (const auto& [i, allocation] : std::views::enumerate(valid_allocations))
     {
-        std::print("Allocation {}:\n", i + 1);
+        std::print("Allocation {}: score : {}\n", i + 1,allocation.get_score());    
         for (const auto& [wire, cavity] : allocation.get_layout())
             std::print("Wire {} -> Cavity {}\n", wire, cavity);
         

@@ -15,8 +15,9 @@
 
 #include <ranges>
 
-cable_region::cable_region( const std::vector<std::pair<int, int>>& connections) :
-    _wire_layout(std::map<int, int>(connections.begin(),connections.end())){}
+cable_region::cable_region( const std::vector<std::pair<int, int>>& connections, double& score) :
+    _wire_layout(std::map<int, int>(connections.begin(),connections.end())),
+    _score(score){}
 
 bool cable_region::operator<(const cable_region &other) const
 {
