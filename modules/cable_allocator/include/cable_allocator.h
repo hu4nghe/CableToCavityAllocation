@@ -26,5 +26,5 @@ public:
     cable_allocator() = delete;
     cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavities);
     void connect(std::map<int, int> connections);
-    std::vector<std::tuple<int,int>> add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires);
+    std::vector<std::map<int,int>> add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires);
 };

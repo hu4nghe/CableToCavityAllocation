@@ -39,7 +39,7 @@ void update_circle(std::pair<double, double>& center, double& radius, const cavi
     
 }
 
-std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires)
+std::vector<std::map<int,int>> cable_allocator::add_cable(int cable_ID, const std::vector<std::tuple<int, int>>& wires)
 {
     auto new_cable = cable(
         cable_ID,
@@ -51,14 +51,13 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
         std::ranges::to<std::vector>());
 
     _region_pool[new_cable];
-
+    //std::print("Connector initilized, pin numbers : {} cable numbres : {}\n", _connector._container.size(), new_cable._container.size());
     for(const auto& cavity_head : _connector._container)
     {
         std::vector<std::pair<int, int>> path;
         std::unordered_set<int> visited;
         std::pair<double, double> center;
         double radius{};
-        
         auto dfs =  
         [&](auto&& self,                 
             int cavity_ID,                 
@@ -123,15 +122,11 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
     }
     
     // Result sender
-    std::vector<std::tuple<int,int>> result;
+    std::vector<std::map<int,int>> result;
 
     for(const auto& allocations : _region_pool.at(new_cable))
-    {
-        auto allocation_map = allocations.get_layout();
-        for(const auto& [wire, cavity] : allocation_map)
-            result.emplace_back(wire, cavity);
-    }
-
+        result.emplace_back(allocations.get_layout());
+    
     return result;
 }
 

@@ -6,18 +6,19 @@ from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.uic import loadUi
 import cavity_detection 
 import cable_allocator_pybind11 as cable_allocator
+import cable_manager_dialog as cable_manager
 
 class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        ui_path = os.path.join(current_dir, "..", "UI", "main_window.ui")
-        ui_path = os.path.normpath(ui_path)
+        ui_path = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "UI", "main_window.ui"))
         loadUi(ui_path, self) 
-
-        # Open png file in menu
         self.actionConnector_Image.triggered.connect(self.open_image)
+            
+        self.openCableManagerButton.clicked.connect(self.open_cable_manager)
+        
+        
     def open_image(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Choose a connector image.", "", "PNG Files (*.png)")
         if file_name:
@@ -33,14 +34,18 @@ class MainWindow(QMainWindow):
 
                 self.imageLabel.setPixmap(QPixmap.fromImage(qt_image))
                 self.imageLabel.adjustSize() 
-                print(f"Detected {len(pins)} pins.")
-                print(pins)
+                self.allocator = cable_allocator.CableAllocator(pins)
                 
-
             except Exception as e:
                 QMessageBox.critical(self, "Error", f"Failed to process image: {e}")
+        
 
-
+    def open_cable_manager(self):
+        self.dialog = cable_manager.CableManagerDialog(self.allocator)
+        if(self.dialog.exec()):
+            res = self.allocator.add_cable(self.dialog.cable_id, self.dialog.wires)
+            print(res)
+        
 if __name__ == "__main__":
     app = QApplication(sys.argv)
     window = MainWindow()
