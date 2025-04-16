@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1102</width>
-    <height>652</height>
+    <width>1170</width>
+    <height>735</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -22,7 +22,10 @@
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout_2">
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout">
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QListWidget" name="potentialSolutionListWidget"/>
+      </item>
       <item>
        <widget class="QLabel" name="imageLabel">
         <property name="sizePolicy">
@@ -61,7 +64,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1102</width>
+     <width>1170</width>
      <height>23</height>
     </rect>
    </property>

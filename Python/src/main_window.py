@@ -1,7 +1,7 @@
 import sys
 import os
 import cv2
-from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox
+from PyQt6.QtWidgets import QApplication, QMainWindow, QFileDialog, QMessageBox, QListWidgetItem
 from PyQt6.QtGui import QPixmap, QImage
 from PyQt6.uic import loadUi
 import cavity_detection 
@@ -18,6 +18,7 @@ class MainWindow(QMainWindow):
             
         self.openCableManagerButton.clicked.connect(self.open_cable_manager)
         
+        self.allocation = []
         
     def open_image(self):
         file_name, _ = QFileDialog.getOpenFileName(self, "Choose a connector image.", "", "PNG Files (*.png)")
@@ -43,8 +44,12 @@ class MainWindow(QMainWindow):
     def open_cable_manager(self):
         self.dialog = cable_manager.CableManagerDialog(self.allocator)
         if(self.dialog.exec()):
-            res = self.allocator.add_cable(self.dialog.cable_id, self.dialog.wires)
-            print(res)
+            for(cable_id, wires) in self.dialog.cables.items():
+                self.allocation = self.allocator.add_cable(self.dialog.cable_id, wires)
+                self.potentialSolutionListWidget.clear()
+                for pair in self.allocation:
+                    item = QListWidgetItem(str(pair))
+                    self.potentialSolutionListWidget.addItem(item)
         
 if __name__ == "__main__":
     app = QApplication(sys.argv)

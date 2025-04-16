@@ -7,3 +7,4 @@ Python/DSLyon/
 Python/PCHome/
 Python/__pycache__/
 .vscode/
+*.pyc
