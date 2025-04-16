@@ -25,7 +25,10 @@
 cable_allocator::cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavities) :
     _connector(
         cavities | 
-        std::views::transform([](const auto& tup){ return std::make_from_tuple<cavity>(tup); }) | 
+        std::views::transform([](const auto& tup)
+        { 
+            return std::make_from_tuple<cavity>(tup); 
+        }) | 
         std::ranges::to<std::vector>()){}
 
 
@@ -41,7 +44,10 @@ std::vector<std::tuple<int,int>> cable_allocator::add_cable(int cable_ID, const 
     auto new_cable = cable(
         cable_ID,
         wires | 
-        std::views::transform([](const auto& tup){ return std::make_from_tuple<wire>(tup); }) | 
+        std::views::transform([](const auto& tup)
+        { 
+            return std::make_from_tuple<wire>(tup); 
+        }) | 
         std::ranges::to<std::vector>());
 
     _region_pool[new_cable];

@@ -23,8 +23,6 @@ private:
     connector                                  _connector;
 
 public:
-
-   
     cable_allocator() = delete;
     cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavities);
     void connect(std::map<int, int> connections);
