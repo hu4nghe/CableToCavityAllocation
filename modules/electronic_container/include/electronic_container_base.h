@@ -24,7 +24,7 @@ class electronic_container_base
 {
 protected:
 
-    std::vector<p_component<T>> _container;
+    std::vector<sp_component<T>> _container;
 
 public:
     friend class cable_allocator;
@@ -48,7 +48,7 @@ public:
      * @param ID The ID of the component to retrieve.
      * @return A shared pointer to the component, or nullptr if not found.
      */
-    p_component<T> get_Component(const int& ID) const
+    sp_component<T> get_Component(const int& ID) const
     {
         for (const auto& component : _container)
             if (component->get_ID() == ID)

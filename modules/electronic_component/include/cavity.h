@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent cavities on connector
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.2
+ * @date 2025-04-17
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -14,92 +14,63 @@
 #pragma once
 
 #include "electronic_component_base.h"
-#include "wire.h"
-
-#include <utility>
+#include <utility>// for std::pair
 
 class cavity : public electronic_component_base
 {
 private:
 
     const std::pair<double,double> _position;
-    std::weak_ptr<wire>            _connected_wire;
 
 public:
-
+    
     /**
-    * @brief Construct a new cavity object.
+    * @brief 
+    * Construct a new cavity object.
     * 
     * @param ID Cavity ID on the connector.
     * @param cavity_gauge American Wire Gauge.
     * @param x x coordinate.
     * @param y y coordinate.
     */
-    cavity(int ID, int cavity_gauge, double x, double y);
+    cavity(int ID, 
+           int cavity_gauge, 
+           double x, 
+           double y) :
+        electronic_component_base(ID, cavity_gauge),
+        _position(x, y){}
 
-    /**
-     * @brief Move constructor for initialization
-     * 
-     * @param other cavity object to move
-     */
-    cavity(cavity&& other);
+    cavity(cavity&& other) :    
+        electronic_component_base(std::move(other)),
+        _position(other._position){}
     
     /**
-     * @brief Compare gauge to other cavity.
+     * @brief 
+     * Compare gauge to other cavity.
      * 
      * @param other Another cavity object.
      * @return true if two cavity have the same gauge.
      * @return false if two cavity have differents gauges.
      */
-    bool operator==(const cavity& other) const;
-
+    bool has_the_same_gauge(const cavity& other) const { return _gauge == other._gauge; }
+    
     /**
-     * @brief Compare ID of two cavities
-     *        (Only for STL container use, do not call explicitly)
-     * 
-     * @param other Another cavity object.
-     * @return true if current cavity ID is smaller than other's.
-     * @return false if current cavity ID is bigger than other's.
-     */
-    bool operator<(const cavity& other) const;
-
-    /**
-     * @brief Calculate distance between two cavities on the same connector.
+     * @brief 
+     * Calculate distance between current cavity and another point.
      * 
      * @param other Another cavity object.
      * @return double Distance between two cavity, +∞ if send itself as argument.
      */
-    double distance(const cavity& other) const;
-
     double distance(const std::pair<double,double>& point) const;
-
-    std::pair<double,double> generate_center(const cavity& other) const;
-
+    // shortcut for cavity object.
+    double distance(const cavity& other) const { return distance(other._position); }
+     
     /**
-     * @brief Connect the cavity to a wire.
+     * @brief 
+     * Calculate the midpoint between two cavities.
      * 
-     * @param target_wire a shared_ptr to target wire.
+     * @param other Another cavity object.
+     * @return std::pair<double,double> Midpoint between two cavities.
      */
-    void connect(p_component<wire> target_wire);
-
-    /**
-     * @brief Disconnect the cavity from the wire.
-     * 
-     */
-    void disconnect();
-
-    /**
-     * @brief Returns availability of current component.
-     * 
-     * @return true if component is available.
-     * @return false if component is unavailable.
-     */
-    bool is_available() const;
-
-    /**
-     * @brief Get the wire object which the cavity is connected.
-     * 
-     * @return shared_ptr to the connected wire.
-     */
-    std::shared_ptr<wire> get_wire() const;
+    std::pair<double,double> midpoint(const cavity& other) const;
 };

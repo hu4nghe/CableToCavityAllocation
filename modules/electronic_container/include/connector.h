@@ -40,7 +40,7 @@ public:
      * @param gauge cable gauge
      * @return a vector that contains shared_ptr point to the cavity.
      */
-    std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
+    std::vector<sp_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
 
     /**
      * @brief Get the adjacency list object.

@@ -25,7 +25,7 @@ connector::connector(std::vector<cavity>&& cavities) :
 void connector::build_adjacency_list()
 {
     // Group cavities by gauge
-    std::map<AWG, std::vector<p_component<cavity>>> gauge_map;
+    std::map<AWG, std::vector<sp_component<cavity>>> gauge_map;
     for (const auto& cavity : _container)
         gauge_map[cavity->get_gauge()].push_back(cavity);
 
@@ -87,9 +87,9 @@ void connector::build_adjacency_list()
             }
 }
 
-std::vector<p_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)
+std::vector<sp_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)
 {
-    std::vector<p_component<cavity>> compatible_cavities;
+    std::vector<sp_component<cavity>> compatible_cavities;
     for (const auto& cavity : _container)
         if (cavity->get_gauge() == gauge)
             compatible_cavities.push_back(cavity);

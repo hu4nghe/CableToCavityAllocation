@@ -57,8 +57,8 @@ bool cable_allocator::add_cable(cable new_cable)
             auto old_center = center;
 
             double max_dist{};
-            std::pair<p_component<cavity>, 
-                      p_component<cavity>> furtherst_cavity;
+            std::pair<sp_component<cavity>, 
+                      sp_component<cavity>> furtherst_cavity;
             for(const auto& [_, i] : dfs_path)
             {
                 auto selected_cavity_i = _connector.get_Component(i);
@@ -80,7 +80,7 @@ bool cable_allocator::add_cable(cable new_cable)
             }
             if(furtherst_cavity.first == furtherst_cavity.second) radius = 0;
             radius = furtherst_cavity.first->distance(*furtherst_cavity.second) / 2.0;
-            center = furtherst_cavity.first->generate_center(*furtherst_cavity.second);
+            center = furtherst_cavity.first->midpoint(*furtherst_cavity.second);
             
             // Save valid complete regions
             if (dfs_path.size() == new_cable.size())
