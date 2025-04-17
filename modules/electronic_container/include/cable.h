@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a cable, who includes multiples wires
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.2
+ * @date 2025-04-17
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -22,36 +22,20 @@ private:
     int _ID;
 
 public:
-  
-    /**
-     * @brief Construct a new cable object
-     * 
-     * @param ID The ID of the cable    
-     * @param wires Vector of all wires of current cable.       
-     */
-    cable(int ID, std::vector<wire>&& wires);
 
-    bool add_wires(const std::vector<std::tuple<int, int>>& wires);
-     
-    /**
-     * @brief Construct a new cable object
-     * 
-     * @param ID The ID of the cable    
-     * @param wires Vector of all wires of current cable.       
-     */
-    bool operator<(const cable& other) const;
+    cable(int ID) : _ID(ID) {}
+    
+    // For STL set/map compatibility
+    auto operator<(const cable& other) const { return _ID < other._ID; }
+    
+    void add_wires(const std::vector<std::tuple<int, int>>& wires)
+    {
+        for (const auto& [wire_gauge, num_wires] : wires)
+            for(auto i = 0; i < num_wires; ++i)
+                _container.emplace_back(i, wire_gauge);
+    }
 
-    /**
-     * @brief Get the ID of the cable
-     * 
-     * @return The ID of the cable
-     */
+    /// Getters
     auto get_ID() const { return _ID; }
-
-    /**
-     * @brief Get the size of the cable
-     * 
-     * @return The size of the cable
-     */
-    auto size() const { return _container.size(); }
+    auto size()   const { return _container.size(); }
 };

@@ -13,16 +13,12 @@
  */
 #include "connector.h"
 
+#include <map>
+
 #include <print>
 #include <ranges>
-
-connector::connector(std::vector<cavity>&& cavities) : 
-    electronic_container_base(std::move(cavities))
-{
-    build_adjacency_list();
-}
-
-void connector::build_adjacency_list()
+connector::connector(const std::vector<std::tuple<int, int, double, double>> &cavity_data) :
+    electronic_container_base<cavity>(cavity_data)
 {
     // Group cavities by gauge
     std::map<AWG, std::vector<sp_component<cavity>>> gauge_map;
@@ -73,7 +69,7 @@ void connector::build_adjacency_list()
                     double min_distance = intra_group_min_distances[i->get_gauge()];
                     double epsilon = 0.1 * min_distance;
                     if (std::abs(current_distance - min_distance) < epsilon) 
-                        _adjacency_list[i->get_ID()].insert(j->get_ID());
+                        _adjacency_list[i->get_ID()].push_back(j->get_ID());
                 } 
                 else 
                 {
@@ -82,9 +78,10 @@ void connector::build_adjacency_list()
                     double epsilon = 0.1 * min_distance;
                     
                     if (std::abs(current_distance - min_distance) < epsilon) 
-                        _adjacency_list[i->get_ID()].insert(j->get_ID());
+                        _adjacency_list[i->get_ID()].push_back(j->get_ID());
                 }
             }
+
 }
 
 std::vector<sp_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)

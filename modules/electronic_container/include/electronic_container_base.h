@@ -3,9 +3,9 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * Electronic containers(cable and connector) base class
- * @version 1.1
- * @date 2025-04-10
+ * Electronic containers base class
+ * @version 1.2
+ * @date 2025-04-17
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -29,21 +29,34 @@ protected:
 public:
     friend class cable_allocator;
   
+    electronic_container_base() = default;
+
     /**
-     * @brief Construct a new electronic container base object
-     * 
-     * @param components A vector containing all components. 
+     * @brief 
+     * Construct a new electronic container base object
+     * Automatically determines the type of component based on the the parameter type.
+     * std::tuple<int, int> for wire objects
+     * std::tuple<int, int, double, double> for cavity objects
+     * @param components A vector containing all components's data. 
      */
-    electronic_container_base(std::vector<T>&& components)
+    template <typename tuple_type>
+    electronic_container_base(const std::vector<tuple_type>& components)
     {
-        for (auto& p : components)
-            _container.push_back(std::make_shared<T>(std::move(p)));
+        // type checking
+        if constexpr (std::is_same_v<T, wire>)
+            static_assert(std::is_same_v<TupleType, std::tuple<int, int>>,
+                "Expecte tuple<int, int> for wire objects");
+        if constexpr (std::is_same_v<T, cavity>)
+            static_assert(std::is_same_v<TupleType, std::tuple<int, int, double, double>>,
+                          "Expecte tuple<int, int, double, double> for cavity objects");
+                          
+        for (const auto& p : components)
+            _container.push_back(std::make_shared<T>(std::make_from_tuple<T>(p)));
     }
 
-    
-
     /**
-     * @brief Get a component by its ID.
+     * @brief 
+     * Get a component by its ID.
      * 
      * @param ID The ID of the component to retrieve.
      * @return A shared pointer to the component, or nullptr if not found.

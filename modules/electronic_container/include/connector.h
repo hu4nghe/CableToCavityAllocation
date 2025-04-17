@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a connector, who includes multiples cavities.
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.2
+ * @date 2025-04-17
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -15,24 +15,17 @@
 
 #include "cable.h"
 
-#include <set>
-#include <map>
+#include <unordered_map>
 
 class connector : public electronic_container_base<cavity>
 {
 private:
 
-    std::map<int, std::set<int>> _adjacency_list;
+    std::unordered_map<int, std::vector<int>> _adjacency_list;
 
 public:
-    /**
-     * @brief Construct a new connector object
-     * 
-     * @param cavities Vector of all cavities of current connector.
-     */
-    connector(std::vector<cavity>&& cavities);
-
-    void build_adjacency_list();
+    
+    connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data); 
 
     /**
      * @brief Get the compatible cavitiy list object.
