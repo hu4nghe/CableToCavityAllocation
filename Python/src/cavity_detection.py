@@ -70,7 +70,5 @@ def detect_pin(Img) :
         coords, value = pins[i]
         pins[i] = (coords, determine_gauge(value))
         
-    cpp_pins_input_data = [(len(pins) - i + 1, gauge, x, y) for i, ((x, y), gauge) in enumerate(pins, start=1)]
-
-    return Img, cpp_pins_input_data
+    return Img, pins
         
