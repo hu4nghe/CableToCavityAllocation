@@ -28,14 +28,7 @@ protected:
 
 public:
     friend class cable_allocator;
-
-    /**
-     * @brief Default constructor for electronic_container_base.
-     * 
-     * This constructor is deleted to prevent instantiation without components.
-     */
-    electronic_container_base() = delete;
-
+  
     /**
      * @brief Construct a new electronic container base object
      * 
@@ -46,6 +39,8 @@ public:
         for (auto& p : components)
             _container.push_back(std::make_shared<T>(std::move(p)));
     }
+
+    
 
     /**
      * @brief Get a component by its ID.

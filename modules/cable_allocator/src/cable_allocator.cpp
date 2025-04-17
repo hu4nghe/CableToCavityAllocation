@@ -25,12 +25,13 @@ cable_allocator::cable_allocator(std::vector<cavity>&& cavities) :
 
 bool cable_allocator::add_cable(cable new_cable)
 {
+    bool add_cable_succeed = false;
     _region_pool[new_cable];
 
     for(const auto& cavity_head : _connector._container)
     {
-        std::vector<std::pair<int, int>> path;
-        std::unordered_set<int> visited;
+        std::vector<std::pair<int, int>> dfs_path;
+        std::unordered_set<int> visited_cavity_indices;
         std::pair<double, double> center;
         double radius{};
         
@@ -39,8 +40,9 @@ bool cable_allocator::add_cable(cable new_cable)
             int cavity_ID,                 
             int wire_index) -> void
         {
-            if(!_connector.is_available(cavity_ID) ||
-               !wire_index >= new_cable.size()) return;
+            if(!_connector.is_available(cavity_ID) || // Current cavity is not available 
+               !wire_index >= new_cable.size())      // wire index is out of range
+                return;
 
             auto current_wire   = new_cable._container[wire_index];
             auto current_cavity = _connector.get_Component(cavity_ID);
@@ -48,8 +50,8 @@ bool cable_allocator::add_cable(cable new_cable)
             // Check if the cavity is compatible with the wire
             if (!current_cavity->is_compatible(*current_wire)) return;
             // Log the searching path
-            visited.insert(cavity_ID);
-            path.emplace_back(current_wire->get_ID(), cavity_ID);
+            visited_cavity_indices.insert(cavity_ID);
+            dfs_path.emplace_back(current_wire->get_ID(), cavity_ID);
 
             auto old_raius = radius;
             auto old_center = center;
@@ -57,10 +59,10 @@ bool cable_allocator::add_cable(cable new_cable)
             double max_dist{};
             std::pair<p_component<cavity>, 
                       p_component<cavity>> furtherst_cavity;
-            for(const auto& [_, i] : path)
+            for(const auto& [_, i] : dfs_path)
             {
                 auto selected_cavity_i = _connector.get_Component(i);
-                for(const auto& [_, j] : path)
+                for(const auto& [_, j] : dfs_path)
                 {
                     auto selected_cavity_j =_connector.get_Component(j);
                     double current_dist{};
@@ -81,27 +83,26 @@ bool cable_allocator::add_cable(cable new_cable)
             center = furtherst_cavity.first->generate_center(*furtherst_cavity.second);
             
             // Save valid complete regions
-            if (path.size() == new_cable.size())
-                _region_pool.at(new_cable).emplace_back(path, radius);
+            if (dfs_path.size() == new_cable.size())
+                _region_pool.at(new_cable).emplace_back(dfs_path, radius);
             else // Continue searching through available neighbors
                 for (const auto& neighbor : _connector.get_adjacency_list(cavity_ID))
-                    if (!visited.count(neighbor))
+                    if (!visited_cavity_indices.count(neighbor))
                         self(self, neighbor, wire_index + 1);
         
             // Backtrack
-            visited.erase(cavity_ID);
-            path.pop_back();
+            visited_cavity_indices.erase(cavity_ID);
+            dfs_path.pop_back();
             radius = old_raius;
             center = old_center;    
         };
         dfs(dfs, cavity_head->get_ID(), 0); 
     }
     
-    std::sort(_region_pool[new_cable].begin(), _region_pool[new_cable].end(), 
-    [](const cable_region& a, const cable_region& b) 
-    {
-        return a.get_score() < b.get_score();
-    });
+    std::sort(_region_pool[new_cable].begin(), 
+              _region_pool[new_cable].end(), 
+              [](const cable_region& a, const cable_region& b) 
+              { return a.get_score() < b.get_score(); });
 
 
     return finalize_allocation(new_cable);

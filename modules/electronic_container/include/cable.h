@@ -31,6 +31,8 @@ public:
      */
     cable(int ID, std::vector<wire>&& wires);
 
+    bool add_wires(const std::vector<std::tuple<int, int>>& wires);
+     
     /**
      * @brief Construct a new cable object
      * 
