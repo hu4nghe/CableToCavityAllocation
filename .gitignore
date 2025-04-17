@@ -5,6 +5,12 @@ lib/
 bin/
 Python/DSLyon/
 Python/PCHome/
-Python/__pycache__/
 .vscode/
+
+
 *.pyc
+__pycache__/
+*.pyo
+*.pyd
+Python/src/__pycache__/cable_manager_dialog.cpython-312.pyc
+Python/src/__pycache__/cavity_detection.cpython-312.pyc
