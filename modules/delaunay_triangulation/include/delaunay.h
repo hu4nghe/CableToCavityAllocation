@@ -12,4 +12,4 @@
 #include <tuple>
 #include <unordered_map>
 
-std::unordered_map<int, std::vector<int>> delaunay_triangulation(const std::vector<std::tuple<int, int, double, double>>& input);
+std::unordered_map<int, std::vector<int>> build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input);
