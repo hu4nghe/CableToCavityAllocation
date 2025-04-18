@@ -44,10 +44,10 @@ public:
     {
         // type checking
         if constexpr (std::is_same_v<T, wire>)
-            static_assert(std::is_same_v<TupleType, std::tuple<int, int>>,
+            static_assert(std::is_same_v<tuple_type, std::tuple<int, int>>,
                 "Expecte tuple<int, int> for wire objects");
         if constexpr (std::is_same_v<T, cavity>)
-            static_assert(std::is_same_v<TupleType, std::tuple<int, int, double, double>>,
+            static_assert(std::is_same_v<tuple_type, std::tuple<int, int, double, double>>,
                           "Expecte tuple<int, int, double, double> for cavity objects");
                           
         for (const auto& p : components)

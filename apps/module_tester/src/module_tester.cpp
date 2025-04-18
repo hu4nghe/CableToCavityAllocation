@@ -1,4 +1,4 @@
-#include "cable_allocator.h"
+#include "connector.h"
 
 #include <vector>
 #include <print>
@@ -7,7 +7,7 @@
 
 int main()
 {
-    std::vector<cavity> cavities;
+    std::vector<std::tuple<int, int, double, double>> cavities;
     cavities.emplace_back(49, 16, 710.0,151.0);
     cavities.emplace_back(48, 16, 644.0,151.0);
     cavities.emplace_back(47, 16, 578.0,151.0);
@@ -57,8 +57,8 @@ int main()
     cavities.emplace_back(3, 22, 183.0,71.0);
     cavities.emplace_back(2, 22, 151.0,71.0);
     cavities.emplace_back(1, 22, 118.0,71.0);
-
-    cable_allocator allocator(std::move(cavities));
-    allocator.print_adjacency_list();
+    
+    connector connector_1(cavities);
+    connector_1.print_adjacency_list();
     return  0;
 }

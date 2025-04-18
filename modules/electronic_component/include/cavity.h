@@ -21,6 +21,7 @@ class cavity : public electronic_component_base
 private:
 
     const std::pair<double,double> _position;
+    int                            _cable_ID;
 
 public:
     
@@ -38,11 +39,13 @@ public:
            double x, 
            double y) :
         electronic_component_base(ID, cavity_gauge),
-        _position(x, y){}
+        _position(x, y),
+        _cable_ID(0) {}
 
     cavity(cavity&& other) :    
         electronic_component_base(std::move(other)),
-        _position(other._position){}
+        _position(other._position),
+        _cable_ID(other._cable_ID) {}
     
     /**
      * @brief 
@@ -54,6 +57,21 @@ public:
      */
     bool has_the_same_gauge(const cavity& other) const { return _gauge == other._gauge; }
     
+    /**
+     * @brief
+     * Allocate the cavity to a cable.
+     * @param cable_ID The ID of the cable to allocate.
+     */
+    void allocate_to_cable(int cable_ID) { _cable_ID = cable_ID; }
+
+    /**
+     * @brief
+     * Check if the cavity is available.
+     * @return 0 if the cavity is available.
+     * @return cable_ID if the cavity is occupied by a cable.
+     */
+    int status() const { return _cable_ID; }
+
     /**
      * @brief 
      * Calculate distance between current cavity and another point.

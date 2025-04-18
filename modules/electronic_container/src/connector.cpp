@@ -12,14 +12,19 @@
  * 
  */
 #include "connector.h"
+#include "delaunay.h"
 
 #include <map>
+#include <set>
 
 #include <print>
 #include <ranges>
 connector::connector(const std::vector<std::tuple<int, int, double, double>> &cavity_data) :
     electronic_container_base<cavity>(cavity_data)
 {
+    _adjacency_list = delaunay_triangulation(cavity_data);
+
+    /*
     // Group cavities by gauge
     std::map<AWG, std::vector<sp_component<cavity>>> gauge_map;
     for (const auto& cavity : _container)
@@ -80,37 +85,10 @@ connector::connector(const std::vector<std::tuple<int, int, double, double>> &ca
                     if (std::abs(current_distance - min_distance) < epsilon) 
                         _adjacency_list[i->get_ID()].push_back(j->get_ID());
                 }
-            }
+            }*/
 
 }
 
-std::vector<sp_component<cavity>> connector::get_compatible_cavitiy_list(AWG gauge)
-{
-    std::vector<sp_component<cavity>> compatible_cavities;
-    for (const auto& cavity : _container)
-        if (cavity->get_gauge() == gauge)
-            compatible_cavities.push_back(cavity);
-    return compatible_cavities;
-}
-
-std::set<int> connector::get_adjacency_list(const int &ID) const
-{ 
-    return _adjacency_list.at(ID);
-} 
-
-std::set<int> connector::get_unavailable_index_pool(AWG gauge) const
-{
-    std::set<int> occupied_cavity_index_pool;
-    for (const auto& cavity : _container)
-        if (cavity->get_gauge() == gauge && !cavity->is_available())
-            occupied_cavity_index_pool.insert(cavity->get_ID());
-    return occupied_cavity_index_pool;
-}
-
-bool connector::is_available(const int &ID)
-{ 
-    return get_Component(ID)->is_available(); 
-}
 
 void connector::print_adjacency_list() const
 {
@@ -127,11 +105,10 @@ void connector::print_current_connector_status() const
 {
     for(const auto cavity : _container)
     {
-        auto status_str = 
-            cavity->is_available() ? 
-                std::format("available") :                                          
-                std::format("unavailable (connected to wire {})", cavity->get_wire()->get_ID());
-        std::print("Cavity {:<3}  {}\n", cavity->get_ID(), status_str);
+        auto status = cavity->status();
+        auto text   = status ? 
+            std::format("Available") : 
+            std::format("Occupied by Cable {}", status);
+        std::print("Cavity {}: {}\n", cavity->get_ID(), text);
     }
-    
 }

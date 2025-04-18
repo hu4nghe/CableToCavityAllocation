@@ -13,9 +13,9 @@
  */
 #pragma once
 
-#include "cable.h"
-
 #include <unordered_map>
+
+#include "electronic_container_base.h"
 
 class connector : public electronic_container_base<cavity>
 {
@@ -28,28 +28,13 @@ public:
     connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data); 
 
     /**
-     * @brief Get the compatible cavitiy list object.
-     * 
-     * @param gauge cable gauge
-     * @return a vector that contains shared_ptr point to the cavity.
-     */
-    std::vector<sp_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
-
-    /**
      * @brief Get the adjacency list object.
      * 
      * @param ID The ID of cavity that we want to know his adjacent nodes.
      * @return A set which contains all adjacent nodes.
      */
-    std::set<int> get_adjacency_list(const int& ID) const;
+    std::vector<int> get_adjacency_list(const int& ID) const { return _adjacency_list.at(ID); } 
 
-    /**
-     * @brief Get a set wich contains the unavailable cavities(occupied or reserved)'s index.
-     * 
-     * @param gauge cavity gauge type.
-     * @return set of index of unavailable cavities.
-     */
-    std::set<int> get_unavailable_index_pool(AWG gauge) const;
 
     /**
      * @brief Check if the cavity is available.
