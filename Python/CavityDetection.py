@@ -46,5 +46,5 @@ def DetecteCavity(Img) :
         cv2.putText(Img, str(len(Cavities) - i), text_pos, 
         cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 2)
     
-    return Img, Cavities
+    return Cavities
         
