@@ -28,7 +28,7 @@ auto super_triangle(const std::vector<point>& points)
     return std::tuple(a, b, c);
 }
 
-auto delaunay_triangulate(std::vector<point>& points) 
+auto delaunay_triangulate(const std::vector<point>& points) 
 {
     if(points.size() <= 3) 
         throw std::invalid_argument("At least 4 points are required for triangulation.");
@@ -86,22 +86,23 @@ auto build_adjacency_list_from_result(const std::vector<triangle>& triangles)
                     adjacency_set[i].insert(j);
     
     return adjacency_set 
-        |   std::views::transform(
-                [](auto&& pair) 
-                {
-                    auto&& [key, value] = pair;
-                    return std::pair{key, std::vector<int>(value.begin(), value.end())};
-                })
+        | std::views::transform([](auto&& pair) 
+                                {          
+                                    auto&& [key, value] = pair;
+                                    return std::pair{key, std::vector<int>(value.begin(), value.end())};
+                                })
         | std::ranges::to<std::unordered_map>();
 
 }
 
-std::unordered_map<int, std::vector<int>> build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input) 
+std::unordered_map<int, std::vector<int>> delaunay::build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input) 
 {
-    std::vector<point> points;
-    for (auto& [id, _, x, y] : input) 
-        points.push_back(point{id, x, y});
-    
-    std::vector<triangle> triangles = delaunay_triangulate(points);
-    return build_adjacency_list_from_result(triangles);
+    return build_adjacency_list_from_result(delaunay_triangulate(
+        input // convert input to a point vector
+        | std::views::transform([](auto&& t) 
+                                {
+                                    auto&& [id, _, x, y] = t;
+                                    return point{id, x, y};
+                                })
+        | std::ranges::to<std::vector<point>>()));
 }

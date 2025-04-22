@@ -14,23 +14,29 @@
 #include "connector.h"
 #include "delaunay.h"
 
-#include <map>
-#include <set>
-
 #include <print>
 #include <ranges>
 connector::connector(const std::vector<std::tuple<int, int, double, double>> &cavity_data) :
     electronic_container_base<cavity>(cavity_data),
-    _adjacency_list(build_adjacency_list(cavity_data)) {}
+    _adjacency_list(delaunay::build_adjacency_list(cavity_data)) {}
 
+double connector::distance(int i, int j) const
+{
+    auto iter_i = std::ranges::find(_container, i, &cavity::get_ID);
+    auto iter_j = std::ranges::find(_container, j, &cavity::get_ID);
+    if(iter_i != _container.end() && iter_j != _container.end())
+        return (*iter_i)->distance(**iter_j);
+    else
+        throw std::invalid_argument("Invalid cavity ID(s) provided.");
+}
 
 void connector::print_adjacency_list() const
 {
-    for (const auto& [cavity_id, neighbors] : _adjacency_list)
+    for (const auto& [cavity_ID, neighbors] : _adjacency_list)
     {
-        std::print("Cavity {} is adjacent to: ", cavity_id);
-        for (const auto& neighbor_id : neighbors)
-            std::print("{} ", neighbor_id);
+        std::print("Cavity {} is adjacent to: ", cavity_ID);
+        for (const auto& neighbor_ID : neighbors)
+            std::print("{} ", neighbor_ID);
         std::print("\n");
     }
 }
@@ -40,9 +46,9 @@ void connector::print_current_connector_status() const
     for(const auto cavity : _container)
     {
         auto status = cavity->status();
-        auto text   = status ? 
-            std::format("Available") : 
-            std::format("Occupied by Cable {}", status);
+        auto text = status ? 
+                                    std::format("Available") : 
+                                    std::format("Occupied by Cable {}", status);
         std::print("Cavity {}: {}\n", cavity->get_ID(), text);
     }
 }

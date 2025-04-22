@@ -27,41 +27,29 @@ private:
     std::map<cable, std::vector<cable_region>> _region_pool;
     connector                                  _connector;
 
-public:
-
+public : 
     /**
-     * @brief Deleted default constructor to prevent uninitialized allocators.
-     */
-    cable_allocator() = delete;
-
-    /**
-     * @brief Constructs a cable_allocator with a list of cavities.
+     * @brief Construct a new cable allocator object.
      * 
-     * @param cavities A vector of cavities to initialize the allocator.
+     * @param connector The connector object containing cavities and their connections.
      */
-    cable_allocator(std::vector<cavity>&& cavities);
+    cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data);
 
-    /**
-     * @brief Handles console-based interactions for the cable allocator.
-     */
-    void console_interaction();
-
-private:
-
-    /**
-     * @brief Establishes connections based on the provided mapping.
-     * 
-     * @param connections A map where keys and values represent connection points.
-     */
-    void connect(std::map<int, int> connections);
-
-    /**
+     /**
      * @brief Adds a new cable to the region pool.
      * 
      * @param new_cable The cable to be added.
      * @return true if the cable was successfully added, false otherwise.
      */
     bool add_cable(cable new_cable);
+
+    /**
+     * @brief Establishes connections based on the provided mapping.
+     * 
+     * @param connections A map where keys and values represent connection points.
+     */
+    void connect(int cable_ID, int allocation);
+   
 
     /**
      * @brief  Finalizes the allocation of a cable.

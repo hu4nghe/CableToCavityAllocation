@@ -13,7 +13,7 @@
 #pragma once
 
 #include "electronic_component.h"
-#include "cable.h"
+#include "electronic_container.h"
 
 #include <map>
 #include <set>
@@ -22,8 +22,9 @@ class cable_region
 {
 private:
 
-    std::map<int, int> _wire_layout;
-    double             _score;
+    std::map<int, int>       _wire_layout;
+    double                   _score;
+    std::weak_ptr<connector> _connector;
 
 public:
 
@@ -33,35 +34,8 @@ public:
      * @param cable_ID ID of the cable.
      * @param connections A vector of pairs representing wire-cavity connections.
      */
-    cable_region(const std::vector<std::pair<int,int>>& connections, double& score);
-    
-    /**
-     * @brief Compare two cable regions based on their cable ID and wire layout.
-     * 
-     * @param other The other cable region to compare with.
-     * @return true if this cable region is less than the other, false otherwise.
-     */
-    bool operator<(const cable_region& other) const;
-    
-    /**
-     * @brief Check if the cable region has any unavailable cavities.
-     * 
-     * @param unavailable_pool A set of unavailable cavity indices.
-     * @return true if there are unavailable cavities, false otherwise.
-     */
-    bool has_unavailable_cavity(const std::set<int>& unavailable_pool) const; 
-
-    /**
-     * @brief Get the wire layout.
-     * 
-     * @return std::map<int, int> wire layout.
-     */
-    std::map<int, int> get_layout() const; 
-
-    auto get_score() const -> double
-    {
-        return _score;
-    }
-
-   
+    cable_region(const std::vector<std::pair<int,int>>& connections);
+    bool operator<(const cable_region& other) const { return _wire_layout < other._wire_layout; }
+    auto get_layout() const{ return _wire_layout; }
+    auto get_score() const { return _score; }
 };

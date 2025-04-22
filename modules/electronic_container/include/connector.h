@@ -35,15 +35,7 @@ public:
      */
     std::vector<int> get_adjacency_list(const int& ID) const { return _adjacency_list.at(ID); } 
 
-
-    /**
-     * @brief Check if the cavity is available.
-     * 
-     * @param ID The ID of cavity that we want to know if it is available.
-     * @return true if the cavity is available.
-     * @return false if the cavity is not available.
-     */
-    bool is_available(const int& ID);
+    double distance(int i, int j) const;
 
     //debug functions
     /**
