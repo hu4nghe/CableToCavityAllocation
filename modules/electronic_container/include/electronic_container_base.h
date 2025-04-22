@@ -61,7 +61,7 @@ public:
      * @param ID The ID of the component to retrieve.
      * @return A shared pointer to the component, or nullptr if not found.
      */
-    sp_component<T> get_Component(const int& ID) const
+    sp_component<T> get_component(const int& ID) const
     {
         for (const auto& component : _container)
             if (component->get_ID() == ID)

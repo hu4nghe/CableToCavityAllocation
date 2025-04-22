@@ -20,9 +20,3 @@ double cavity::distance(const std::pair<double, double>& point) const
    return sqrt(pow(point.first  - _position.first ,2) + 
                pow(point.second - _position.second,2));
 }
-
-std::pair<double, double> cavity::midpoint(const cavity &other) const
-{
-    return std::make_pair<double, double>((_position.first  + other._position.first ) / 2.0,
-                                          (_position.second + other._position.second) / 2.0);
-}

@@ -18,7 +18,7 @@
 #include <ranges>
 connector::connector(const std::vector<std::tuple<int, int, double, double>> &cavity_data) :
     electronic_container_base<cavity>(cavity_data),
-    _adjacency_list(delaunay::build_adjacency_list(cavity_data)) {}
+    _adjacency_list(geo_tools::build_adjacency_list(cavity_data)) {}
 
 double connector::distance(int i, int j) const
 {

@@ -12,7 +12,7 @@
 #include <tuple>
 #include <unordered_map>
 
-namespace delaunay
+namespace geo_tools
 {
     std::unordered_map<int, std::vector<int>> build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input);
 }

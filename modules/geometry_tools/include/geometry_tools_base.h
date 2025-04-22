@@ -1,11 +1,10 @@
 /**
- * @file Graph.h
+ * @file geometry_tool_base.h
  * @author HUANG He (he.huang@utt.fr)
  * @brief
- * This file is created to realize the point and triangle object some fonctions with them.
- * These objects are used to represent points and triangles in two-dimensional space.
- * @version 1.0
- * @date 2022-12-20
+ * This file defines serveral basical structure for geometry calculations
+ * @version 1.1
+ * @date 2025-04-22
  * 
  */
 
@@ -65,6 +64,7 @@ public:
     circle() = default; 
     circle(point center, double radius) : center(center), radius(radius) {}
     bool contains(const point& p) const{ return center.distance(p) <= radius; }
+    
 };
 
 struct triangle

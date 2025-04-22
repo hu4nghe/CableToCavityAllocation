@@ -33,14 +33,13 @@ bool cable::generate_allocations()
             {
                 if (wire_index >= _container.size()) return; //wire index is out of range
                 auto current_wire     = _container[wire_index];
-                auto current_cavity = sp_connector->get_Component(cavity_ID);
+                auto current_cavity = sp_connector->get_component(cavity_ID);
                 if (current_cavity->status()) return; // Cavity is already occupied
                 if (!current_cavity->is_compatible(*current_wire)) return; // cavity not compatible
     
                 // Log the searching path
                 visited_cavity_indices.insert(cavity_ID);
                 dfs_path.emplace_back(current_wire->get_ID(), cavity_ID);
-    
                 
                 if (dfs_path.size() == _container.size()) // Save valid complete regions
                     _allocations.emplace_back(dfs_path,sp_connector);
@@ -63,7 +62,8 @@ bool cable::generate_allocations()
 
 void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
 {
+    auto wire_index = 0;
     for (const auto& [wire_gauge, num_wires] : wires)
         for (auto i = 0; i < num_wires; ++i)
-            _container.emplace_back(std::make_shared<wire>(i, wire_gauge));
+            _container.emplace_back(std::make_shared<wire>(wire_index++, wire_gauge));
 }

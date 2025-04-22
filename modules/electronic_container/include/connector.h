@@ -39,6 +39,7 @@ public:
 
     double distance(int i, int j) const;
 
+
     //debug functions
     /**
      * @brief print auto-generated adjacency list.

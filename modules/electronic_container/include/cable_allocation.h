@@ -14,14 +14,14 @@
 
 #include "electronic_component_base.h"
 #include "connector.h"
+#include <map>
 
 class cable_allocation
 {
 private:
 
-    std::unordered_map<int, int> _wire_layout;
-    double                       _score;
-    std::weak_ptr<connector>     _wp_connector;
+    std::map<int, int> _wire_layout;
+    double             _score;
 
 public:
 

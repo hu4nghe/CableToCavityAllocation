@@ -83,12 +83,5 @@ public:
     // shortcut for cavity object.
     double distance(const cavity& other) const { return distance(other._position); }
      
-    /**
-     * @brief 
-     * Calculate the midpoint between two cavities.
-     * 
-     * @param other Another cavity object.
-     * @return std::pair<double,double> Midpoint between two cavities.
-     */
-    std::pair<double,double> midpoint(const cavity& other) const;
+    auto get_pos() const { return _position; }
 };

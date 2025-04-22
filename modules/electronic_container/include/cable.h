@@ -22,7 +22,7 @@ class cable : public electronic_container_base<wire>
 private: 
 
     std::vector<cable_allocation> _allocations;
-    std::weak_ptr<connector>  _wp_connector;
+    std::weak_ptr<connector>      _wp_connector;
 
 public:
 

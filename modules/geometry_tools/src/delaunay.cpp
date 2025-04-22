@@ -7,7 +7,7 @@
 #include <limits>
 #include <ranges>
 
-#include "graphic_tools.h"
+#include "geometry_tools_base.h"
 #include "delaunay.h"
 
 auto super_triangle(const std::vector<point>& points) 
@@ -95,7 +95,7 @@ auto build_adjacency_list_from_result(const std::vector<triangle>& triangles)
 
 }
 
-std::unordered_map<int, std::vector<int>> delaunay::build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input) 
+std::unordered_map<int, std::vector<int>> geo_tools::build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input) 
 {
     return build_adjacency_list_from_result(delaunay_triangulate(
         input // convert input to a point vector
