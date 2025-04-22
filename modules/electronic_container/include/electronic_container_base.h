@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Electronic containers base class
- * @version 1.2
- * @date 2025-04-17
+ * @version 1.3
+ * @date 2025-04-22
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -45,7 +45,7 @@ public:
         // type checking
         if constexpr (std::is_same_v<T, wire>)
             static_assert(std::is_same_v<tuple_type, std::tuple<int, int>>,
-                "Expecte tuple<int, int> for wire objects");
+                          "Expecte tuple<int, int> for wire objects");
         if constexpr (std::is_same_v<T, cavity>)
             static_assert(std::is_same_v<tuple_type, std::tuple<int, int, double, double>>,
                           "Expecte tuple<int, int, double, double> for cavity objects");

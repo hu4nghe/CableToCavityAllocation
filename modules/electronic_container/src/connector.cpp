@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Implementation of the connector class.
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.3
+ * @date 2025-04-22
  * 
  * @copyright 
  * Dassault Systemes 2025

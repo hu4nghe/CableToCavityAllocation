@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a connector, who includes multiples cavities.
- * @version 1.2
- * @date 2025-04-17
+ * @version 1.3
+ * @date 2025-04-22
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -20,6 +20,8 @@
 class connector : public electronic_container_base<cavity>
 {
 private:
+
+    friend class cable;
 
     std::unordered_map<int, std::vector<int>> _adjacency_list;
 

@@ -4,17 +4,17 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Allocator who manages cable connections.
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.3
+ * @date 2025-04-22
  * 
  * @copyright 
  * Dassault Systemes 2025
  */
 #pragma once
 
-#include "cable_region.h"
 #include "electronic_container.h"
 #include "electronic_component.h"
+#include <map>
 
 /**
  * @class cable_allocator
@@ -24,9 +24,9 @@ class cable_allocator
 {
 private:
 
-    std::map<cable, std::vector<cable_region>> _region_pool;
-    connector                                  _connector;
-
+    std::vector<cable>         _cable_list;
+    std::shared_ptr<connector> _sp_connector;
+    
 public : 
     /**
      * @brief Construct a new cable allocator object.
@@ -38,51 +38,12 @@ public :
      /**
      * @brief Adds a new cable to the region pool.
      * 
-     * @param new_cable The cable to be added.
+     * @param cable_ID The ID of the cable to be added.
+     * @param wires A vector of tuples representing the wires and their gauges.
      * @return true if the cable was successfully added, false otherwise.
      */
-    bool add_cable(cable new_cable);
+    bool add_cable(const std::vector<std::tuple<int, int>>& wires);
+    
+    auto get_allocations(int cable_ID) const -> std::vector<cable_allocation>;
 
-    /**
-     * @brief Establishes connections based on the provided mapping.
-     * 
-     * @param connections A map where keys and values represent connection points.
-     */
-    void connect(int cable_ID, int allocation);
-   
-
-    /**
-     * @brief  Finalizes the allocation of a cable.
-     * 
-     * @param new_cable The cable to be allocated.
-     * @return true if the allocation was successful, false otherwise.
-     * @return false if no valid allocation was found.
-     */
-    bool finalize_allocation(const cable &new_cable);
-
-    /**
-     * @brief Handles user input within a specified range.
-     * 
-     * @param lower The lower bound of the input range.
-     * @param upper The upper bound of the input range.
-     * @param msg The message to display to the user.
-     * @return The validated user input.
-     */
-    int input(int lower, int upper, const std::string& msg) const;
-
-    /**
-     * @brief Gets the size of the region pool.
-     * 
-     * @return The number of entries in the region pool.
-     */
-    size_t size() const;
-
-public://debug
-
-    /**
-     * @brief Prints the adjacency list for debugging purposes.
-     * 
-     * This method is intended for debug use only and prints the calculation result.
-     */
-    void print_adjacency_list() const;
 };

@@ -3,10 +3,10 @@ file(GLOB SOURCES "src/*.cpp")
 file(GLOB HEADERS "include/*.h")
 
 # Create the static library
-add_library(delaunay_triangulation STATIC ${SOURCES} ${HEADERS})
+add_library(geometry_tools STATIC ${SOURCES} ${HEADERS})
 
 # Include directories
-target_include_directories(delaunay_triangulation
+target_include_directories(geometry_tools
     PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/include
     PRIVATE

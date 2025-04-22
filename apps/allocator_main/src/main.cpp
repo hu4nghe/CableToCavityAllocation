@@ -1,13 +1,11 @@
 #include "cable_allocator.h"
 
-#include <vector>
 #include <print>
-#include <utility>
-#include <iostream>
+#include <ranges>
 
 int main()
 {
-    std::vector<cavity> cavities;
+    std::vector<std::tuple<int, int, double, double>> cavities;
     cavities.emplace_back(49, 16, 710.0,151.0);
     cavities.emplace_back(48, 16, 644.0,151.0);
     cavities.emplace_back(47, 16, 578.0,151.0);
@@ -58,7 +56,16 @@ int main()
     cavities.emplace_back(2, 22, 151.0,71.0);
     cavities.emplace_back(1, 22, 118.0,71.0);
 
-    cable_allocator allocator(std::move(cavities));
-    allocator.console_interaction();
+
+    cable_allocator allocator(cavities);
+    allocator.add_cable({{22, 2}});
+    auto allocations = allocator.get_allocations(0);
+    for (const auto& [i, allocation] : std::views::enumerate(allocations))
+    {
+        std::print("Allocation {}, Score :{}\n", i, allocation.get_score());
+        for (const auto& [wire_ID, cavity_ID] : allocation.get_layout())
+            std::print("wire {} -> cavity {}\n", wire_ID, cavity_ID);
+    }
+
     return  0;
 }

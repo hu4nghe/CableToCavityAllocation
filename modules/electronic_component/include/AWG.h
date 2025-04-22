@@ -5,7 +5,7 @@
  * @brief
  * American Wire Gauge (AWG) class
  * Mimics the traditional enum class while adding checks for value
- * @version 1.0
+ * @version 1.2
  * @date 2025-04-17     
  * @copyright
  * Dassault Systemes 2025   

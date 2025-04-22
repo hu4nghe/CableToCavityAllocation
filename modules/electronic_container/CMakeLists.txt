@@ -13,5 +13,5 @@ target_include_directories(electronic_container
 target_link_libraries(electronic_container
     PUBLIC
         electronic_component
-        delaunay_triangulation
+        geometry_tools
 )

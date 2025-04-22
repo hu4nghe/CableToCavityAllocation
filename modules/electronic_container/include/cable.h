@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a cable, who includes multiples wires
- * @version 1.2
- * @date 2025-04-17
+ * @version 1.3
+ * @date 2025-04-22
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -14,28 +14,25 @@
 #pragma once
 
 #include "electronic_container_base.h"
+#include "connector.h"
+#include "cable_allocation.h"
 
 class cable : public electronic_container_base<wire>
 {
 private: 
 
-    int _ID;
+    std::vector<cable_allocation> _allocations;
+    std::weak_ptr<connector>  _wp_connector;
 
 public:
 
-    cable(int ID) : _ID(ID) {}
+    cable(std::shared_ptr<connector> _sp_connector) : 
+        _wp_connector(_sp_connector) {}
     
-    // For STL set/map compatibility
-    auto operator<(const cable& other) const { return _ID < other._ID; }
-    
-    void add_wires(const std::vector<std::tuple<int, int>>& wires)
-    {
-        for (const auto& [wire_gauge, num_wires] : wires)
-            for(auto i = 0; i < num_wires; ++i)
-                _container.emplace_back(i, wire_gauge);
-    }
+    bool generate_allocations();
+    void add_wires(const std::vector<std::tuple<int, int>>& wires);
 
     /// Getters
-    auto get_ID() const { return _ID; }
     auto size()   const { return _container.size(); }
+    auto get_allocations() const { return _allocations; }
 };
