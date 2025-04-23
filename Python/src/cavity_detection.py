@@ -40,11 +40,11 @@ def detect_pin(Img) :
         
         pins.append((centre, r))
     #draw   
-    for i, (Pos, r) in enumerate(pins, 0):
+    pins.sort(key=lambda x: (x[0][1], x[0][0]))  
+    for i, (Pos, r) in enumerate(pins, 1): 
         cv2.circle(Img, Pos, r, (0,255,0), 2)
-        text_pos = (Pos[0], Pos[1])
-        cv2.putText(Img, str(len(pins) - i), text_pos, 
-        cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 2)
+        text_pos = (Pos[0] - 10, Pos[1] - 10)
+        cv2.putText(Img, str(i), text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255,0,0), 2)
     
     def determine_gauge(r):
             match r:
@@ -68,6 +68,6 @@ def detect_pin(Img) :
     for i in range(len(pins)):
         coords, value = pins[i]
         pins[i] = (coords, determine_gauge(value))
-        
+    
     return Img, pins
         
