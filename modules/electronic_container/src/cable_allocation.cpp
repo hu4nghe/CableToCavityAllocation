@@ -18,7 +18,8 @@
 
 cable_allocation::cable_allocation(const std::vector<std::pair<int, int>>& connections,
                                          std::shared_ptr<connector>        sp_connector) :
-    _wire_layout(std::map<int, int>(connections.begin(),connections.end())),
+    _reserved_cavities( connections | std::views::transform([](const auto& p) { return p.second; })
+                                    | std::ranges::to<std::set>()),
     _score (0.0)
 {
     std::vector<std::pair<double,double>> coords;

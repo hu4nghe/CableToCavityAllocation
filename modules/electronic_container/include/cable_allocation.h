@@ -14,13 +14,13 @@
 
 #include "electronic_component_base.h"
 #include "connector.h"
-#include <map>
+#include <set>
 
 class cable_allocation
 {
 private:
 
-    std::map<int, int> _wire_layout;
+    std::set<int>      _reserved_cavities;
     double             _score;
 
 public:
@@ -28,6 +28,6 @@ public:
     cable_allocation(const std::vector<std::pair<int,int>>& connections, 
                            std::shared_ptr<connector>       connector);
 
-    auto get_layout() const{ return _wire_layout; }
+    auto get_layout() const{ return _reserved_cavities; }
     auto get_score() const { return _score; }
 };

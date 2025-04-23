@@ -36,7 +36,7 @@ auto cable_allocator::get_allocations(int cable_ID) const -> std::set<std::tuple
     auto cable = _cable_list.at(cable_ID);
     cable.generate_allocations();
     for(const auto& cable_allocation : cable.get_allocations())
-        result.emplace(cable_allocation.get_score(), cable_allocation.get_layout() | std::views::values | std::ranges::to<std::set>());
+        result.emplace(cable_allocation.get_score(), cable_allocation.get_layout());
         
     return result;
 }

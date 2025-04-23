@@ -38,5 +38,5 @@ public:
     auto size() const { return _container.size(); }
     auto get_allocations() const { return _allocations; }
     auto is_allocated() const { return _is_allocated; }
-    void confirme_allocation(int allocation_ID, int current_cable_ID);
+    void confirme_allocation(int current_cable_ID, int allocation_ID);
 };

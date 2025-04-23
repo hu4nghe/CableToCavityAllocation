@@ -2,6 +2,7 @@
 
 #include <print>
 #include <ranges>
+#include <iostream>
 
 int main()
 {
@@ -67,7 +68,9 @@ int main()
         for (const auto& cavity_ID : allocation)
             std::print("cavity {}\n",  cavity_ID);
     }
-    allocator.confirme_allocation(0,1);
+    int idx = 0;
+    std::cin>>idx;
+    allocator.confirme_allocation(0,idx);
     allocator.print_connector_status();
     return  0;
 }
