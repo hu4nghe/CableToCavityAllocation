@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
                 img = cv2.imread(file_name)
                 self.original_image, self.pins = cavity_detection.detect_pin(img)
         
-                self.cavity_id_to_index = {len(self.pins) - i + 1: i - 1 for i in range(1, len(self.pins) + 1)}
+                self.cavity_id_to_index = {i + 1: i - 1 for i in range(1, len(self.pins) + 1)}
                 cpp_pins_input_data = [(len(self.pins) - i + 1, gauge, x, y) for i, ((x, y), gauge) in enumerate(self.pins, start=1)]
 
                 # Convert to Qt image format

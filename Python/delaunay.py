@@ -10,8 +10,8 @@ detectedImg,cavities = detect_pin(img)
 centers = [pt for pt, _ in cavities]
 cv2.imshow("DetectedImg", detectedImg)
 cv2.waitKey(0)
-for idx, ((x, y), value) in enumerate(cavities, 0):
-    print(f"cavities.emplace_back({len(cavities) - idx}, {value}, {x}, {y});")
+for idx, ((x, y), value) in enumerate(cavities, 1):
+    print(f"cavities.emplace_back({idx}, {value}, {x}, {y});")
 
 points = np.array(centers)
 tri = Delaunay(points)
