@@ -47,8 +47,8 @@ void connector::print_current_connector_status() const
     {
         auto status = cavity->status();
         auto text = status ? 
-                                    std::format("Available") : 
-                                    std::format("Occupied by Cable {:0>3}", status);
-        std::print("Cavity {}: {}\n", cavity->get_ID(), text);
+                                    std::format("Occupied by Cable {:<2}", status) :
+                                    std::format("Available");
+        std::print("Cavity {:<2}: {}\n", cavity->get_ID(), text);
     }
 }

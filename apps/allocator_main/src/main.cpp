@@ -67,6 +67,7 @@ int main()
         for (const auto& cavity_ID : allocation)
             std::print("cavity {}\n",  cavity_ID);
     }
-
+    allocator.confirme_allocation(0,1);
+    allocator.print_connector_status();
     return  0;
 }
