@@ -14,7 +14,6 @@
 
 #include "electronic_container.h"
 #include "electronic_component.h"
-#include <map>
 
 class cable_allocator
 {

@@ -20,13 +20,12 @@ bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires)
 {
     auto new_cable = cable(_sp_connector);
     new_cable.add_wires(wires);
-    _cable_list.push_back(new_cable);
     if (new_cable.generate_allocations())
-        return true;
+        _cable_list.push_back(new_cable);
     else
-        _cable_list.pop_back();
-    
-    return false;
+        return false;
+
+    return true;
 }
 
 auto cable_allocator::get_allocations(int cable_ID) const -> std::vector<cable_allocation>

@@ -3,13 +3,16 @@
 import cv2
 import numpy as np
 from scipy.spatial import Delaunay
-from CavityDetection import DetecteCavity
+from src.cavity_detection import detect_pin
 
-img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/12T16+25T20.png') 
+img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/DetectionResults/Cavity_detected_78T22.png') 
 original = img.copy()
 
-cavities = DetecteCavity(img)
+_,cavities = detect_pin(img)
 centers = [pt for pt, _ in cavities]
+
+for idx, ((x, y), value) in enumerate(cavities, 0):
+    print(f"cavities.emplace_back({len(cavities) - idx}, {value}, {x}, {y});")
 
 points = np.array(centers)
 tri = Delaunay(points)

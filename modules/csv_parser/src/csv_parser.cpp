@@ -42,18 +42,14 @@ std::vector<cable> csv_parser::parse_cable(const std::string& filename)
     std::string line;
     while (std::getline(file, line)) 
     {
-
-        // 移除行尾的换行符和空格
         line.erase(std::remove(line.begin(), line.end(), '\r'), line.end());
         line.erase(std::remove(line.begin(), line.end(), '\n'), line.end());
         line.erase(std::remove(line.begin(), line.end(), ' '), line.end());
 
         std::istringstream iss(line);
         std::string token;
-        if (!std::getline(iss, token, ',')) {
-            continue; // 跳过格式错误的行
-        }
-
+        if (!std::getline(iss, token, ',')) 
+            continue;
         int cable_id = std::stoi(token);
 
         while (std::getline(iss, token, ',')) 

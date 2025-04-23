@@ -6,9 +6,9 @@ bin/
 Python/DSLyon/
 Python/PCHome/
 .vscode/
-
+__pycache__/
 
 *.pyc
-__pycache__/
+
 *.pyo
 *.pyd

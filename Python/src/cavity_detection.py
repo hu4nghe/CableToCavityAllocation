@@ -29,10 +29,9 @@ def detect_pin(Img) :
        Circularity = 4 * np.pi * area / (perimetre * perimetre)
     
 
-       if (r > 10 and               
+       if (r > 5 and               
            r < 60 and              
-           Circularity > 0.7 and        
-           area > 30): 
+           Circularity > 0.5 ): 
         
         count += 1;    
            
