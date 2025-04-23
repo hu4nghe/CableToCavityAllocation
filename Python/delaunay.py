@@ -3,7 +3,7 @@ import numpy as np
 from scipy.spatial import Delaunay
 from src.cavity_detection import detect_pin
 
-img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/78T22.png') 
+img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/12T16+25T20.png') 
 original = img.copy()
 
 detectedImg,cavities = detect_pin(img)
