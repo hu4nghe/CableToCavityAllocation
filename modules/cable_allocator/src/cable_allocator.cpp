@@ -33,8 +33,7 @@ auto cable_allocator::get_cable_allocations(int cable_ID) const -> std::set<std:
 {
     std::set<std::tuple<double, std::set<int>>> result;
 
-    auto cable = _cable_list.at(cable_ID);
-    cable.generate_allocations();
+    auto cable = _cable_list.at(cable_ID - 1);
     for(const auto& cable_allocation : cable.get_allocations())
         result.emplace(cable_allocation.get_score(), cable_allocation.get_layout());
         
@@ -43,5 +42,5 @@ auto cable_allocator::get_cable_allocations(int cable_ID) const -> std::set<std:
 
 void cable_allocator::confirme_allocation(int cable_ID, int allocation_idx)
 { 
-    _cable_list.at(cable_ID).confirme_allocation(cable_ID, allocation_idx); 
+    _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
 }

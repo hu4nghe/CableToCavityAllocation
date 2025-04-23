@@ -21,9 +21,19 @@ bool cable::generate_allocations()
     if (_container.empty()) return false; // No wires to allocate
     else if (auto sp_connector = _wp_connector.lock())
     {
+        auto generate_region_key = [&](std::vector<int> path)
+        {
+            std::sort(path.begin(), path.end());
+            std::string key;
+            for(const auto& ID : path)
+                key += std::to_string(ID);
+            return key;
+        };
+
+        std::set<std::string> key_pool;
         for (const auto& cavity_head : sp_connector->_container)
         {
-            std::vector<std::pair<int, int>> dfs_path;
+            std::vector<int> dfs_path;
             std::set<int> visited_cavity_indices;
             
             auto dfs =  
@@ -34,15 +44,22 @@ bool cable::generate_allocations()
                 if (wire_index >= _container.size()) return; //wire index is out of range
                 auto current_wire     = _container[wire_index];
                 auto current_cavity = sp_connector->get_component(cavity_ID);
-                if (current_cavity->status()) return; // Cavity is already occupied
+                if (current_cavity->status() == -1) return; // Cavity is already occupied
                 if (!current_cavity->is_compatible(*current_wire)) return; // cavity not compatible
     
                 // Log the searching path
                 visited_cavity_indices.insert(cavity_ID);
-                dfs_path.emplace_back(current_wire->get_ID(), cavity_ID);
+                dfs_path.emplace_back(cavity_ID);
                 
                 if (dfs_path.size() == _container.size()) // Save valid complete regions
-                    _allocations.emplace_back(visited_cavity_indices, sp_connector);
+                {
+                    auto key = generate_region_key(dfs_path);
+                    if(!key_pool.count(key))
+                    {
+                        key_pool.insert(key);
+                        _allocations.emplace_back(visited_cavity_indices, sp_connector);
+                    }
+                } 
                 else // Continue searching through available neighbors
                     for (const auto& neighbor : sp_connector->get_adjacency_list(cavity_ID))
                         if (!visited_cavity_indices.count(neighbor))
