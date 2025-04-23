@@ -1,4 +1,4 @@
-from CavityDetection import DetecteCavity
+from CavityDetection import detect_pin
 from pathlib import Path
 import cv2
 import os
@@ -11,7 +11,7 @@ def CallDetecteFunction(iDir, oDir):
             ImgPath = os.path.join(iDir, File)
             Img = cv2.imread(ImgPath)
             
-            ResImg, Cavities = DetecteCavity(Img)
+            ResImg, Cavities = detect_pin(Img)
             
             # Save results
             output_path = os.path.join(oDir, f"Cavity_detected_{File}")
@@ -19,8 +19,9 @@ def CallDetecteFunction(iDir, oDir):
             
             # Print summary
             print(f"{File}: Detected {len(Cavities)} Cavities")
-            for i, (Pos, r) in enumerate(Cavities, 0):
-                print(f"cavities.emplace_back({len(Cavities) - i}, {r}, {Pos[0]}.0,{Pos[1]}.0);")
+            for i, (Pos, r) in enumerate(Cavities, 1):
+                print(f"cavities.emplace_back({i}, {r}, {Pos[0]}.0,{Pos[1]}.0);")
+               
 
 if __name__ == "__main__":
     root_path = Path(__file__).resolve().parent.parent

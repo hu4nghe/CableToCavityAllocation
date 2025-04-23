@@ -34,9 +34,9 @@ void connector::print_adjacency_list() const
 {
     for (const auto& [cavity_ID, neighbors] : _adjacency_list)
     {
-        std::print("Cavity {} is adjacent to: ", cavity_ID);
+        std::print("Cavity {:0>2} is adjacent to: ", cavity_ID);
         for (const auto& neighbor_ID : neighbors)
-            std::print("{} ", neighbor_ID);
+            std::print("{:0>2} ", neighbor_ID);
         std::print("\n");
     }
 }
@@ -48,7 +48,7 @@ void connector::print_current_connector_status() const
         auto status = cavity->status();
         auto text = status ? 
                                     std::format("Available") : 
-                                    std::format("Occupied by Cable {}", status);
+                                    std::format("Occupied by Cable {:0>3}", status);
         std::print("Cavity {}: {}\n", cavity->get_ID(), text);
     }
 }

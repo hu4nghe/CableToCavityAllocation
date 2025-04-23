@@ -3,12 +3,12 @@
 import cv2
 import numpy as np
 from scipy.spatial import Delaunay
-from CavityDetection import DetecteCavity
+from CavityDetection import detect_pin
 
 img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/12T16+25T20.png') 
 original = img.copy()
 
-cavities = DetecteCavity(img)
+cavities = detect_pin(img)
 centers = [pt for pt, _ in cavities]
 
 points = np.array(centers)
