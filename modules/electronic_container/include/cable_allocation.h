@@ -25,8 +25,8 @@ private:
 
 public:
 
-    cable_allocation(const std::vector<std::pair<int,int>>& connections, 
-                           std::shared_ptr<connector>       connector);
+    cable_allocation(const std::set<int>&             connections, 
+                           std::shared_ptr<connector> connector);
 
     auto get_layout() const{ return _reserved_cavities; }
     auto get_score() const { return _score; }

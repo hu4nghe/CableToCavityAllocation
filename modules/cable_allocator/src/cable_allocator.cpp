@@ -29,7 +29,7 @@ bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires)
     return true;
 }
 
-auto cable_allocator::get_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>
+auto cable_allocator::get_cable_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>
 {
     std::set<std::tuple<double, std::set<int>>> result;
 

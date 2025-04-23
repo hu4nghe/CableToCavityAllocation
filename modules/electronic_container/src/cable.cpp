@@ -12,7 +12,7 @@
  */
 #include "cable.h"
 
-#include <unordered_set>
+#include <set>
 #include <algorithm>
 #include <ranges>
 
@@ -24,7 +24,7 @@ bool cable::generate_allocations()
         for (const auto& cavity_head : sp_connector->_container)
         {
             std::vector<std::pair<int, int>> dfs_path;
-            std::unordered_set<int> visited_cavity_indices;
+            std::set<int> visited_cavity_indices;
             
             auto dfs =  
             [&](auto&& self,                 
@@ -42,7 +42,7 @@ bool cable::generate_allocations()
                 dfs_path.emplace_back(current_wire->get_ID(), cavity_ID);
                 
                 if (dfs_path.size() == _container.size()) // Save valid complete regions
-                    _allocations.emplace_back(dfs_path,sp_connector);
+                    _allocations.emplace_back(visited_cavity_indices, sp_connector);
                 else // Continue searching through available neighbors
                     for (const auto& neighbor : sp_connector->get_adjacency_list(cavity_ID))
                         if (!visited_cavity_indices.count(neighbor))

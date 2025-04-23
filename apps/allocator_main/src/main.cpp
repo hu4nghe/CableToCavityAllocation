@@ -60,7 +60,7 @@ int main()
 
     cable_allocator allocator(cavities);
     allocator.add_cable({{22, 4}});
-    auto allocations = allocator.get_allocations(0);
+    auto allocations = allocator.get_cable_allocations(0);
     for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
     {
         const auto& [score, allocation] = allocation_tuple;

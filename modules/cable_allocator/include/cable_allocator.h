@@ -41,7 +41,7 @@ public :
      */
     bool add_cable(const std::vector<std::tuple<int, int>>& wires);
     
-    auto get_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>;
+    auto get_cable_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>;
     void confirme_allocation(int cable_ID, int allocation_idx);
 
     void print_connector_status() const { _sp_connector->print_current_connector_status(); }
