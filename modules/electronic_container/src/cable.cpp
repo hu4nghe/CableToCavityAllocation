@@ -67,3 +67,11 @@ void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
         for (auto i = 0; i < num_wires; ++i)
             _container.emplace_back(std::make_shared<wire>(wire_index++, wire_gauge));
 }
+
+auto cable::confirme_allocation(int allocation_ID, int current_cable_ID)
+{
+    auto layout = _allocations.at(allocation_ID).get_layout();
+    if(auto promoted_connector_ptr = _wp_connector.lock())
+        for(const auto& [_, allocated_cavity_ID] : layout)
+            promoted_connector_ptr->get_component(allocated_cavity_ID)->allocate_to_cable(current_cable_ID);
+}

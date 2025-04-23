@@ -21,12 +21,11 @@ def detect_pin(Img):
         if perimetre == 0:
             continue
         Circularity = 4 * np.pi * area / (perimetre * perimetre)
-        if (r > 8 and r < 60 and Circularity > 0.5):
+        if (r > 10 and r < 60 and Circularity > 0.5):
             centre = (int(x), int(y))
             r = int(r)
             pins.append((centre, r))
 
-    # >>>>> 替代 sort：按行列排序 <<<<<
     def sort_pins_by_rows(pins, row_tol=20):
         centers = [p[0] for p in pins]
         rows = []

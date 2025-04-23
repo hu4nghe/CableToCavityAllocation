@@ -1,5 +1,6 @@
 Resources/demo
 Resources/DetectionResults
+Resources/DelaunayResults
 build/
 lib/
 bin/

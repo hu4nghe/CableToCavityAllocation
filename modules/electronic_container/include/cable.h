@@ -23,16 +23,20 @@ private:
 
     std::vector<cable_allocation> _allocations;
     std::weak_ptr<connector>      _wp_connector;
+    bool                          _is_allocated;
 
 public:
 
     cable(std::shared_ptr<connector> _sp_connector) : 
-        _wp_connector(_sp_connector) {}
+        _wp_connector(_sp_connector),
+        _is_allocated(false) {}
     
     bool generate_allocations();
     void add_wires(const std::vector<std::tuple<int, int>>& wires);
 
     /// Getters
-    auto size()   const { return _container.size(); }
+    auto size() const { return _container.size(); }
     auto get_allocations() const { return _allocations; }
+    auto is_allocated() const { return _is_allocated; }
+    auto confirme_allocation(int allocation_ID, int current_cable_ID);
 };

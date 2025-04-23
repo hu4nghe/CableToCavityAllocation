@@ -3,8 +3,7 @@ import numpy as np
 from scipy.spatial import Delaunay
 from src.cavity_detection import detect_pin
 
-img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/12T16+25T20.png') 
-original = img.copy()
+img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/21T16.png') 
 
 detectedImg,cavities = detect_pin(img)
 centers = [pt for pt, _ in cavities]
@@ -18,9 +17,9 @@ tri = Delaunay(points)
 
 for triangle in tri.simplices:
     pts = points[triangle]
-    cv2.line(img, tuple(pts[0]), tuple(pts[1]), (0, 0, 255), 1)
-    cv2.line(img, tuple(pts[1]), tuple(pts[2]), (0, 0, 255), 1)
-    cv2.line(img, tuple(pts[2]), tuple(pts[0]), (0, 0, 255), 1)
+    cv2.line(img, tuple(pts[0]), tuple(pts[1]), (0, 0, 255), 3)
+    cv2.line(img, tuple(pts[1]), tuple(pts[2]), (0, 0, 255), 3)
+    cv2.line(img, tuple(pts[2]), tuple(pts[0]), (0, 0, 255), 3)
 
 cv2.imshow("Delaunay Triangulation", img)
 cv2.waitKey(0)
