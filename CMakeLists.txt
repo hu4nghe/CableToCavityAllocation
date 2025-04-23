@@ -14,7 +14,6 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 add_subdirectory(modules/electronic_component)
 add_subdirectory(modules/electronic_container)
 add_subdirectory(modules/cable_allocator)
-add_subdirectory(modules/csv_parser)
 add_subdirectory(modules/py_module)
 add_subdirectory(modules/geometry_tools)
 

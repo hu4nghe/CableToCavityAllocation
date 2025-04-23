@@ -13,6 +13,7 @@
  */
 #include "cable_allocator.h"
 
+#include <ranges>
 cable_allocator::cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data) :
     _sp_connector(std::make_shared<connector>(cavity_data)){}
 
@@ -28,12 +29,19 @@ bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires)
     return true;
 }
 
-auto cable_allocator::get_allocations(int cable_ID) const -> std::vector<cable_allocation>
+auto cable_allocator::get_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>
 {
-    auto cable = _cable_list.at(cable_ID);
+    std::set<std::tuple<double, std::set<int>>> result;
 
-    if (cable.generate_allocations())
-        return cable.get_allocations();
-    else
-        return std::vector<cable_allocation>{};
+    auto cable = _cable_list.at(cable_ID);
+    cable.generate_allocations();
+    for(const auto& cable_allocation : cable.get_allocations())
+        result.emplace(cable_allocation.get_score(), cable_allocation.get_layout() | std::views::values | std::ranges::to<std::set>());
+        
+    return result;
+}
+
+void cable_allocator::confirme_allocation(int cable_ID, int allocation_idx)
+{ 
+    _cable_list.at(cable_ID).confirme_allocation(cable_ID, allocation_idx); 
 }

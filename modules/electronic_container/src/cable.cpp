@@ -68,7 +68,7 @@ void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
             _container.emplace_back(std::make_shared<wire>(wire_index++, wire_gauge));
 }
 
-auto cable::confirme_allocation(int allocation_ID, int current_cable_ID)
+void cable::confirme_allocation(int allocation_ID, int current_cable_ID)
 {
     auto layout = _allocations.at(allocation_ID).get_layout();
     if(auto promoted_connector_ptr = _wp_connector.lock())

@@ -15,6 +15,8 @@
 #include "electronic_container.h"
 #include "electronic_component.h"
 
+#include <set>
+
 class cable_allocator
 {
 private:
@@ -39,6 +41,7 @@ public :
      */
     bool add_cable(const std::vector<std::tuple<int, int>>& wires);
     
-    auto get_allocations(int cable_ID) const -> std::vector<cable_allocation>;
+    auto get_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>;
+    void confirme_allocation(int cable_ID, int allocation_idx);
 
 };
