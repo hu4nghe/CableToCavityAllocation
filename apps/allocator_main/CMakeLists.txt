@@ -7,4 +7,5 @@ target_link_libraries(allocator_main
         cable_allocator
         electronic_container
         electronic_component
+        geometry_tools
 )

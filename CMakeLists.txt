@@ -16,6 +16,7 @@ add_subdirectory(modules/electronic_container)
 add_subdirectory(modules/cable_allocator)
 add_subdirectory(modules/csv_parser)
 add_subdirectory(modules/py_module)
+add_subdirectory(modules/geometry_tools)
 
 # executable
 add_subdirectory(apps/allocator_main)

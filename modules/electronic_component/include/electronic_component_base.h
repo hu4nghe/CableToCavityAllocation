@@ -13,8 +13,11 @@
  */
 #pragma once
 
+#include <functional>
 #include <memory>
 #include <type_traits>
+
+#include "AWG.h"
 
 class electronic_component_base;
 
@@ -24,33 +27,13 @@ class electronic_component_base;
  * @tparam T Type to check
  */
 template <typename T>
-concept electronic_component_type = std::is_base_of_v<electronic_component_base,T>;
-
-/**
- * @brief shared_ptr type for electronic components.
- * 
- * @tparam T electronic component type
- */
+concept electronic_component_type = 
+    std::is_base_of_v<electronic_component_base,T>;
 template <electronic_component_type T>
-using p_component = std::shared_ptr<T>;
+using sp_component = std::shared_ptr<T>;
 
-/**
- * @brief American Wire Gauge enum class.
- * 
- */
-enum class AWG
-{
-    AWGUnkown = -1,
-    
-    AWG8  = 8,
-    AWG10 = 10,
-    AWG12 = 12,
-    AWG16 = 16,
-    AWG20 = 20, 
-    AWG22 = 22
-};
 
-class electronic_component_base: public std::enable_shared_from_this<electronic_component_base>
+class electronic_component_base
 {
 protected:
 
@@ -59,63 +42,83 @@ protected:
 
 public:
 
-    /**
-     * @brief Default constructor set attributs to unknwon status.
-     */
-    electronic_component_base();
+    electronic_component_base() :
+        _ID(0),
+        _gauge(AWG::AWGUnkown){}
 
     /**
-     * @brief Base class constructor.
+     * @brief 
+     * Base class constructor.
      * 
      * @param id Component's ID.
      * @param gauge Component's size in American Wire Gauge.
      */
-    electronic_component_base(const int& ID, const int& gauge);
+    electronic_component_base(const int& ID, 
+                              const int& gauge) : 
+        _ID(ID),
+        _gauge(static_cast<AWG>(gauge)){}
 
     /**
      * All component is unique, identified with ID.
-     * You can NEVER copy a component.
+     * You do not want to copy a component.
      */
-    electronic_component_base(const electronic_component_base& other) = delete;
+    electronic_component_base           (const electronic_component_base& other) = delete;
     electronic_component_base& operator=(const electronic_component_base& other) = delete;
 
     /**
-     * @brief Base move constructor.
+     * @brief 
+     * Base move constructor.
      * 
      * @param other Another electronic_component_base object to move.
      */
-    explicit electronic_component_base(electronic_component_base&& other);
+    explicit electronic_component_base(electronic_component_base&& other) : 
+        _ID(std::move(other._ID)),
+        _gauge(std::move(other._gauge)){}
     
     /**
-     * @brief Overrided operator< for std::set/std::map
+     * @brief 
+     * Overrided operator< for std::set/std::map
      * 
      * @param other Another electronic component
      * @return true if current object's ID is inferior than the other's.
      * @return false if if current object's ID is superior than the other's.
      */
-    bool operator<(const electronic_component_base& other) const; 
-
+    bool operator<(const electronic_component_base& other) const { return _ID < other._ID; }
     /**
-     * @brief Get the ID of the component.
+     * @brief 
+     * Overrided operator== for STL unordered container
      * 
-     * @return int ID of the component.
+     * @param other Another electronic component
+     * @return true if current object's ID is equal to the other's.
+     * @return false if if current object's ID is different from the other's.
      */
-    const AWG get_gauge() const;
+    bool operator==(const electronic_component_base& other) const { return _ID == other._ID; }
 
     /**
-     * @brief Get the ID of the component.
-     * 
-     * @return int ID of the component.
-     */
-    const int get_ID() const;
-
-    /**
-     * @brief Check if two component can fit each other.
-     *        (May add contact calculation in future.)
+     * @brief 
+     * Check if two component can fit each other.
+     * (May add contact calculation in future.)
      * 
      * @param other Another electronic_component_base object.
      * @return true if two components have the same gauge.
      * @return false if two components have differents gauges.
      */
-    bool is_compatible(const electronic_component_base& other) const; 
+    bool is_compatible(const electronic_component_base& other) const { return _gauge == other._gauge; }
+
+    /// Getters
+    const AWG get_gauge() const { return _gauge; }
+    const int get_ID()    const { return _ID; }
 };
+
+/// Hash function for electronic_component_base for STL unordered container
+namespace std 
+{
+    template<>
+    struct hash<electronic_component_base> 
+    {
+        size_t operator()(const electronic_component_base& comp) const 
+        {
+            return std::hash<int>()(comp.get_ID());
+        }
+    };
+}

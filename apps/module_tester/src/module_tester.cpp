@@ -1,4 +1,4 @@
-#include "cable_allocator.h"
+#include "connector.h"
 
 #include <vector>
 #include <print>
@@ -7,58 +7,46 @@
 
 int main()
 {
-    /*std::vector<cavity> cavities;
-    cavities.emplace_back(49, 16, 710.0,151.0);
-    cavities.emplace_back(48, 16, 644.0,151.0);
-    cavities.emplace_back(47, 16, 578.0,151.0);
-    cavities.emplace_back(46, 16, 512.0,151.0);
-    cavities.emplace_back(45, 16, 446.0,151.0);
-    cavities.emplace_back(44, 16, 381.0,151.0);
-    cavities.emplace_back(43, 16, 315.0,151.0);
-    cavities.emplace_back(42, 16, 249.0,151.0);
-    cavities.emplace_back(41, 16, 183.0,151.0);
-    cavities.emplace_back(40, 16, 118.0,151.0);
-    cavities.emplace_back(39, 22, 728.0,99.0);
-    cavities.emplace_back(38, 22, 695.0,99.0);
-    cavities.emplace_back(37, 22, 662.0,99.0);
-    cavities.emplace_back(36, 22, 629.0,99.0);
-    cavities.emplace_back(35, 22, 596.0,99.0);
-    cavities.emplace_back(34, 22, 563.0,99.0);
-    cavities.emplace_back(33, 22, 530.0,99.0);
-    cavities.emplace_back(32, 22, 497.0,99.0);
-    cavities.emplace_back(31, 22, 464.0,99.0);
-    cavities.emplace_back(30, 22, 431.0,99.0);
-    cavities.emplace_back(29, 22, 398.0,99.0);
-    cavities.emplace_back(28, 22, 365.0,99.0);
-    cavities.emplace_back(27, 22, 332.0,99.0);
-    cavities.emplace_back(26, 22, 299.0,99.0);
-    cavities.emplace_back(25, 22, 266.0,99.0);
-    cavities.emplace_back(24, 22, 233.0,99.0);
-    cavities.emplace_back(23, 22, 200.0,99.0);
-    cavities.emplace_back(22, 22, 167.0,99.0);
-    cavities.emplace_back(21, 22, 134.0,99.0);
-    cavities.emplace_back(20, 22, 101.0,99.0);
-    cavities.emplace_back(19, 22, 711.0,71.0);
-    cavities.emplace_back(18, 22, 678.0,71.0);
-    cavities.emplace_back(17, 22, 645.0,71.0);
-    cavities.emplace_back(16, 22, 612.0,71.0);
-    cavities.emplace_back(15, 22, 579.0,71.0);
-    cavities.emplace_back(14, 22, 546.0,71.0);
-    cavities.emplace_back(13, 22, 513.0,71.0);
-    cavities.emplace_back(12, 22, 480.0,71.0);
-    cavities.emplace_back(11, 22, 447.0,71.0);
-    cavities.emplace_back(10, 22, 414.0,71.0);
-    cavities.emplace_back(9, 22, 381.0,71.0);
-    cavities.emplace_back(8, 22, 348.0,71.0);
-    cavities.emplace_back(7, 22, 315.0,71.0);
-    cavities.emplace_back(6, 22, 282.0,71.0);
-    cavities.emplace_back(5, 22, 249.0,71.0);
-    cavities.emplace_back(4, 22, 216.0,71.0);
-    cavities.emplace_back(3, 22, 183.0,71.0);
-    cavities.emplace_back(2, 22, 151.0,71.0);
-    cavities.emplace_back(1, 22, 118.0,71.0);
-
-    cable_allocator allocator(std::move(cavities));
-    allocator.print_adjacency_list();*/
+    std::vector<std::tuple<int, int, double, double>> cavities;
+    cavities.emplace_back(37, 14, 682.0,161.0);
+cavities.emplace_back(36, 14, 636.0,161.0);
+cavities.emplace_back(35, 14, 591.0,161.0);
+cavities.emplace_back(34, 14, 545.0,161.0);
+cavities.emplace_back(33, 14, 499.0,161.0);
+cavities.emplace_back(32, 14, 453.0,161.0);
+cavities.emplace_back(31, 14, 407.0,161.0);
+cavities.emplace_back(30, 14, 361.0,161.0);
+cavities.emplace_back(29, 14, 315.0,161.0);
+cavities.emplace_back(28, 14, 270.0,161.0);
+cavities.emplace_back(27, 14, 224.0,161.0);
+cavities.emplace_back(26, 14, 178.0,161.0);
+cavities.emplace_back(25, 14, 132.0,161.0);
+cavities.emplace_back(24, 14, 665.0,115.0);
+cavities.emplace_back(23, 14, 618.0,115.0);
+cavities.emplace_back(22, 14, 571.0,115.0);
+cavities.emplace_back(21, 14, 524.0,115.0);
+cavities.emplace_back(20, 14, 477.0,115.0);
+cavities.emplace_back(19, 14, 431.0,115.0);
+cavities.emplace_back(18, 14, 384.0,115.0);
+cavities.emplace_back(17, 14, 337.0,115.0);
+cavities.emplace_back(16, 14, 290.0,115.0);
+cavities.emplace_back(15, 14, 243.0,115.0);
+cavities.emplace_back(14, 14, 196.0,115.0);
+cavities.emplace_back(13, 14, 149.0,115.0);
+cavities.emplace_back(12, 23, 741.0,121.0);
+cavities.emplace_back(11, 23, 80.0,121.0);
+cavities.emplace_back(10, 23, 703.0,59.0);
+cavities.emplace_back(9, 23, 637.0,59.0);
+cavities.emplace_back(8, 22, 572.0,59.0);
+cavities.emplace_back(7, 23, 506.0,59.0);
+cavities.emplace_back(6, 23, 440.0,59.0);
+cavities.emplace_back(5, 23, 374.0,59.0);
+cavities.emplace_back(4, 23, 308.0,59.0);
+cavities.emplace_back(3, 23, 243.0,59.0);
+cavities.emplace_back(2, 23, 177.0,59.0);
+cavities.emplace_back(1, 23, 111.0,59.0);
+    
+    connector connector_1(cavities);
+    connector_1.print_adjacency_list();
     return  0;
 }
