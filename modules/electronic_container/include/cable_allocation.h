@@ -28,6 +28,8 @@ public:
     cable_allocation(const std::set<int>&             connections, 
                            std::shared_ptr<connector> connector);
 
+                
+    bool operator<(const cable_allocation& other) const;
     auto get_layout() const{ return _reserved_cavities; }
     auto get_score() const { return _score; }
 };

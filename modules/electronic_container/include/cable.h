@@ -21,7 +21,7 @@ class cable : public electronic_container_base<wire>
 {
 private: 
 
-    std::vector<cable_allocation> _allocations;
+    std::set<cable_allocation>    _allocations;
     std::weak_ptr<connector>      _wp_connector;
     bool                          _is_allocated;
 
