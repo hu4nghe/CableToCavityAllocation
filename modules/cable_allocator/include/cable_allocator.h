@@ -45,4 +45,5 @@ public :
     void confirme_allocation(int cable_ID, int allocation_idx);
 
     void print_connector_status() const { _sp_connector->print_current_connector_status(); }
+    auto get_connector_status() const -> std::vector<int>;
 };

@@ -53,6 +53,6 @@ public:
      */
     void print_current_connector_status() const;
 
-    auto size() const;
+    auto size() const { return _container.size(); }
    
 };

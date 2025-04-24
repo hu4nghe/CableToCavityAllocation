@@ -74,7 +74,7 @@ int main()
     allocator.confirme_allocation(1,idx);
     allocator.print_connector_status();
 
-    allocator.add_cable({{22, 3}},1);
+    allocator.add_cable({{22, 4}},1);
     allocations = allocator.get_cable_allocations(2);
     for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
     {

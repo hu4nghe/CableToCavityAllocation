@@ -44,3 +44,10 @@ void cable_allocator::confirme_allocation(int cable_ID, int allocation_idx)
 { 
     _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
 }
+
+auto cable_allocator::get_connector_status() const -> std::vector<int>
+{
+    return _sp_connector->_container                                                    | 
+            std::views::transform([](const auto& cavity) { return cavity->status(); })  | 
+            std::ranges::to<std::vector>();
+}

@@ -16,8 +16,8 @@
 
 #include <ranges>
 
-cable_allocation::cable_allocation(const std::set<int>& connections,
-                                         std::shared_ptr<connector>     sp_connector) :
+cable_allocation::cable_allocation(const std::set<int>&             connections,
+                                         std::shared_ptr<connector> sp_connector) :
     _reserved_cavities( connections),
     _score (0.0)
 {
