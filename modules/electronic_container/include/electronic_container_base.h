@@ -63,10 +63,6 @@ public:
      */
     sp_component<T> get_component(const int& ID) const
     {
-        for (const auto& component : _container)
-            if (component->get_ID() == ID)
-                return component;
-        
-        return nullptr;
+        return *(std::ranges::find(_container, ID, &electronic_component_base::get_ID));
     }
 };

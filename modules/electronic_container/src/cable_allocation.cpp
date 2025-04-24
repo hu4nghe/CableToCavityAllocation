@@ -16,14 +16,24 @@
 
 #include <ranges>
 
-cable_allocation::cable_allocation(const std::vector<std::pair<int, int>>& connections,
-                                         std::shared_ptr<connector>        sp_connector) :
-    _reserved_cavities( connections | std::views::transform([](const auto& p) { return p.second; })
-                                    | std::ranges::to<std::set>()),
+cable_allocation::cable_allocation(const std::set<int>& connections,
+                                         std::shared_ptr<connector>     sp_connector) :
+    _reserved_cavities( connections),
     _score (0.0)
 {
     std::vector<std::pair<double,double>> coords;
-    for(const auto& [_, connected_cavity] : connections)
+    for(const auto& connected_cavity : connections)
         coords.push_back(sp_connector->get_component(connected_cavity)->get_pos());
     _score = geo_tools::calculate_min_enclosing_circle_radius(coords);
+}
+
+bool cable_allocation::operator<(const cable_allocation &other) const
+{
+    if (_reserved_cavities == other._reserved_cavities) 
+        return false;
+    
+    if (_score == other._score) 
+        return _reserved_cavities < other._reserved_cavities; 
+    
+    return _score < other._score; 
 }
