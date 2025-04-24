@@ -39,7 +39,7 @@ public :
      * @param wires A vector of tuples representing the wires and their gauges.
      * @return true if the cable was successfully added, false otherwise.
      */
-    bool add_cable(const std::vector<std::tuple<int, int>>& wires);
+    bool add_cable(const std::vector<std::tuple<int, int>>& wires, int mode);
     
     auto get_cable_allocations(int cable_ID) const -> std::set<std::tuple<double, std::set<int>>>;
     void confirme_allocation(int cable_ID, int allocation_idx);

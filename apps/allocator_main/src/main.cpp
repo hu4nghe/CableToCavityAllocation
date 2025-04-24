@@ -59,7 +59,8 @@ int main()
 
 
     cable_allocator allocator(cavities);
-    allocator.add_cable({{22, 4}});
+
+    allocator.add_cable({{22, 4},{16, 2 }},0);
     auto allocations = allocator.get_cable_allocations(1);
     for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
     {
@@ -71,6 +72,19 @@ int main()
     int idx = 0;
     std::cin>>idx;
     allocator.confirme_allocation(1,idx);
+    allocator.print_connector_status();
+
+    allocator.add_cable({{22, 3}},1);
+    allocations = allocator.get_cable_allocations(2);
+    for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+    {
+        const auto& [score, allocation] = allocation_tuple;
+        std::print("Allocation {}, Score :{}\n", i, score);
+        for (const auto& cavity_ID : allocation)
+            std::print("cavity {}\n",  cavity_ID);
+    }
+    std::cin>>idx;
+    allocator.confirme_allocation(2,idx);
     allocator.print_connector_status();
     return  0;
 }
