@@ -3,6 +3,64 @@
 #include <print>
 #include <ranges>
 #include <iostream>
+#include <sstream>
+
+
+void console_interaction(cable_allocator& allocator)
+{
+    int cable_idx = 1;
+    int idx = 0;
+    int mode = 0;
+    while (true)
+    {
+        std::vector<std::tuple<int,int>> wires;
+        std::string input_line;
+
+        std::print("Enter groups of data (gauge number_of_wires), or type 'end' to finish:\n");
+        
+        while (true)
+        {
+            std::getline(std::cin, input_line);
+            
+            // Skip empty lines
+            if (input_line.empty())
+                continue;
+
+            // Check if the user wants to end the input
+            if (input_line == "end")
+                break;
+
+            // Parse the input line
+            std::istringstream iss(input_line);
+            int gauge, num_wires;
+            if (!(iss >> gauge >> num_wires))
+            {
+                std::print("Invalid input. Please enter two integers (gauge number_of_wires) or 'end'.\n");
+                continue;
+            }
+
+            wires.emplace_back(gauge, num_wires);
+            
+        }
+        
+        allocator.add_cable(wires, mode);
+        auto allocations = allocator.get_cable_allocations(cable_idx);
+        for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+        {
+            const auto& [score, allocation] = allocation_tuple;
+            std::print("Allocation {}, Score :{}\n", i, score);
+            for (const auto& cavity_ID : allocation)
+                std::print("cavity {}\n",  cavity_ID);
+        }
+        std::cin>>idx;
+        allocator.confirme_allocation(cable_idx,idx);
+        allocator.print_connector_status();
+
+        cable_idx++;
+        mode = cable_idx == 1 ? 0 : 1;
+        
+    }
+}
 
 int main()
 {
@@ -59,32 +117,7 @@ int main()
 
 
     cable_allocator allocator(cavities);
-
-    allocator.add_cable({{22, 4},{16, 2 }},0);
-    auto allocations = allocator.get_cable_allocations(1);
-    for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
-    {
-        const auto& [score, allocation] = allocation_tuple;
-        std::print("Allocation {}, Score :{}\n", i, score);
-        for (const auto& cavity_ID : allocation)
-            std::print("cavity {}\n",  cavity_ID);
-    }
-    int idx = 0;
-    std::cin>>idx;
-    allocator.confirme_allocation(1,idx);
-    allocator.print_connector_status();
-
-    allocator.add_cable({{22, 4}},1);
-    allocations = allocator.get_cable_allocations(2);
-    for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
-    {
-        const auto& [score, allocation] = allocation_tuple;
-        std::print("Allocation {}, Score :{}\n", i, score);
-        for (const auto& cavity_ID : allocation)
-            std::print("cavity {}\n",  cavity_ID);
-    }
-    std::cin>>idx;
-    allocator.confirme_allocation(2,idx);
-    allocator.print_connector_status();
+    console_interaction(allocator);
     return  0;
 }
+

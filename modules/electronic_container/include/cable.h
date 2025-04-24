@@ -32,9 +32,6 @@ public:
         _is_allocated(false) {}
     
     bool generate_allocations(int searching_range);
-
-
-
     void add_wires(const std::vector<std::tuple<int, int>>& wires);
 
     /// Getters
