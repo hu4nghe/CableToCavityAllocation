@@ -1,19 +1,18 @@
 /**
  * @file geometry_tool_base.h
- * @author HUANG He (he.huang@utt.fr)
+ * @author 
+ * HUANG He (he.huang@utt.fr)
  * @brief
  * This file defines serveral basical structure for geometry calculations
- * @version 1.1
- * @date 2025-04-22
- * 
+ * @version 1.4
+ * @date 2025-04-25
+ *
  */
 
 #pragma once
  
 #include <cmath>
 #include <stdexcept>
- 
-
  
 struct point
 {
@@ -76,7 +75,7 @@ public:
     triangle(point a, point b, point c) : a(a), b(b), c(c) {}
     triangle(const point& a, const edge& e) : a(a), b(e.a), c(e.b) 
     {
-        if(a == b || a == c || b == c) 
+        if (a == b || a == c || b == c) 
             throw std::invalid_argument("Invalid triangle");
     }
         

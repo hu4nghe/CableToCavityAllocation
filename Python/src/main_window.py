@@ -53,8 +53,8 @@ class MainWindow(QMainWindow):
 
     def open_cable_manager(self):
         self.dialog = cable_manager.CableManagerDialog(self.allocator)
-        if(self.dialog.exec()):
-            for(cable_id, wires) in self.dialog.cables.items():
+        if (self.dialog.exec()):
+            for (cable_id, wires) in self.dialog.cables.items():
                 self.allocations = self.allocator.add_cable(self.dialog.cable_id, wires)
             self.potentialSolutionTreeWidget.clear()
             #print(self.allocations)

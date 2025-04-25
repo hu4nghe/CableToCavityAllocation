@@ -3,56 +3,72 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * The class that represent a connector, who includes multiples cavities.
- * @version 1.3
- * @date 2025-04-22
+ * The class that represent a connector.
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
- * 
+ *
  */
-#pragma once
 
-#include <unordered_map>
+#pragma once
 
 #include "electronic_container_base.h"
 
+#include <unordered_map>
+
 class connector : public electronic_container_base<cavity>
 {
-private:
-
     friend class cable;
+
+private :
 
     std::unordered_map<int, std::vector<int>> _adjacency_list;
 
-public:
+public :
     
+    /**
+     * @brief 
+     * Construct a new connector object.
+     * 
+     * @param cavity_data Cavity's ID, gauge, and coordinates.
+     */
     connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data); 
 
     /**
-     * @brief Get the adjacency list object.
+     * @brief 
+     * Get the adjacency list object.
      * 
      * @param ID The ID of cavity that we want to know his adjacent nodes.
-     * @return A set which contains all adjacent nodes.
+     * @return A vector which contains all adjacent nodes.
      */
-    std::vector<int> get_adjacency_list(const int& ID) const { return _adjacency_list.at(ID); } 
+    std::vector<int> get_adjacency_list(int ID) const { return _adjacency_list.at(ID); } 
 
+    /**
+     * @brief 
+     * Calculate distance between two cavities.
+     * 
+     * @param i First cavity.
+     * @param j Second cavity.
+     * @return double Distance between two cavities.
+     */
     double distance(int i, int j) const;
 
+    ///debug functions
 
-    //debug functions
     /**
-     * @brief print auto-generated adjacency list.
+     * @brief 
+     * print auto-generated adjacency list.
      * 
      */
     void print_adjacency_list() const;
 
     /**
-     * @brief print cavities and their status.
+     * @brief 
+     * print cavities and their status.
      * 
      */
     void print_current_connector_status() const;
-
-    auto size() const { return _container.size(); }
    
 };

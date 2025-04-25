@@ -1,3 +1,15 @@
+/**
+ * @file py_binding.cpp
+ * @author 
+ * HUANG He (he.huang.intern@3ds.com)
+ * @brief 
+ * This file creates binding functions of cable_allocator class for python call.
+ * @version 1.4
+ * @date 2025-04-25
+ * 
+ * @copyright Dassault Systemes 2025
+ * 
+ */
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 #include <pybind11/functional.h>

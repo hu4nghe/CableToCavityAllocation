@@ -3,41 +3,47 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * Electronic containers base class
- * @version 1.3
- * @date 2025-04-22
+ * The electronic containers base class
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
- * 
+ *
  */
+
 #pragma once
 
 #include "electronic_component.h"
 
-#include <vector>
+#include <memory>
 
 class cable_allocator;
 
-template <electronic_component_type T>
+template <typename T>
 class electronic_container_base
 {
-protected:
+protected :
 
-    std::vector<sp_component<T>> _container;
+    std::vector<std::shared_ptr<T>> _container;
 
-public:
+public :
     friend class cable_allocator;
-  
+    
+    /**
+     * @brief 
+     * Default constructor for electronic container base object
+     * 
+     */
     electronic_container_base() = default;
 
     /**
      * @brief 
-     * Construct a new electronic container base object
+     * Construct a new electronic container base object.
      * Automatically determines the type of component based on the the parameter type.
-     * std::tuple<int, int> for wire objects
-     * std::tuple<int, int, double, double> for cavity objects
-     * @param components A vector containing all components's data. 
+     * std::tuple<int, int> for wire objects.
+     * std::tuple<int, int, double, double> for cavity objects.
+     * @param components A vector containing all components's data.
      */
     template <typename tuple_type>
     electronic_container_base(const std::vector<tuple_type>& components)
@@ -59,10 +65,18 @@ public:
      * Get a component by its ID.
      * 
      * @param ID The ID of the component to retrieve.
-     * @return A shared pointer to the component, or nullptr if not found.
+     * @return A shared_ptr to the component.
      */
-    sp_component<T> get_component(const int& ID) const
+    std::shared_ptr<T> get_component(const int& ID) const
     {
         return *(std::ranges::find(_container, ID, &electronic_component_base::get_ID));
     }
+
+    /**
+     * @brief 
+     * Get container size.
+     * 
+     * @return std::size_t Container's size. 
+     */
+    auto size() const { return _container.size(); }
 };

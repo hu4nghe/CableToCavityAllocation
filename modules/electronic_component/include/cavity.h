@@ -4,26 +4,28 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent cavities on connector
- * @version 1.2
- * @date 2025-04-17
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
- * 
+ *
  */
+
 #pragma once
 
 #include "electronic_component_base.h"
-#include <utility>// for std::pair
+
+#include <cmath>
 
 class cavity : public electronic_component_base
 {
-private:
+private :
 
     const std::pair<double,double> _position;
     int                            _cable_ID;
 
-public:
+public :
     
     /**
     * @brief 
@@ -79,8 +81,11 @@ public:
      * @param other Another cavity object.
      * @return double Distance between two cavity, +∞ if send itself as argument.
      */
-    double distance(const std::pair<double,double>& point) const;
-    // shortcut for cavity object.
+    double distance(const std::pair<double,double>& point) const
+    {
+        return sqrt(pow(point.first  - _position.first ,2) + 
+                    pow(point.second - _position.second,2));
+    }
     double distance(const cavity& other) const { return distance(other._position); }
      
     auto get_pos() const { return _position; }

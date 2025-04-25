@@ -4,18 +4,17 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief
  * American Wire Gauge (AWG) class
- * Mimics the traditional enum class while adding checks for value
- * @version 1.2
- * @date 2025-04-17     
- * @copyright
- * Dassault Systemes 2025   
+ * @version 1.4
+ * @date 2025-04-25
  * 
+ * @copyright 
+ * Dassault Systemes 2025
+ *
  */
-#include <stdexcept>
 
 class AWG
 {
-public:
+public :
 
     enum awg_values : int 
     {
@@ -28,30 +27,73 @@ public:
         AWG22 = 22
     };
 
-    // Default constructor set attributes to unknown.
+    /**
+     * @brief 
+     * Default constructor set attributes to unknown.
+     */
     constexpr AWG() : _value(awg_values::AWGUnkown) {}
-    // Constructor with enum value.
+
+    /**
+     * @brief 
+     * Constructor with enum value.
+     * 
+     */
     constexpr AWG(awg_values gauge) : _value(gauge) {}
 
-    // Constructor with int value, if the value is not in the enum, set to unknown.
+    /**
+     * @brief 
+     * Constructor with integer, if the integer is invalid, set value to unknown.
+     */
     explicit constexpr AWG(int gauge) : 
         _value(is_valid(gauge) ? static_cast<awg_values>(gauge) : awg_values::AWGUnkown) {}
 
-    // Allow switch(AWG) directly and prevent if(AWG).
+    /**
+     * @brief 
+     * Allow switch(AWG)
+     * 
+     * @return awg_values Enum value
+     */
     constexpr operator awg_values() const { return _value; }
+
+    /**
+     * @brief 
+     * Prevent if (AWG) operattion.
+     * 
+     */
     explicit  operator bool()       const = delete;
     
-    // Allow comparison with int8_t
+    /**
+     * @brief 
+     * Operator== which allows comparaison.
+     * 
+     * @param other Another AWG enum object
+     * @return true If they are equal.
+     * @return false If they are not equal.
+     */
     constexpr bool operator==(AWG& other) const { return _value == other._value; }
+
+    /**
+     * @brief 
+     * Operator!= which allows comparaison.
+     * 
+     * @param other Another AWG enum object
+     * @return true If they are not equal.
+     * @return false If they are equal.
+     */
     constexpr bool operator!=(AWG& other) const { return _value != other._value; }
 
-private:
+private :
 
-    // value
     awg_values _value;
 
-
-    //tools
+    /**
+     * @brief 
+     * Tool function to check the validity at initialization.
+     * 
+     * @param gauge Gauge value.
+     * @return true If the value is a valid AWG.
+     * @return false If the value is not a valid AWG.
+     */
     constexpr bool is_valid(int gauge) const
     {
         return gauge == 8  || gauge == 10 || gauge == 12 ||

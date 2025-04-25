@@ -1,3 +1,14 @@
+/**
+ * @file min_enclosing_circle.cpp
+ * @author 
+ * HUANG He (he.huang@utt.fr)
+ * @brief 
+ * Implementation of min_enclosing_circle.h
+ * @version 1.4
+ * @date 2025-04-25
+ * 
+ */
+
 #include <algorithm>
 #include <random>
 #include <ctime>
@@ -45,9 +56,9 @@ circle welzl(std::vector<point>& P, std::vector<point> R, int n)
     return welzl(P, R, n - 1);
 }
 
-double geo_tools::calculate_min_enclosing_circle_radius(const std::vector<std::pair<double, double>>& coords)
+double geo_tools::calculate_min_enclosing_circle_radius(const std::vector<std::pair<double, double>>& point_set)
 {
-    std::vector<point> points = points_init(coords);
+    std::vector<point> points = points_init(point_set);
     std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));
     std::shuffle(points.begin(), points.end(), rng);
 

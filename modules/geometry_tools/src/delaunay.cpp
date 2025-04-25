@@ -1,10 +1,16 @@
-#include <vector>
-#include <tuple>
-#include <unordered_map>
+/**
+ * @file delaunay.cpp
+ * @author 
+ * HUANG He (he.huang@utt.fr)
+ * @brief 
+ * Implementation of delaunay.h
+ * @version 1.4
+ * @date 2025-04-25
+ * 
+ */
+
 #include <set>
 #include <algorithm>
-#include <cmath>
-#include <limits>
 #include <ranges>
 
 #include "geometry_tools_base.h"
@@ -30,7 +36,7 @@ auto super_triangle(const std::vector<point>& points)
 
 auto delaunay_triangulate(const std::vector<point>& points) 
 {
-    if(points.size() <= 3) 
+    if (points.size() <= 3) 
         throw std::invalid_argument("At least 4 points are required for triangulation.");
 
     std::vector<triangle> all_triangles;
@@ -85,20 +91,22 @@ auto build_adjacency_list_from_result(const std::vector<triangle>& triangles)
                 if (i != j)
                     adjacency_set[i].insert(j);
     
-    return adjacency_set 
-        | std::views::transform([](auto&& pair) 
+    return adjacency_set
+        | std::views::transform([](auto&& pair)
                                 {          
                                     auto&& [key, value] = pair;
-                                    return std::pair{key, std::vector<int>(value.begin(), value.end())};
+                                    return std::pair{key, 
+                                                     std::vector<int>(value.begin(), 
+                                                                      value.end())};
                                 })
         | std::ranges::to<std::unordered_map>();
 
 }
 
-std::unordered_map<int, std::vector<int>> geo_tools::build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& input) 
+auto geo_tools::build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& point_data) -> std::unordered_map<int, std::vector<int>>
 {
     return build_adjacency_list_from_result(delaunay_triangulate(
-        input // convert input to a point vector
+        point_data // convert point_data to a point vector
         | std::views::transform([](auto&& t) 
                                 {
                                     auto&& [id, _, x, y] = t;
