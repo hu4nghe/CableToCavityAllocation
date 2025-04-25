@@ -1,9 +1,9 @@
-Resources/demo
-Resources/DetectionResults
+Resources/
 build/
 lib/
 bin/
+html/
 Python/DSLyon/
 Python/PCHome/
-Python/__pycache__/
+__pycache__/
 .vscode/
