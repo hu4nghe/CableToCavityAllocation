@@ -4,6 +4,7 @@ Resources/DelaunayResults
 build/
 lib/
 bin/
+html/
 Python/DSLyon/
 Python/PCHome/
 .vscode/
