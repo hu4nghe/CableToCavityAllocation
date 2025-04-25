@@ -16,6 +16,8 @@
 #include "geometry_tools_base.h"
 #include "delaunay.h"
 
+using namespace geo_tools;
+
 auto super_triangle(const std::vector<point>& points) 
 {
     auto [min_x, max_x] = std::ranges::minmax(points | std::views::transform(&point::x));

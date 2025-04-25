@@ -17,6 +17,8 @@
 #include "geometry_tools_base.h"
 #include "min_enclosing_circle.h"
 
+using namespace geo_tools;
+
 std::vector<point> points_init(const std::vector<std::pair<double, double>>& coords) 
 {
     std::vector<point> pts;
