@@ -26,9 +26,20 @@ protected :
 
 public :
 
-    electronic_component_base() :
-        _ID(0),
-        _gauge(AWG::AWGUnknown) {}
+    /**
+     * @brief 
+     * Deleted default constructor 
+     * Please allocate an ID for every electronic component.
+     * 
+     */
+    electronic_component_base() = delete;
+
+    /**
+     * @brief 
+     * Default destructor.
+     * 
+     */
+    virtual ~electronic_component_base() = default;
 
     /**
      * @brief 
@@ -37,8 +48,8 @@ public :
      * @param id Component's ID.
      * @param gauge Component's size in American Wire Gauge.
      */
-    electronic_component_base(const int& ID, 
-                              const int& gauge) : 
+    electronic_component_base(int ID, 
+                              int gauge) : 
         _ID(ID),
         _gauge(static_cast<AWG>(gauge)) {}
 
@@ -46,8 +57,9 @@ public :
      * All component is unique, identified with ID.
      * You do not want to copy a component.
      */
-    electronic_component_base           (const electronic_component_base& other) = delete;
-    electronic_component_base& operator=(const electronic_component_base& other) = delete;
+    electronic_component_base           (const electronic_component_base&)  = delete;
+    electronic_component_base& operator=(const electronic_component_base&)  = delete;
+    electronic_component_base& operator=(      electronic_component_base&&) = delete;
 
     /**
      * @brief 
@@ -56,7 +68,7 @@ public :
      * @param other Another electronic_component_base object to move.
      */
     explicit electronic_component_base(electronic_component_base&& other) : 
-        _ID(std::move(other._ID)),
+        _ID(other._ID),
         _gauge(std::move(other._gauge)) {}
     
     /**

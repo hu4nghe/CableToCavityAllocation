@@ -44,20 +44,15 @@ public :
         _position(x, y),
         _cable_ID(0) {}
 
+    /**
+     * @brief Move constructor
+     * 
+     * @param other Cavity object to move.
+     */
     cavity(cavity&& other) :    
         electronic_component_base(std::move(other)),
-        _position(other._position),
-        _cable_ID(other._cable_ID) {}
-    
-    /**
-     * @brief 
-     * Compare gauge to other cavity.
-     * 
-     * @param other Another cavity object.
-     * @return true if two cavity have the same gauge.
-     * @return false if two cavity have differents gauges.
-     */
-    bool has_the_same_gauge(const cavity& other) const { return _gauge == other._gauge; }
+        _position(std::move(other._position)),
+        _cable_ID(std::exchange(other._cable_ID, 0)) {}
     
     /**
      * @brief
@@ -83,8 +78,8 @@ public :
      */
     double distance(const std::pair<double,double>& point) const
     {
-        return sqrt(pow(point.first  - _position.first ,2) + 
-                    pow(point.second - _position.second,2));
+        return std::hypot(point.first  - _position.first, 
+                          point.second - _position.second);
     }
 
     /**

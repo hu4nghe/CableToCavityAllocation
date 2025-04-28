@@ -66,12 +66,7 @@ public :
      * 
      * @return A vector, the nth is m means the nth cavity is allocated to cable m, 0 if cavity is available.
      */
-    auto get_connector_status() const
-    {
-        return _sp_connector->_container
-            | std::views::transform([](const auto& c){return c->status();})  
-            | std::ranges::to<std::vector>();
-    }
+    auto get_connector_status() const{ return _sp_connector->get_status(); }
     
     /**
      * @brief 

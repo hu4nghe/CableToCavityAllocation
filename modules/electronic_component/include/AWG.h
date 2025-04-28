@@ -70,7 +70,7 @@ public :
      * @return true If they are equal.
      * @return false If they are not equal.
      */
-    constexpr bool operator==(AWG& other) const { return _value == other._value; }
+    constexpr bool operator==(const AWG& other) const { return _value == other._value; }
 
     /**
      * @brief 
@@ -80,7 +80,7 @@ public :
      * @return true If they are not equal.
      * @return false If they are equal.
      */
-    constexpr bool operator!=(AWG& other) const { return _value != other._value; }
+    constexpr bool operator!=(const AWG& other) const { return _value != other._value; }
 
 private :
 

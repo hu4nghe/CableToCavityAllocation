@@ -18,7 +18,7 @@
 
 bool cable::generate_allocations(int mode)
 {
-    std::vector<std::shared_ptr<cavity>> range;
+    connector seraching_range;
     
     if (_container.empty()) return false; // No wires to allocate
     else if (auto sp_connector = _wp_connector.lock())
@@ -26,7 +26,7 @@ bool cable::generate_allocations(int mode)
         if (mode == 1)
         {
             // Search only the places near the allocated cavities.
-            range = sp_connector->_container
+            seraching_range = *sp_connector
                 // Find allocated cavities.
                 | std::views::filter([&](const auto& obj){return obj->status() != 0;})
                 // Get their adjacent cavities.
@@ -37,12 +37,12 @@ bool cable::generate_allocations(int mode)
                 | std::ranges::to<std::vector<int>>()
                 // Retrive the cavity object by ID.
                 | std::views::transform([&](int id){return sp_connector->get_component(id);})
-                // Build the searching range vector.
-                | std::ranges::to<std::vector<std::shared_ptr<cavity>>>();
+                // Build the searching seraching_range vector.
+                | std::ranges::to<connector>();
         }
-        else range = sp_connector->_container;
+        else seraching_range = *sp_connector;
             
-        for (const auto& path_head_cavity : range)
+        for (const auto& path_head_cavity : seraching_range)
         {
             std::set<int> visited_cavity_indices;
             
@@ -53,7 +53,7 @@ bool cable::generate_allocations(int mode)
             {
                 auto current_cavity = sp_connector->get_component(cavity_ID);
                 if (current_cavity->status()) return; // Cavity is already occupied
-                auto current_wire     = _container[wire_index];
+                auto current_wire   = _container[wire_index];
                 if (!current_cavity->is_compatible(*current_wire)) return; // cavity not compatible
                 
                 // Log the searching path
