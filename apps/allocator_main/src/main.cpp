@@ -1,13 +1,70 @@
 #include "cable_allocator.h"
 
-#include <vector>
 #include <print>
-#include <utility>
+#include <ranges>
 #include <iostream>
+#include <sstream>
+
+
+void console_interaction(cable_allocator& allocator)
+{
+    int cable_idx = 1;
+    int idx = 0;
+    int mode = 0;
+    while (true)
+    {
+        std::vector<std::tuple<int,int>> wires;
+        std::string input_line;
+
+        std::print("Enter groups of data (gauge number_of_wires), or type 'end' to finish:\n");
+        
+        while (true)
+        {
+            std::getline(std::cin, input_line);
+            
+            // Skip empty lines
+            if (input_line.empty())
+                continue;
+
+            // Check if the user wants to end the input
+            if (input_line == "end")
+                break;
+
+            // Parse the input line
+            std::istringstream iss(input_line);
+            int gauge, num_wires;
+            if (!(iss >> gauge >> num_wires))
+            {
+                std::print("Invalid input. Please enter two integers (gauge number_of_wires) or 'end'.\n");
+                continue;
+            }
+
+            wires.emplace_back(gauge, num_wires);
+            
+        }
+        
+        allocator.add_cable(wires, mode);
+        auto allocations = allocator.get_cable_allocations(cable_idx);
+        for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+        {
+            const auto& [score, allocation] = allocation_tuple;
+            std::print("Allocation {}, Score :{}\n", i, score);
+            for (const auto& cavity_ID : allocation)
+                std::print("cavity {}\n",  cavity_ID);
+        }
+        std::cin>>idx;
+        allocator.confirme_allocation(cable_idx,idx);
+        allocator.print_connector_status();
+
+        cable_idx++;
+        mode = cable_idx == 1 ? 0 : 1;
+        
+    }
+}
 
 int main()
 {
-    std::vector<cavity> cavities;
+    std::vector<std::tuple<int, int, double, double>> cavities;
     cavities.emplace_back(49, 16, 710.0,151.0);
     cavities.emplace_back(48, 16, 644.0,151.0);
     cavities.emplace_back(47, 16, 578.0,151.0);
@@ -58,7 +115,9 @@ int main()
     cavities.emplace_back(2, 22, 151.0,71.0);
     cavities.emplace_back(1, 22, 118.0,71.0);
 
-    cable_allocator allocator(std::move(cavities));
-    allocator.console_interaction();
+
+    cable_allocator allocator(cavities);
+    console_interaction(allocator);
     return  0;
 }
+

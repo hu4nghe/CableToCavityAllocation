@@ -3,98 +3,96 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * Allocator who manages cable connections.
- * @version 1.1
- * @date 2025-04-10
+ * Header for allocator who manages connectors, cables and their connections.
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
+ * 
  */
+
 #pragma once
 
-#include "cable_region.h"
 #include "electronic_container.h"
 #include "electronic_component.h"
 
-/**
- * @class cable_allocator
- * @brief Manages the allocation of cables and their connections.
- */
+#include <ranges>
+
 class cable_allocator
-{
-private:
+{ 
+private :
 
-    std::map<cable, std::vector<cable_region>> _region_pool;
-    connector                                  _connector;
-
-public:
-
+    std::vector<cable>         _cable_list;
+    std::shared_ptr<connector> _sp_connector;
+    
+public : 
     /**
-     * @brief Deleted default constructor to prevent uninitialized allocators.
-     */
-    cable_allocator() = delete;
-
-    /**
-     * @brief Constructs a cable_allocator with a list of cavities.
+     * @brief 
+     * Construct a new cable_allocator object.
      * 
-     * @param cavities A vector of cavities to initialize the allocator.
+     * @param cavity_data Cavity data to initialize the connector, in format <ID, gauge, Pos_x, Pos_y>.
      */
-    cable_allocator(std::vector<cavity>&& cavities);
+    cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data);
 
-    /**
-     * @brief Handles console-based interactions for the cable allocator.
-     */
-    void console_interaction();
-
-private:
-
-    /**
-     * @brief Establishes connections based on the provided mapping.
+     /**
+     * @brief 
+     * Adds a new cable to the region pool and generate possible allocations.
      * 
-     * @param connections A map where keys and values represent connection points.
+     * @param wires A vector of tuples representing the wires and their gauges.
+     * @param mode 1 to select allocations adjacent to placed cables. Others to select all allocations.
+     * @return true If the cable was successfully added, false otherwise.
      */
-    void connect(std::map<int, int> connections);
+    bool add_cable(const std::vector<std::tuple<int, int>>& wires, int mode);
+    
+    /**
+     * @brief 
+     * Return a vector of allocations. 
+     * Each allocation contains a score and a occupied cavity ID list.
+     *
+     * @param cable_ID The cable ID to which the allocations belong.
+     * @return A vector of allocations
+     */
+    auto get_cable_allocations(int cable_ID) const
+    {
+        return _cable_list.at(cable_ID - 1).get_allocations()
+            | std::views::transform([](const auto& a){return std::tuple{a.get_score(), a.get_layout()};}) 
+            | std::ranges::to<std::set>();
+    }
 
     /**
-     * @brief Adds a new cable to the region pool.
+     * @brief 
+     * Get the current connector status
      * 
-     * @param new_cable The cable to be added.
-     * @return true if the cable was successfully added, false otherwise.
+     * @return A vector, the nth is m means the nth cavity is allocated to cable m, 0 if cavity is available.
      */
-    bool add_cable(cable new_cable);
+    auto get_connector_status() const
+    {
+        return _sp_connector->_container
+            | std::views::transform([](const auto& c){return c->status();})  
+            | std::ranges::to<std::vector>();
+    }
+    
+    /**
+     * @brief 
+     * To confirme a allocation of a cable.
+     * 
+     * @param cable_ID The cable that we want to allocate.
+     * @param allocation_idx The allocation's index.
+     */
+    void confirme_allocation(int cable_ID, int allocation_idx)
+    { 
+        _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
+    }
 
     /**
-     * @brief  Finalizes the allocation of a cable.
+     * @brief
+     * Debug fonctions to print the status of connector's cavities .
      * 
-     * @param new_cable The cable to be allocated.
-     * @return true if the allocation was successful, false otherwise.
-     * @return false if no valid allocation was found.
      */
-    bool finalize_allocation(const cable &new_cable);
+    void print_connector_status() const 
+    { 
+        _sp_connector->print_current_connector_status(); 
+    }
 
-    /**
-     * @brief Handles user input within a specified range.
-     * 
-     * @param lower The lower bound of the input range.
-     * @param upper The upper bound of the input range.
-     * @param msg The message to display to the user.
-     * @return The validated user input.
-     */
-    int input(int lower, int upper, const std::string& msg) const;
-
-    /**
-     * @brief Gets the size of the region pool.
-     * 
-     * @return The number of entries in the region pool.
-     */
-    size_t size() const;
-
-public://debug
-
-    /**
-     * @brief Prints the adjacency list for debugging purposes.
-     * 
-     * This method is intended for debug use only and prints the calculation result.
-     */
-    void print_adjacency_list() const;
 };

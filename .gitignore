@@ -7,3 +7,9 @@ Python/DSLyon/
 Python/PCHome/
 __pycache__/
 .vscode/
+__pycache__/
+
+*.pyc
+
+*.pyo
+*.pyd

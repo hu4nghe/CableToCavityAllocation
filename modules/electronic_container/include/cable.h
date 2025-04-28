@@ -4,52 +4,84 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a cable, who includes multiples wires
- * @version 1.1
- * @date 2025-04-10
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
- * 
+ *
  */
+
 #pragma once
 
 #include "electronic_container_base.h"
+#include "connector.h"
+#include "cable_allocation.h"
 
 class cable : public electronic_container_base<wire>
 {
-private: 
+private : 
 
-    int _ID;
+    std::set<cable_allocation>    _allocations;
+    std::weak_ptr<connector>      _wp_connector;
+    bool                          _is_allocated;
 
-public:
-  
-    /**
-     * @brief Construct a new cable object
-     * 
-     * @param ID The ID of the cable    
-     * @param wires Vector of all wires of current cable.       
-     */
-    cable(int ID, std::vector<wire>&& wires);
+public :
 
     /**
-     * @brief Construct a new cable object
+     * @brief 
+     * Construct a new cable object
      * 
-     * @param ID The ID of the cable    
-     * @param wires Vector of all wires of current cable.       
+     * @param _sp_connector The connector's shared_ptr where we allocate the cable.
      */
-    bool operator<(const cable& other) const;
+    cable(std::shared_ptr<connector> _sp_connector) : 
+        _wp_connector(_sp_connector),
+        _is_allocated(false) {}
+    
+    /**
+     * @brief 
+     * Generate possible allocations for current cable on the conncetor.
+     * 
+     * @param searching_range 1 to search allocations adjacent to placed cables. 
+     *                        Others to select all allocations.
+     * @return true If at least one allocation is found.
+     * @return false If there is no allocation found.AIO_PRIO_DELTA_MAX
+     */
+    bool generate_allocations(int mode);
 
     /**
-     * @brief Get the ID of the cable
+     * @brief 
+     * Applicate a allocation on current cable.
+     * This will clear _allocations, you need to regenerated it after to keep it up to date.
      * 
-     * @return The ID of the cable
+     * @param current_cable_ID Current Cable ID (which is externally managed by cable_allocator.)
+     * @param allocation_ID ID of the allocation that we want to applicate.
      */
-    auto get_ID() const { return _ID; }
+    void confirme_allocation(int current_cable_ID, int allocation_ID);
 
     /**
-     * @brief Get the size of the cable
+     * @brief 
+     * Add wires to cable. 
      * 
-     * @return The size of the cable
+     * @param wires A vector, each element indicates the wire's gauge and number.
      */
-    auto size() const { return _container.size(); }
+    void add_wires(const std::vector<std::tuple<int, int>>& wires);
+
+    /**
+     * @brief 
+     * Return a set that includes all allocations.
+     * 
+     * @return std::set<cable_allocation> Allocations for current cable.
+     */
+    auto get_allocations() const { return _allocations; }
+
+    /**
+     * @brief 
+     * Get cable status.
+     * 
+     * @return true If cable is allocated.
+     * @return false If cable is not allocated.
+     */
+    bool is_allocated() const { return _is_allocated; }
+
 };

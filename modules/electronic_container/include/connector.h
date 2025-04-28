@@ -3,79 +3,70 @@
  * @author 
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
- * The class that represent a connector, who includes multiples cavities.
- * @version 1.1
- * @date 2025-04-10
+ * The class that represent a connector.
+ * @version 1.4
+ * @date 2025-04-25
  * 
  * @copyright 
  * Dassault Systemes 2025
- * 
+ *
  */
+
 #pragma once
 
-#include "cable.h"
+#include "electronic_container_base.h"
 
-#include <set>
-#include <map>
+#include <unordered_map>
 
 class connector : public electronic_container_base<cavity>
 {
-private:
+    friend class cable;
 
-    std::map<int, std::set<int>> _adjacency_list;
+private :
 
-public:
+    std::unordered_map<int, std::vector<int>> _adjacency_list;
+
+public :
+    
     /**
-     * @brief Construct a new connector object
+     * @brief 
+     * Construct a new connector object.
      * 
-     * @param cavities Vector of all cavities of current connector.
+     * @param cavity_data Cavity's ID, gauge, and coordinates.
      */
-    connector(std::vector<cavity>&& cavities);
-
-    void build_adjacency_list();
+    connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data); 
 
     /**
-     * @brief Get the compatible cavitiy list object.
-     * 
-     * @param gauge cable gauge
-     * @return a vector that contains shared_ptr point to the cavity.
-     */
-    std::vector<p_component<cavity>> get_compatible_cavitiy_list(AWG gauge);
-
-    /**
-     * @brief Get the adjacency list object.
+     * @brief 
+     * Get the adjacency list object.
      * 
      * @param ID The ID of cavity that we want to know his adjacent nodes.
-     * @return A set which contains all adjacent nodes.
+     * @return A vector which contains all adjacent nodes.
      */
-    std::set<int> get_adjacency_list(const int& ID) const;
+    std::vector<int> get_adj_list(int ID) const { return _adjacency_list.at(ID); } 
 
     /**
-     * @brief Get a set wich contains the unavailable cavities(occupied or reserved)'s index.
+     * @brief 
+     * Calculate distance between two cavities.
      * 
-     * @param gauge cavity gauge type.
-     * @return set of index of unavailable cavities.
+     * @param i First cavity.
+     * @param j Second cavity.
+     * @return double Distance between two cavities.
      */
-    std::set<int> get_unavailable_index_pool(AWG gauge) const;
+    double distance(int i, int j) const;
+
+    ///debug functions
 
     /**
-     * @brief Check if the cavity is available.
-     * 
-     * @param ID The ID of cavity that we want to know if it is available.
-     * @return true if the cavity is available.
-     * @return false if the cavity is not available.
-     */
-    bool is_available(const int& ID);
-
-    //debug functions
-    /**
-     * @brief print auto-generated adjacency list.
+     * @brief 
+     * print auto-generated adjacency list.
      * 
      */
     void print_adjacency_list() const;
 
     /**
-     * @brief print cavities and their status.
+     * @brief 
+     * print cavities and their status.
      * 
      */
     void print_current_connector_status() const;
