@@ -86,7 +86,21 @@ public :
         return sqrt(pow(point.first  - _position.first ,2) + 
                     pow(point.second - _position.second,2));
     }
+
+    /**
+     * @brief 
+     * Alias to calculate the distance between two cavities.
+     * 
+     * @param other Another cavity.
+     * @return double Distance between current cavity and other.
+     */
     double distance(const cavity& other) const { return distance(other._position); }
-     
+    
+    /**
+     * @brief 
+     * Get the cavity's coordinate on the connector.
+     * 
+     * @return std::pair<doube, doube> The 2D coordinate pair (x, y). 
+     */
     auto get_pos() const { return _position; }
 };

@@ -6,7 +6,7 @@ cable_allocation::cable_allocation(const std::set<int>& connections,
 {
 auto adjacency = [&](int idx) 
 {
-    return connector->get_adjacency_list(idx);
+    return connector->get_adj_list(idx);
 };
 
 std::unordered_set<int> visited;

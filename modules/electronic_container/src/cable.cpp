@@ -25,14 +25,19 @@ bool cable::generate_allocations(int mode)
     {
         if (mode == 1)
         {
-            auto result = sp_connector->_container
+            // Search only the places near the allocated cavities.
+            range = sp_connector->_container
+                // Find allocated cavities.
                 | std::views::filter([&](const auto& obj){return obj->status() != 0;})
-                | std::views::transform([&](const auto& obj){return sp_connector->get_adjacency_list(obj->get_ID()); }) 
-                | std::views::join 
-                | std::ranges::to<std::vector<int>>(); 
-            std::set<int> unique_ids(result.begin(), result.end());
-            range = unique_ids
-                | std::views::transform([&](int id){return sp_connector->get_component(id);}) 
+                // Get their adjacent cavities.
+                | std::views::transform([&](const auto& obj){return sp_connector->get_adj_list(obj->get_ID());})
+                // Flatten the adjacent cavities's index.
+                | std::views::join
+                // Turn result into a cavity index vector.
+                | std::ranges::to<std::vector<int>>()
+                // Retrive the cavity object by ID.
+                | std::views::transform([&](int id){return sp_connector->get_component(id);})
+                // Build the searching range vector.
                 | std::ranges::to<std::vector<std::shared_ptr<cavity>>>();
         }
         else range = sp_connector->_container;
@@ -43,8 +48,8 @@ bool cable::generate_allocations(int mode)
             
             auto dfs =  
             [&](auto&& self,                 
-                int cavity_ID,
-                int wire_index) -> void
+                int    cavity_ID,
+                int    wire_index)
             {
                 auto current_cavity = sp_connector->get_component(cavity_ID);
                 if (current_cavity->status()) return; // Cavity is already occupied
@@ -58,7 +63,7 @@ bool cable::generate_allocations(int mode)
                     _allocations.emplace(visited_cavity_indices, sp_connector);
                 
                 else // Continue searching through available neighbors
-                    for (const auto& neighbor : sp_connector->get_adjacency_list(cavity_ID))
+                    for (const auto& neighbor : sp_connector->get_adj_list(cavity_ID))
                         if (!visited_cavity_indices.count(neighbor))
                             self(self, neighbor, wire_index + 1);
     

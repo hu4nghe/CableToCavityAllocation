@@ -43,7 +43,7 @@ public :
      * @param ID The ID of cavity that we want to know his adjacent nodes.
      * @return A vector which contains all adjacent nodes.
      */
-    std::vector<int> get_adjacency_list(int ID) const { return _adjacency_list.at(ID); } 
+    std::vector<int> get_adj_list(int ID) const { return _adjacency_list.at(ID); } 
 
     /**
      * @brief 
