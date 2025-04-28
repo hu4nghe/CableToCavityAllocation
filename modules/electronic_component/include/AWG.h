@@ -18,7 +18,7 @@ public :
 
     enum awg_values : int 
     {
-        AWGUnkown = -1,
+        AWGUnknown = -1,
         AWG8  = 8,
         AWG10 = 10,
         AWG12 = 12,
@@ -31,7 +31,7 @@ public :
      * @brief 
      * Default constructor set attributes to unknown.
      */
-    constexpr AWG() : _value(awg_values::AWGUnkown) {}
+    constexpr AWG() : _value(awg_values::AWGUnknown) {}
 
     /**
      * @brief 
@@ -45,7 +45,7 @@ public :
      * Constructor with integer, if the integer is invalid, set value to unknown.
      */
     explicit constexpr AWG(int gauge) : 
-        _value(is_valid(gauge) ? static_cast<awg_values>(gauge) : awg_values::AWGUnkown) {}
+        _value(is_valid(gauge) ? static_cast<awg_values>(gauge) : awg_values::AWGUnknown) {}
 
     /**
      * @brief 

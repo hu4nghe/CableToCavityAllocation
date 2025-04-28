@@ -28,7 +28,7 @@ public :
 
     electronic_component_base() :
         _ID(0),
-        _gauge(AWG::AWGUnkown) {}
+        _gauge(AWG::AWGUnknown) {}
 
     /**
      * @brief 
