@@ -4,10 +4,23 @@
 #include <ranges>
 #include <iostream>
 #include <sstream>
+#include <filesystem>
 
+#include <pybind11/embed.h>
+#include <pybind11/stl.h>
+
+namespace py = pybind11;
+namespace fs = std::filesystem;
 
 void console_interaction(cable_allocator& allocator)
 {
+    auto repo_dir = fs::current_path().parent_path();
+    auto python_src_dir = fs::absolute(repo_dir / "Python" / "src");
+    py::module_ sys = py::module_::import("sys");
+    sys.attr("path").attr("append")(python_src_dir.string());
+
+    py::module_ visualizer = py::module_::import("visualizer");
+
     int cable_idx = 1;
     int idx = 0;
     int mode = 0;
@@ -55,7 +68,9 @@ void console_interaction(cable_allocator& allocator)
             }
             std::cin>>idx;
             allocator.confirme_allocation(cable_idx,idx);
-            allocator.print_connector_status();
+
+            auto status = allocator.get_connector_status();
+            visualizer.attr("visualize_connector")(status); 
 
             cable_idx++;
             mode = cable_idx == 1 ? 0 : 1;
@@ -65,12 +80,14 @@ void console_interaction(cable_allocator& allocator)
             std::print("Void input.\n");
             continue;
         }
-        
     }
 }
 
 int main()
 {
+
+    py::scoped_interpreter guard{}; 
+
     std::vector<std::tuple<int, int, double, double>> cavities;
     cavities.emplace_back(49, 16, 710.0,151.0);
     cavities.emplace_back(48, 16, 644.0,151.0);

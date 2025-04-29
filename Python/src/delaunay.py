@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 from scipy.spatial import Delaunay
-from src.cavity_detection import detect_pin
+from cavity_detection import detect_pin
 
 img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/21T16.png') 
 

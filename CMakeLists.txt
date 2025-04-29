@@ -1,6 +1,15 @@
 cmake_minimum_required(VERSION 3.16)
 project(CableAllocationProject)
 
+if(DEFINED ENV{VIRTUAL_ENV})
+    set(VIRTUAL_ENV $ENV{VIRTUAL_ENV})
+    message(STATUS "✅ Using virtual environment: ${VIRTUAL_ENV}")
+    set(Python3_ROOT_DIR "${VIRTUAL_ENV}")
+else()
+    message(WARNING "❌ VIRTUAL_ENV is not set. Using system Python instead.")
+endif()
+
+
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 

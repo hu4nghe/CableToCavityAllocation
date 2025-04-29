@@ -96,8 +96,8 @@ public :
         {
             auto status = cavity->status();
             auto text = status ? 
-                                        std::format("Occupied by Cable {:<2}", status) :
-                                        std::format("Available");
+                            std::format("Occupied by Cable {:<2}", status) :
+                            std::format("Available");            
             std::print("Cavity {:<2}: {}\n", cavity->get_ID(), text);
         }
     }

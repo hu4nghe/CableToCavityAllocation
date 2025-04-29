@@ -49,9 +49,15 @@ def detect_pin(Img):
     pins = sort_pins_by_rows(pins)
 
     for i, (Pos, r) in enumerate(pins, 1):
-        cv2.circle(Img, Pos, r, (0, 255, 0), 2)
-        text_pos = (Pos[0] - 10, Pos[1] - 10)
-        cv2.putText(Img, str(i), text_pos, cv2.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 2)
+        #cv2.circle(Img, Pos, r, (0, 255, 0), 2)
+        text_pos = (Pos[0], Pos[1] + 20)
+        cv2.putText(Img, 
+                    str(i), 
+                    text_pos, 
+                    cv2.FONT_HERSHEY_SIMPLEX, 
+                    0.4, 
+                    (255,255,255), 
+                    1)
 
     def determine_gauge(r):
         match r:
@@ -69,9 +75,10 @@ def detect_pin(Img):
                 return 22
             case _:
                 return r
-
-    for i in range(len(pins)):
+    result = []
+    for i, (Pos, r) in enumerate(pins, 0):
         coords, value = pins[i]
-        pins[i] = (coords, determine_gauge(value))
+        gauge = determine_gauge(value)
+        result.append((coords,gauge,r))    
 
-    return Img, pins
+    return Img, result

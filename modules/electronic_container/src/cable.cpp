@@ -74,7 +74,7 @@ bool cable::generate_allocations(int mode)
         }
         return !_allocations.empty();
     }
-    else throw std::runtime_error("connector is expired !"); // Connector is not valid
+    else throw std::runtime_error("connector is expired !"); 
 }
 
 void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)

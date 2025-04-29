@@ -82,7 +82,9 @@ public :
      * @brief 
      * Get the current connector status
      * 
-     * @return A vector, the nth is m means the nth cavity is allocated to cable m, 0 if cavity is available.
+     * @return A vector<int>, vec[n] is equal to
+     *         - 0 if cavity is available.
+     *         - m if cavity is occupied by cable m.
      */
     auto get_connector_status() const
     {
