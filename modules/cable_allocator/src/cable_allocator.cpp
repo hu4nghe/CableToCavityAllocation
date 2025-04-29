@@ -24,3 +24,10 @@ bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires, 
         return false;
     return true;
 }
+
+void cable_allocator::confirme_allocation(int cable_ID, int allocation_idx)
+{
+    if (cable_ID < 1 || cable_ID > _cable_list.size()) 
+        throw std::out_of_range("Cable index out of range.");
+    else _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
+}

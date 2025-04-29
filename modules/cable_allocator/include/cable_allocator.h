@@ -76,12 +76,7 @@ public :
      * 
      * @throw std::out_of_range If cable_ID is not valid.
      */
-    void confirme_allocation(int cable_ID, int allocation_idx)
-    {
-        if (cable_ID < 1 || cable_ID > _cable_list.size()) 
-            throw std::out_of_range("Cable index out of range.");
-        else _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
-    }
+    void confirme_allocation(int cable_ID, int allocation_idx);
 
     /**
      * @brief 
