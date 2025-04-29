@@ -20,13 +20,14 @@ cable_allocation::cable_allocation(const std::set<int>&             connections,
     _reserved_cavities( connections),
     _score (0.0)
 {
+    if (!sp_connector) throw std::runtime_error("connector is not valid.");
     std::vector<std::pair<double,double>> coords;
     for (const auto& connected_cavity : connections)
         coords.push_back(sp_connector->get_component(connected_cavity)->get_pos());
     _score = geo_tools::calculate_min_enclosing_circle_radius(coords);
 }
 
-bool cable_allocation::operator<(const cable_allocation &other) const
+bool cable_allocation::operator<(const cable_allocation &other) const noexcept
 {
     if (_reserved_cavities == other._reserved_cavities) 
         return false;

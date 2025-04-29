@@ -74,7 +74,7 @@ bool cable::generate_allocations(int mode)
         }
         return !_allocations.empty();
     }
-    else return false; // Connector is not valid
+    else throw std::runtime_error("connector is expired !"); // Connector is not valid
 }
 
 void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
@@ -87,11 +87,12 @@ void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
 
 void cable::confirme_allocation(int current_cable_ID, int allocation_ID)
 {
-    auto iter = std::next(_allocations.begin(),allocation_ID);
+    auto iter = std::next(_allocations.begin(), allocation_ID);
+    if (iter == _allocations.end()) throw std::out_of_range("Invalid allocation ID.");
     auto layout = (*iter).get_layout();
-    if (auto promoted_connector_ptr = _wp_connector.lock())
-        for (const auto& allocated_cavity_ID : layout)
-            promoted_connector_ptr->get_component(allocated_cavity_ID)->allocate_to_cable(current_cable_ID);
+    if (auto sp_connector = _wp_connector.lock())
+        for (const auto& chosen_cavity_ID : layout)
+            sp_connector->get_component(chosen_cavity_ID)->allocate_to_cable(current_cable_ID);
     
     _allocations.clear();
     _is_allocated = true;

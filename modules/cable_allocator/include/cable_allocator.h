@@ -33,7 +33,8 @@ public :
      * 
      * @param cavity_data Cavity data to initialize the connector, in format <ID, gauge, Pos_x, Pos_y>.
      */
-    cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data);
+    cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data) : 
+        _sp_connector(std::make_shared<connector>(cavity_data)) {}
 
      /**
      * @brief 
@@ -51,13 +52,35 @@ public :
      * Each allocation contains a score and a occupied cavity ID list.
      *
      * @param cable_ID The cable ID to which the allocations belong.
-     * @return A vector of allocations
+     * @return A vector of allocations in tuple format :
+     *         - double : Allocation's score
+     *         - std::set<int> : Indices of cavities allocated.
+     * 
+     * @throw std::out_of_range If cable_ID is not valid.
      */
     auto get_cable_allocations(int cable_ID) const
     {
-        return _cable_list.at(cable_ID - 1).get_allocations()
+        if (cable_ID < 1 || cable_ID > _cable_list.size()) 
+            throw std::out_of_range("Cable index out of range.");
+        else return _cable_list.at(cable_ID - 1).get_allocations()
             | std::views::transform([](const auto& a){return std::tuple{a.get_score(), a.get_layout()};}) 
             | std::ranges::to<std::set>();
+    }
+
+    /**
+     * @brief 
+     * To confirme a allocation of a cable.
+     * 
+     * @param cable_ID The cable that we want to allocate.
+     * @param allocation_idx The allocation's index.
+     * 
+     * @throw std::out_of_range If cable_ID is not valid.
+     */
+    void confirme_allocation(int cable_ID, int allocation_idx)
+    {
+        if (cable_ID < 1 || cable_ID > _cable_list.size()) 
+            throw std::out_of_range("Cable index out of range.");
+        else _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
     }
 
     /**
@@ -66,18 +89,11 @@ public :
      * 
      * @return A vector, the nth is m means the nth cavity is allocated to cable m, 0 if cavity is available.
      */
-    auto get_connector_status() const{ return _sp_connector->get_status(); }
-    
-    /**
-     * @brief 
-     * To confirme a allocation of a cable.
-     * 
-     * @param cable_ID The cable that we want to allocate.
-     * @param allocation_idx The allocation's index.
-     */
-    void confirme_allocation(int cable_ID, int allocation_idx)
-    { 
-        _cable_list.at(cable_ID - 1 ).confirme_allocation(cable_ID, allocation_idx); 
+    auto get_connector_status() const
+    {
+        return *(_sp_connector)
+            | std::views::transform([](const auto& c){return c->status();})  
+            | std::ranges::to<std::vector>();
     }
 
     /**

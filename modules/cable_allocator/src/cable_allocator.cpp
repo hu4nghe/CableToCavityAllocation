@@ -14,9 +14,6 @@
 
 #include "cable_allocator.h"
 
-cable_allocator::cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data) :
-    _sp_connector(std::make_shared<connector>(cavity_data)) {}
-
 bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires, int mode)
 {
     auto new_cable = cable(_sp_connector);

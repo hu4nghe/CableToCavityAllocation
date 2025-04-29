@@ -40,12 +40,22 @@ public :
     
     /**
      * @brief 
+     * Add wires to cable. 
+     * 
+     * @param wires A vector, each element indicates the wire's gauge and number.
+     */
+    void add_wires(const std::vector<std::tuple<int, int>>& wires);
+
+    /**
+     * @brief 
      * Generate possible allocations for current cable on the conncetor.
      * 
      * @param searching_range 1 to search allocations adjacent to placed cables. 
      *                        Others to select all allocations.
      * @return true If at least one allocation is found.
      * @return false If there is no allocation found.AIO_PRIO_DELTA_MAX
+     * 
+     * @throw std::runtime_error If connector pointer is expired.
      */
     bool generate_allocations(int mode);
 
@@ -56,16 +66,10 @@ public :
      * 
      * @param current_cable_ID Current Cable ID (which is externally managed by cable_allocator.)
      * @param allocation_ID ID of the allocation that we want to applicate.
+     * 
+     * @throw std::out_of_range If allocation ID is not valid.
      */
     void confirme_allocation(int current_cable_ID, int allocation_ID);
-
-    /**
-     * @brief 
-     * Add wires to cable. 
-     * 
-     * @param wires A vector, each element indicates the wire's gauge and number.
-     */
-    void add_wires(const std::vector<std::tuple<int, int>>& wires);
 
     /**
      * @brief 
@@ -73,7 +77,7 @@ public :
      * 
      * @return std::set<cable_allocation> Allocations for current cable.
      */
-    auto get_allocations() const { return _allocations; }
+    const auto& get_allocations() const { return _allocations; }
 
     /**
      * @brief 

@@ -43,21 +43,28 @@ void console_interaction(cable_allocator& allocator)
             
         }
         
-        allocator.add_cable(wires, mode);
-        auto allocations = allocator.get_cable_allocations(cable_idx);
-        for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+        if(allocator.add_cable(wires, mode))
         {
-            const auto& [score, allocation] = allocation_tuple;
-            std::print("Allocation {}, Score :{}\n", i, score);
-            for (const auto& cavity_ID : allocation)
-                std::print("cavity {}\n",  cavity_ID);
-        }
-        std::cin>>idx;
-        allocator.confirme_allocation(cable_idx,idx);
-        allocator.print_connector_status();
+            auto allocations = allocator.get_cable_allocations(cable_idx);
+            for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+            {
+                const auto& [score, allocation] = allocation_tuple;
+                std::print("Allocation {}, Score :{}\n", i, score);
+                for (const auto& cavity_ID : allocation)
+                    std::print("cavity {}\n",  cavity_ID);
+            }
+            std::cin>>idx;
+            allocator.confirme_allocation(cable_idx,idx);
+            allocator.print_connector_status();
 
-        cable_idx++;
-        mode = cable_idx == 1 ? 0 : 1;
+            cable_idx++;
+            mode = cable_idx == 1 ? 0 : 1;
+        }
+        else 
+        {
+            std::print("Void input.\n");
+            continue;
+        }
         
     }
 }
