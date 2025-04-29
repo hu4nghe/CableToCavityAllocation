@@ -62,5 +62,5 @@ public :
      * 
      * @return double Current allocation's score.
      */
-    double get_score() const { return _score; }
+    const double get_score() const { return _score; }
 };

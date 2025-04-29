@@ -78,7 +78,7 @@ public :
      * @brief 
      * Add iterator support(begin()) for range based for.
      * 
-     * @return auto container.begin()
+     * @return auto _container.begin()
      */
     auto begin() const { return _container.begin(); }
 
@@ -86,7 +86,7 @@ public :
      * @brief 
      * Add iterator support(end()) for range based for.
      * 
-     * @return auto container.end()
+     * @return auto _container.end()
      */
     auto end() const { return _container.end(); }
 
@@ -112,7 +112,7 @@ public :
      * @brief 
      * size() to imitate vector's behavior.
      * 
-     * @return std::size_t Container's size. 
+     * @return std::size_t _container's size. 
      */
     auto size() const { return _container.size(); }
 
@@ -122,7 +122,7 @@ public :
      * 
      * @param pos A const iterator of vector
      * @param ptr Object pointer to insert
-     * @return auto vector's insert return value.
+     * @return auto _containter.insert() return value.
      */
     auto insert(container_t::const_iterator pos, 
                 std::shared_ptr<T>          ptr) { return _container.insert(pos, ptr); }

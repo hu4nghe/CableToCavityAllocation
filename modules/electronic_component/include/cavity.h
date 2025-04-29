@@ -97,5 +97,5 @@ public :
      * 
      * @return std::pair<doube, doube> The 2D coordinate pair (x, y). 
      */
-    auto get_pos() const { return _position; }
+    const auto& get_pos() const { return _position; }
 };
