@@ -23,12 +23,13 @@ class cable_allocator;
 template <typename T>
 class electronic_container_base
 {
+    using container_t = std::vector<std::shared_ptr<T>>;
+    
 protected :
-
-    std::vector<std::shared_ptr<T>> _container;
+    
+    container_t _container;
 
 public :
-    friend class cable_allocator;
     
     /**
      * @brief 
@@ -51,10 +52,10 @@ public :
         // type checking
         if constexpr (std::is_same_v<T, wire>)
             static_assert(std::is_same_v<tuple_type, std::tuple<int, int>>,
-                          "Expecte tuple<int, int> for wire objects");
+                          "Require tuple<int, int> for wire objects");
         if constexpr (std::is_same_v<T, cavity>)
             static_assert(std::is_same_v<tuple_type, std::tuple<int, int, double, double>>,
-                          "Expecte tuple<int, int, double, double> for cavity objects");
+                          "Require tuple<int, int, double, double> for cavity objects");
                           
         for (const auto& p : components)
             _container.push_back(std::make_shared<T>(std::make_from_tuple<T>(p)));
@@ -69,14 +70,61 @@ public :
      */
     std::shared_ptr<T> get_component(const int& ID) const
     {
-        return *(std::ranges::find(_container, ID, &electronic_component_base::get_ID));
+        auto iter = std::ranges::find(_container, ID, &electronic_component_base::get_ID);
+        return iter == _container.end() ? nullptr : *iter;
     }
 
     /**
      * @brief 
-     * Get container size.
+     * Add iterator support(begin()) for range based for.
+     * 
+     * @return auto container.begin()
+     */
+    auto begin() const { return _container.begin(); }
+
+    /**
+     * @brief 
+     * Add iterator support(end()) for range based for.
+     * 
+     * @return auto container.end()
+     */
+    auto end() const { return _container.end(); }
+
+    /**
+     * @brief 
+     * Operator[] to imitate vector's behavior.(No boudary check.)
+     * 
+     * @param index key
+     * @return auto value
+     */
+    auto operator[](std::size_t index) const{ return _container[index]; }
+
+    /**
+     * @brief 
+     * at() to imitate vector's behavior.(With boundary check.)
+     * 
+     * @param index key
+     * @return auto value
+     */
+    auto at(std::size_t index) const{ return _container.at(index); }
+
+    /**
+     * @brief 
+     * size() to imitate vector's behavior.
      * 
      * @return std::size_t Container's size. 
      */
     auto size() const { return _container.size(); }
+
+    /**
+     * @brief 
+     * insert() to imitate vector's behavior (Adapt to std::ranges)
+     * 
+     * @param pos A const iterator of vector
+     * @param ptr Object pointer to insert
+     * @return auto vector's insert return value.
+     */
+    auto insert(container_t::const_iterator pos, 
+                std::shared_ptr<T>          ptr) { return _container.insert(pos, ptr); }
+
 };

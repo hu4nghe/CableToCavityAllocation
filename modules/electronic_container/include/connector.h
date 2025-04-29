@@ -15,13 +15,14 @@
 #pragma once
 
 #include "electronic_container_base.h"
+#include "delaunay.h"
 
 #include <unordered_map>
+#include <ranges>
+#include <print>
 
 class connector : public electronic_container_base<cavity>
 {
-    friend class cable;
-
 private :
 
     std::unordered_map<int, std::vector<int>> _adjacency_list;
@@ -30,11 +31,20 @@ public :
     
     /**
      * @brief 
+     * Default connector constructor.
+     * 
+     */
+    connector() = default;
+
+    /**
+     * @brief 
      * Construct a new connector object.
      * 
      * @param cavity_data Cavity's ID, gauge, and coordinates.
      */
-    connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data); 
+    connector(const std::vector<std::tuple<int, int, double, double>>& cavity_data) :
+        electronic_container_base<cavity>(cavity_data),
+        _adjacency_list(geo_tools::build_adjacency_list(cavity_data)) {}
 
     /**
      * @brief 
@@ -43,32 +53,53 @@ public :
      * @param ID The ID of cavity that we want to know his adjacent nodes.
      * @return A vector which contains all adjacent nodes.
      */
-    std::vector<int> get_adj_list(int ID) const { return _adjacency_list.at(ID); } 
+    const auto& get_adj_list(int ID) const { return _adjacency_list.at(ID); } 
 
     /**
-     * @brief 
-     * Calculate distance between two cavities.
+     * @brief Get the a list of cavities's status.
      * 
-     * @param i First cavity.
-     * @param j Second cavity.
-     * @return double Distance between two cavities.
+     * @return vector<int> that logs the status of cavities : 0 if available, otherwise the connected cable's ID. 
      */
-    double distance(int i, int j) const;
+    auto get_status() const
+    {
+        return _container
+            | std::views::transform([](const auto& c){return c->status();})  
+            | std::ranges::to<std::vector>();
+    }
 
-    ///debug functions
+    ///debug functions///
 
     /**
      * @brief 
      * print auto-generated adjacency list.
      * 
      */
-    void print_adjacency_list() const;
-
+    void print_adjacency_list() const
+    {
+        for (const auto& [cavity_ID, neighbors] : _adjacency_list)
+        {
+            std::print("Cavity {:0>2} is adjacent to: ", cavity_ID);
+            for (const auto& neighbor_ID : neighbors)
+                std::print("{:0>2} ", neighbor_ID);
+            std::print("\n");
+        }
+    }
+    
     /**
      * @brief 
      * print cavities and their status.
      * 
      */
-    void print_current_connector_status() const;
+    void print_current_connector_status() const
+    {
+        for (const auto cavity : _container)
+        {
+            auto status = cavity->status();
+            auto text = status ? 
+                                        std::format("Occupied by Cable {:<2}", status) :
+                                        std::format("Available");
+            std::print("Cavity {:<2}: {}\n", cavity->get_ID(), text);
+        }
+    }
    
 };

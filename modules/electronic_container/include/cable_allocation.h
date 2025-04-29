@@ -34,9 +34,11 @@ public :
      * 
      * @param connections A set that includes the cavities allocated to the cable.
      * @param connector A pointer that points to the cable's target connector.
+     * 
+     * @throw std::runtime_error If connector pointer is expired.
      */
-    cable_allocation(const std::set<int>&             connections, 
-                           std::shared_ptr<connector> connector);
+    cable_allocation(const std::set<int>&              connections, 
+                           std::shared_ptr<connector>  connector);
 
     /**
      * @brief 
@@ -46,19 +48,19 @@ public :
      * @return true If reserved_cavities < other's, if equal, compare their score.
      * @return false If they have same reserved cavities.
      */
-    bool operator<(const cable_allocation& other) const;
+    bool operator<(const cable_allocation& other) const noexcept;
 
     /**
      * @brief Get the set of allocated cavityies.
      * 
      * @return std::set<int> Allocated cavities for current cable.
      */
-    auto get_layout() const{ return _reserved_cavities; }
+    const auto& get_layout() const{ return _reserved_cavities; }
 
     /**
-     * @brief Get the score object
+     * @brief Get current allocation's score.
      * 
-     * @return auto 
+     * @return double Current allocation's score.
      */
-    auto get_score() const { return _score; }
+    double get_score() const { return _score; }
 };
