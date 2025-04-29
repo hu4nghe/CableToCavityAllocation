@@ -1,12 +1,18 @@
 cmake_minimum_required(VERSION 3.16)
 project(CableAllocationProject)
 
-if(DEFINED ENV{VIRTUAL_ENV})
-    set(VIRTUAL_ENV $ENV{VIRTUAL_ENV})
-    message(STATUS "✅ Using virtual environment: ${VIRTUAL_ENV}")
-    set(Python3_ROOT_DIR "${VIRTUAL_ENV}")
+if(NOT DEFINED ENV{VIRTUAL_ENV})
+    set(_default_venv_path "${CMAKE_SOURCE_DIR}/Python/DSLyon")
+    if(EXISTS "${_default_venv_path}/bin/activate")
+        set(ENV{VIRTUAL_ENV} "${_default_venv_path}")
+        set(VIRTUAL_ENV "${_default_venv_path}" CACHE PATH "Python virtual environment")
+        message(STATUS "✅ Automatically using virtual env at ${_default_venv_path}")
+    else()
+        message(WARNING "❌ VIRTUAL_ENV is not set. Using system Python instead.")
+    endif() 
 else()
-    message(WARNING "❌ VIRTUAL_ENV is not set. Using system Python instead.")
+    set(VIRTUAL_ENV "$ENV{VIRTUAL_ENV}" CACHE PATH "Python virtual environment")
+    message(STATUS "✅ Using virtual environment: $ENV{VIRTUAL_ENV}")
 endif()
 
 

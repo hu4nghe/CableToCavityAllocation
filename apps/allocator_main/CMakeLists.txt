@@ -9,7 +9,7 @@ if (VIRTUAL_ENV)
     set(PYBIND11_FINDPYTHON ON)
     find_package(pybind11 REQUIRED PATHS ${PYBIND11_DIR} NO_DEFAULT_PATH)
 else()
-    message(WARNING "VIRTUAL_ENV is not defined. Skipping Python module build.")
+    message(STATUS "VIRTUAL_ENV is not defined. Skipping Python module build.")
 endif()
 
 
