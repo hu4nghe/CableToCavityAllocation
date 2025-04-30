@@ -12,7 +12,7 @@
 namespace py = pybind11;
 namespace fs = std::filesystem;
 
-void console_interaction(cable_allocator& allocator)
+void console_interaction()
 {
     auto repo_dir = fs::current_path().parent_path();
     auto python_src_dir = fs::absolute(repo_dir / "Python" / "src");
@@ -20,10 +20,46 @@ void console_interaction(cable_allocator& allocator)
     sys.attr("path").attr("append")(python_src_dir.string());
 
     py::module_ visualizer = py::module_::import("visualizer");
-
+    
     int cable_idx = 1;
     int idx = 0;
     int mode = 0;
+
+    std::string image_path;
+    while (true) 
+    {
+        std::print("Please enter the image file path: \n");
+        std::getline(std::cin, image_path);
+
+        fs::path img_path_fs(image_path);
+
+        if (!fs::exists(img_path_fs)) 
+        {
+            std::cout << "The path does not exist. Try again.\n";
+            continue;
+        }
+
+       break;
+    }
+
+
+    py::object py_result = visualizer.attr("scan_pins")(image_path);
+
+
+    std::vector<std::tuple<int, int, double, double>> result;
+
+    for (const auto& item_raw : py_result) 
+    {
+        py::tuple item = item_raw.cast<py::tuple>(); 
+        int index = item[0].cast<int>();
+        int gauge = item[1].cast<int>();
+        double x = item[2].cast<double>();
+        double y = item[3].cast<double>();
+        result.emplace_back(index, gauge, x, y);
+    }
+
+    cable_allocator allocator(result);
+
     while (true)
     {
         std::vector<std::tuple<int,int>> wires;
@@ -85,63 +121,8 @@ void console_interaction(cable_allocator& allocator)
 
 int main()
 {
-
     py::scoped_interpreter guard{}; 
-
-    std::vector<std::tuple<int, int, double, double>> cavities;
-    cavities.emplace_back(49, 16, 710.0,151.0);
-    cavities.emplace_back(48, 16, 644.0,151.0);
-    cavities.emplace_back(47, 16, 578.0,151.0);
-    cavities.emplace_back(46, 16, 512.0,151.0);
-    cavities.emplace_back(45, 16, 446.0,151.0);
-    cavities.emplace_back(44, 16, 381.0,151.0);
-    cavities.emplace_back(43, 16, 315.0,151.0);
-    cavities.emplace_back(42, 16, 249.0,151.0);
-    cavities.emplace_back(41, 16, 183.0,151.0);
-    cavities.emplace_back(40, 16, 118.0,151.0);
-    cavities.emplace_back(39, 22, 728.0,99.0);
-    cavities.emplace_back(38, 22, 695.0,99.0);
-    cavities.emplace_back(37, 22, 662.0,99.0);
-    cavities.emplace_back(36, 22, 629.0,99.0);
-    cavities.emplace_back(35, 22, 596.0,99.0);
-    cavities.emplace_back(34, 22, 563.0,99.0);
-    cavities.emplace_back(33, 22, 530.0,99.0);
-    cavities.emplace_back(32, 22, 497.0,99.0);
-    cavities.emplace_back(31, 22, 464.0,99.0);
-    cavities.emplace_back(30, 22, 431.0,99.0);
-    cavities.emplace_back(29, 22, 398.0,99.0);
-    cavities.emplace_back(28, 22, 365.0,99.0);
-    cavities.emplace_back(27, 22, 332.0,99.0);
-    cavities.emplace_back(26, 22, 299.0,99.0);
-    cavities.emplace_back(25, 22, 266.0,99.0);
-    cavities.emplace_back(24, 22, 233.0,99.0);
-    cavities.emplace_back(23, 22, 200.0,99.0);
-    cavities.emplace_back(22, 22, 167.0,99.0);
-    cavities.emplace_back(21, 22, 134.0,99.0);
-    cavities.emplace_back(20, 22, 101.0,99.0);
-    cavities.emplace_back(19, 22, 711.0,71.0);
-    cavities.emplace_back(18, 22, 678.0,71.0);
-    cavities.emplace_back(17, 22, 645.0,71.0);
-    cavities.emplace_back(16, 22, 612.0,71.0);
-    cavities.emplace_back(15, 22, 579.0,71.0);
-    cavities.emplace_back(14, 22, 546.0,71.0);
-    cavities.emplace_back(13, 22, 513.0,71.0);
-    cavities.emplace_back(12, 22, 480.0,71.0);
-    cavities.emplace_back(11, 22, 447.0,71.0);
-    cavities.emplace_back(10, 22, 414.0,71.0);
-    cavities.emplace_back(9, 22, 381.0,71.0);
-    cavities.emplace_back(8, 22, 348.0,71.0);
-    cavities.emplace_back(7, 22, 315.0,71.0);
-    cavities.emplace_back(6, 22, 282.0,71.0);
-    cavities.emplace_back(5, 22, 249.0,71.0);
-    cavities.emplace_back(4, 22, 216.0,71.0);
-    cavities.emplace_back(3, 22, 183.0,71.0);
-    cavities.emplace_back(2, 22, 151.0,71.0);
-    cavities.emplace_back(1, 22, 118.0,71.0);
-
-
-    cable_allocator allocator(cavities);
-    console_interaction(allocator);
+    console_interaction();
     return  0;
 }
 

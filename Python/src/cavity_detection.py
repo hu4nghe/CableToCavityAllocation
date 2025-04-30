@@ -75,10 +75,12 @@ def detect_pin(Img):
                 return 22
             case _:
                 return r
-    result = []
+    cpp_result = []
+    py_result = []
+    pins.reverse()
     for i, (Pos, r) in enumerate(pins, 0):
-        coords, value = pins[i]
-        gauge = determine_gauge(value)
-        result.append((coords,gauge,r))    
+        gauge = determine_gauge(r)
+        cpp_result.append((len(pins) - i, gauge, Pos[0], Pos[1]))
+        py_result.append((Pos, r))
 
-    return Img, result
+    return Img, cpp_result, py_result

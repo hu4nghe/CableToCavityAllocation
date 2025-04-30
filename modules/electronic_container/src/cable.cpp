@@ -18,7 +18,7 @@
 
 bool cable::generate_allocations(int mode)
 {
-    connector seraching_range;
+    connector searching_range;
     
     if (_container.empty()) return false; // No wires to allocate
     else if (auto sp_connector = _wp_connector.lock())
@@ -26,7 +26,7 @@ bool cable::generate_allocations(int mode)
         if (mode == 1)
         {
             // Search only the places near the allocated cavities.
-            seraching_range = *sp_connector
+            searching_range = *sp_connector
                 // Find allocated cavities.
                 | std::views::filter([&](const auto& obj){return obj->status() != 0;})
                 // Get their adjacent cavities.
@@ -37,12 +37,18 @@ bool cable::generate_allocations(int mode)
                 | std::ranges::to<std::vector<int>>()
                 // Retrive the cavity object by ID.
                 | std::views::transform([&](int id){return sp_connector->get_component(id);})
-                // Build the searching seraching_range vector.
+                // Build the searching searching_range vector.
                 | std::ranges::to<connector>();
         }
-        else seraching_range = *sp_connector;
-            
-        for (const auto& path_head_cavity : seraching_range)
+        else searching_range = *sp_connector;
+        
+        /*std::print("searching list :\n");
+        for (const auto& element : searching_range)
+        {
+            std::print("{}\n",element->get_ID());
+        }*/
+
+        for (const auto& path_head_cavity : searching_range)
         {
             std::set<int> visited_cavity_indices;
             
