@@ -5,11 +5,10 @@ bin/
 html/
 Python/DSLyon/
 Python/PCHome/
+Python/Surface/
 __pycache__/
 .vscode/
-__pycache__/
 
 *.pyc
-
 *.pyo
 *.pyd
