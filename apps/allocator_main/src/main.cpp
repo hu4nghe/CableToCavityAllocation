@@ -14,18 +14,22 @@ namespace fs = std::filesystem;
 
 void console_interaction()
 {
-    auto repo_dir = fs::current_path().parent_path();
-    auto python_src_dir = fs::absolute(repo_dir / "Python" / "src");
-    py::module_ sys = py::module_::import("sys");
-    sys.attr("path").attr("append")(python_src_dir.string());
+    /**
+     * prepare python scripts
+     */
+    auto repository_dir = fs::current_path().parent_path();
+    auto python_src_dir = repository_dir / "Python" / "src";
 
     py::module_ visualizer = py::module_::import("visualizer");
+    py::module_ sys        = py::module_::import("sys");
+    sys.attr("path").attr("append")(python_src_dir.string());
     
     int cable_idx = 1;
     int idx = 0;
     int mode = 0;
 
     std::string image_path;
+
     while (true) 
     {
         std::print("Please enter the image file path: \n");
@@ -35,16 +39,14 @@ void console_interaction()
 
         if (!fs::exists(img_path_fs)) 
         {
-            std::cout << "The path does not exist. Try again.\n";
+	    std::print("The path does not exist. Try again.\n");
             continue;
         }
 
        break;
     }
 
-
     py::object py_result = visualizer.attr("scan_pins")(image_path);
-
 
     std::vector<std::tuple<int, int, double, double>> result;
 
@@ -53,7 +55,7 @@ void console_interaction()
         py::tuple item = item_raw.cast<py::tuple>(); 
         int index = item[0].cast<int>();
         int gauge = item[1].cast<int>();
-        double x = item[2].cast<double>();
+        double x   = item[2].cast<double>();
         double y = item[3].cast<double>();
         result.emplace_back(index, gauge, x, y);
     }
