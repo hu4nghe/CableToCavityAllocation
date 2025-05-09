@@ -18,11 +18,10 @@ void console_interaction()
      * prepare python scripts
      */
     auto repository_dir = fs::current_path().parent_path();
-    auto python_src_dir = repository_dir / "Python" / "src";
-
-    py::module_ visualizer = py::module_::import("visualizer");
+    auto python_src_dir = fs::absolute(repository_dir / "Python" / "src");
     py::module_ sys        = py::module_::import("sys");
     sys.attr("path").attr("append")(python_src_dir.string());
+    py::module_ visualizer = py::module_::import("visualizer");
     
     int cable_idx = 1;
     int idx = 0;
