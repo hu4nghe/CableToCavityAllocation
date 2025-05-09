@@ -48,11 +48,11 @@ auto delaunay_triangulate(const std::vector<point>& points)
     for (const auto& p : points) 
     {
         std::set<edge> polygon;
-        all_triangles.erase(std::remove_if( all_triangles.begin(), 
+        all_triangles.erase(std::remove_if (all_triangles.begin(), 
                                             all_triangles.end(),
                                             [&](const triangle& tri) 
                                             {
-                                                if (tri.circumCircle().contains(p)) 
+                                                if (tri.circum_circle().contains(p)) 
                                                 {
                                                     edge e1{tri.a, tri.b}, 
                                                          e2{tri.b, tri.c}, 
@@ -62,7 +62,7 @@ auto delaunay_triangulate(const std::vector<point>& points)
                                                         else polygon.insert(e);
                                                     return true;
                                                 }
-                                                else return false;
+                                                return false;
                                             }), 
                             all_triangles.end());
         //construct new triangles with current point and edges.                                
@@ -71,13 +71,14 @@ auto delaunay_triangulate(const std::vector<point>& points)
     }
 
     // Remove triangles that contain any of the super triangle vertices.
-    all_triangles.erase(std::remove_if( all_triangles.begin(), 
+    all_triangles.erase(std::remove_if (all_triangles.begin(), 
                                         all_triangles.end(), 
                                         [&](const triangle& tri) 
                                         {
-                                            return tri.containsVertex(p1) || 
-                                                   tri.containsVertex(p2) || 
-                                                   tri.containsVertex(p3);
+                                            for (const auto& p : {p1, p2, p3})
+                                                if(tri.containsVertex(p))
+                                                    return true;
+                                            return false;
                                         }), 
                         all_triangles.end());
     return all_triangles;
@@ -88,10 +89,10 @@ auto build_adjacency_list_from_result(const std::vector<triangle>& triangles)
     std::unordered_map<int, std::set<int>> adjacency_set;
 
     for (const auto& tri : triangles)
-        for (auto i : {tri.a.id, tri.b.id, tri.c.id})
-            for (auto j : {tri.a.id, tri.b.id, tri.c.id})
+        for (const auto& i : {tri.a.id, tri.b.id, tri.c.id})
+            for (const auto& j : {tri.a.id, tri.b.id, tri.c.id})
                 if (i != j)
-                    adjacency_set[i].insert(j);
+                    adjacency_set.at(i).insert(j);
     
     return adjacency_set
         | std::views::transform([](auto&& pair)

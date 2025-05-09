@@ -36,7 +36,7 @@ circle make_circle_two_points(const point& a, const point& b)
 circle make_circle_three_points(const point& a, const point& b, const point& c) 
 {
     triangle tri(a, b, c);
-    return tri.circumCircle();
+    return tri.circum_circle();
 }
 
 circle welzl(std::vector<point>& P, std::vector<point> R, int n) 

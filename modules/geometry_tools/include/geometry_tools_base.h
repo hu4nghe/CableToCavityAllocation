@@ -86,7 +86,7 @@ namespace geo_tools
                                                 b.x * (c.y - a.y) + 
                                                 c.x * (a.y - b.y)) / 2.0); }
 
-        circle circumCircle() const
+        circle circum_circle() const
         {
             double a1 = b.x - a.x, 
                 b1 = b.y - a.y, 

@@ -94,7 +94,7 @@ void console_interaction()
             
         }
         
-        if(allocator.add_cable(wires, mode))
+        if (allocator.add_cable(wires, mode))
         {
             auto allocations = allocator.get_cable_allocations(cable_idx);
             for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
