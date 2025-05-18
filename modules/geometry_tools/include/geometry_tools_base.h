@@ -15,6 +15,44 @@
 #include <stdexcept>
 namespace geo_tools
 {
+    auto get_dbl_delta =
+        [](double a, 
+           double b, 
+           double epsilon = std::numeric_limits<double>::epsilon())
+        { 
+            auto diff  = a - b;
+            auto abs_a = std::fabs(a);
+            auto abs_b = std::fabs(b);
+            auto max_val = std::max(abs_a, abs_b);
+            return std::tuple(diff, max_val * epsilon);
+        };
+    auto dbl_eq = 
+        [](double a, 
+           double b, 
+           double epsilon = std::numeric_limits<double>::epsilon())
+        { 
+            auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
+            return std::fabs(diff) <= relative_epsilon;
+        };
+    auto dbl_sup =
+        [](double a, 
+           double b, 
+           double epsilon = std::numeric_limits<double>::epsilon())
+        { 
+            auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
+            return diff > relative_epsilon;
+        };
+    auto dbl_inf = 
+        [](double a, 
+           double b, 
+           double epsilon = std::numeric_limits<double>::epsilon())
+        { 
+            auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
+            return -diff > relative_epsilon;
+        };
+
+
+
     struct point
     {
     public:
@@ -24,14 +62,13 @@ namespace geo_tools
         point() = default;
         point(int id, double x, double y) : id(id), x(x), y(y) {}
 
-        bool operator==(const point& p) const { return id == p.id && x == p.x && y  == p.y; }
+        bool operator==(const point& p) const { return id == p.id && dbl_eq(x, p.x) && dbl_eq(y, p.y); }
         bool operator!=(const point& p) const { return !(*this == p); }
-
-        double distance(const point& p) const { return std::sqrt((x - p.x) * (x - p.x) + 
-                                                                (y - p.y) * (y - p.y)); }
-        double slope   (const point& p) const { return *this != p ? 
-                                                            (y - p.y) / (x - p.x) :
-                                                            std::numeric_limits<double>::infinity(); }
+        bool operator< (const point& p) const { return dbl_eq(x, p.x) ? dbl_inf(y, p.y) : dbl_inf(x, p.x); }
+        bool operator> (const point& p) const { return (*this != p) && !(*this < p); }
+        double distance(const point& p) const { return std::sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y)); }
+        double slope   (const point& p) const { return dbl_eq(x, p.x) ? std::numeric_limits<double>::infinity() : (y - p.y) / (x - p.x);}
+        
     };
 
     struct edge
@@ -41,18 +78,9 @@ namespace geo_tools
         point b;
 
         edge() = default;
-        edge(point a, point b) : a(a), b(b) {}
-        bool operator==(const edge& p) const { return (a.id == p.a.id && b.id == p.b.id) ||
-                                                    (a.id == p.b.id && b.id == p.a.id); }
-        // Only for std::set use
-        bool operator<(const edge& p) const 
-        {
-            int min1 = std::min(a.id, b.id),     
-                max1 = std::max(a.id, b.id);
-            int min2 = std::min(p.a.id, p.b.id), 
-                max2 = std::max(p.a.id, p.b.id);
-            return std::tie(min1, max1) < std::tie(min2, max2);
-        }
+        edge(point a, point b) : a(a > b ? a : b), b(a > b ? b : a) {}
+        bool operator==(const edge& p) const { return a == p.a && b == p.b; }
+        bool operator< (const edge& p) const { return a == p.a ? b < p.b : a < p.a; }
     };
 
     struct circle
