@@ -15,7 +15,7 @@
 #include <stdexcept>
 namespace geo_tools
 {
-    auto get_dbl_delta =
+    static auto get_dbl_delta =
         [](double a, 
            double b, 
            double epsilon = std::numeric_limits<double>::epsilon())
@@ -26,7 +26,7 @@ namespace geo_tools
             auto max_val = std::max(abs_a, abs_b);
             return std::tuple(diff, max_val * epsilon);
         };
-    auto dbl_eq = 
+    static auto dbl_eq = 
         [](double a, 
            double b, 
            double epsilon = std::numeric_limits<double>::epsilon())
@@ -34,7 +34,7 @@ namespace geo_tools
             auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
             return std::fabs(diff) <= relative_epsilon;
         };
-    auto dbl_sup =
+    static auto dbl_sup =
         [](double a, 
            double b, 
            double epsilon = std::numeric_limits<double>::epsilon())
@@ -42,7 +42,7 @@ namespace geo_tools
             auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
             return diff > relative_epsilon;
         };
-    auto dbl_inf = 
+    static auto dbl_inf = 
         [](double a, 
            double b, 
            double epsilon = std::numeric_limits<double>::epsilon())
