@@ -21,10 +21,15 @@ using namespace geo_tools;
 
 std::vector<point> points_init(const std::vector<std::pair<double, double>>& coords) 
 {
-    std::vector<point> pts;
-    for (const auto& [i, coord] : std::views::enumerate(coords))
-        pts.emplace_back(i, coord.first, coord.second);
-    return pts;
+    return coords 
+        | std::views::enumerate
+        | std::views::transform(
+            [](const auto& pair) 
+            {
+                const auto& [i, coord] = pair;
+                return point{ static_cast<int>(i), coord.first, coord.second };
+            })
+        | std::ranges::to<std::vector>();
 }
 
 circle make_circle_two_points(const point& a, const point& b) 
