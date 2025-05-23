@@ -41,12 +41,6 @@ bool cable::generate_allocations(int mode)
                 | std::ranges::to<connector>();
         }
         else searching_range = *sp_connector;
-        
-        /*std::print("searching list :\n");
-        for (const auto& element : searching_range)
-        {
-            std::print("{}\n",element->get_ID());
-        }*/
 
         for (const auto& path_head_cavity : searching_range)
         {
