@@ -17,6 +17,7 @@
 #include "electronic_container_base.h"
 #include "delaunay.h"
 
+#include <map>
 #include <unordered_map>
 #include <ranges>
 #include <print>
@@ -76,7 +77,8 @@ public :
      */
     void print_adjacency_list() const
     {
-        for (const auto& [cavity_ID, neighbors] : _adjacency_list)
+        std::map<int, std::vector<int>> ordered_result(_adjacency_list.begin(),_adjacency_list.end());
+        for (const auto& [cavity_ID, neighbors] : ordered_result)
         {
             std::print("Cavity {:0>2} is adjacent to: ", cavity_ID);
             for (const auto& neighbor_ID : neighbors)

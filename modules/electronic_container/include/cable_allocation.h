@@ -37,7 +37,7 @@ public :
      * 
      * @throw std::runtime_error If connector pointer is expired.
      */
-    cable_allocation(const std::set<int>&              connections, 
+    cable_allocation(const std::vector<int>&           connections, 
                            std::shared_ptr<connector>  connector);
 
     /**

@@ -54,8 +54,8 @@ void console_interaction()
         py::tuple item = item_raw.cast<py::tuple>(); 
         int index = item[0].cast<int>();
         int gauge = item[1].cast<int>();
-        double x   = item[2].cast<double>();
-        double y = item[3].cast<double>();
+        double x  = item[2].cast<double>();
+        double y  = item[3].cast<double>();
         result.emplace_back(index, gauge, x, y);
     }
 

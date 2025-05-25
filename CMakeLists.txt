@@ -33,4 +33,3 @@ add_subdirectory(modules/geometry_tools)
 
 # executable
 add_subdirectory(apps/allocator_main)
-add_subdirectory(apps/module_tester)

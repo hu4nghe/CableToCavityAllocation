@@ -15,6 +15,7 @@
 #include "cable.h"
 
 #include <ranges>
+#include <algorithm>
 
 bool cable::generate_allocations(int mode)
 {
@@ -44,7 +45,7 @@ bool cable::generate_allocations(int mode)
 
         for (const auto& path_head_cavity : searching_range)
         {
-            std::set<int> visited_cavity_indices;
+            std::vector<int> visited_cavity_indices;
             
             auto dfs =  
             [&](auto&& self,                 
@@ -53,22 +54,22 @@ bool cable::generate_allocations(int mode)
             {
                 auto current_cavity = sp_connector->get_component(cavity_ID);
                 if (current_cavity->status()) return; // Cavity is already occupied
-                auto current_wire   = _container[wire_index];
+                auto current_wire = _container[wire_index];
                 if (!current_cavity->is_compatible(*current_wire)) return; // cavity not compatible
                 
                 // Log the searching path
-                visited_cavity_indices.insert(cavity_ID);
+                visited_cavity_indices.push_back(cavity_ID);
                 
                 if (visited_cavity_indices.size() == size()) // Save valid complete regions
                     _allocations.emplace(visited_cavity_indices, sp_connector);
                 
                 else // Continue searching through available neighbors
                     for (const auto& neighbor : sp_connector->get_adj_list(cavity_ID))
-                        if (!visited_cavity_indices.count(neighbor))
+                        if (!std::ranges::contains(visited_cavity_indices,neighbor))
                             self(self, neighbor, wire_index + 1);
-    
+
                 // Backtrack
-                visited_cavity_indices.erase(cavity_ID);
+                visited_cavity_indices.pop_back();
             };
             dfs(dfs, path_head_cavity->get_ID(), 0); 
         }

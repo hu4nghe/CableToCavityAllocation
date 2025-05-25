@@ -15,9 +15,9 @@
 #include "cable_allocation.h"
 #include "min_enclosing_circle.h"
 
-cable_allocation::cable_allocation(const std::set<int>&             connections,
+cable_allocation::cable_allocation(const std::vector<int>&          connections,
                                          std::shared_ptr<connector> sp_connector) :
-    _reserved_cavities( connections),
+    _reserved_cavities(connections.begin(),connections.end()),
     _score (0.0)
 {
     if (!sp_connector) throw std::runtime_error("connector is not valid.");
