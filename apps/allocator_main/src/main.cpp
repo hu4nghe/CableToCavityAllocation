@@ -3,6 +3,7 @@
 #include <print>
 #include <ranges>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include <filesystem>
 
@@ -11,6 +12,25 @@
 
 namespace py = pybind11;
 namespace fs = std::filesystem;
+
+fs::path read_file(const std::string& target_ext,
+                   const std::string& hint)
+{
+    fs::path input_path_fs;
+    while (true) 
+    {
+        std::string input_path;
+        std::print("{}",hint);
+        std::getline(std::cin, input_path);
+        input_path_fs = input_path;
+        if (!fs::exists(input_path_fs)) 
+	        std::print("The path does not exist, try again.\n");
+        else if (input_path_fs.extension() != target_ext)
+            std::print("The format is not supported, try again.\n");
+        else break;
+    }
+    return input_path_fs;
+}
 
 void console_interaction()
 {
@@ -27,28 +47,12 @@ void console_interaction()
     int idx = 0;
     int mode = 0;
 
-    std::string image_path;
-
-    while (true) 
-    {
-        std::print("Please enter the image file path: \n");
-        std::getline(std::cin, image_path);
-
-        fs::path img_path_fs(image_path);
-
-        if (!fs::exists(img_path_fs)) 
-        {
-	    std::print("The path does not exist. Try again.\n");
-            continue;
-        }
-
-       break;
-    }
-
-    py::object py_result = visualizer.attr("scan_pins")(image_path);
-
+    // Build connector object from a connector image.
+    const std::string& connector_hint = "Please enter the image file path: \n";
+    const std::string& connector_ext  = ".png";
+    auto image_path = read_file(connector_ext, connector_hint);
+    py::object py_result = visualizer.attr("scan_pins")(image_path.string());
     std::vector<std::tuple<int, int, double, double>> result;
-
     for (const auto& item_raw : py_result) 
     {
         py::tuple item = item_raw.cast<py::tuple>(); 
@@ -58,65 +62,60 @@ void console_interaction()
         double y  = item[3].cast<double>();
         result.emplace_back(index, gauge, x, y);
     }
-
     cable_allocator allocator(result);
 
-    while (true)
+    // Read cable data
+    const std::string cable_hint = "Please enter the cable data path.\n";
+    const std::string cable_ext  = ".csv";
+    std::ifstream cable_input_file(read_file(cable_ext, cable_hint));
+    std::string line;
+    // Ignore first line;
+    std::getline(cable_input_file, line);
+    std::map<int, std::vector<std::tuple<int, int>>> cable_data;
+    while (std::getline(cable_input_file, line)) 
     {
-        std::vector<std::tuple<int,int>> wires;
-        std::string input_line;
+        std::istringstream iss(line);
 
-        std::print("Enter groups of data (gauge number_of_wires), or type 'end' to finish:\n");
-        
-        while (true)
-        {
-            std::getline(std::cin, input_line);
-            
-            // Skip empty lines
-            if (input_line.empty())
-                continue;
+        std::string token;
+        int cable_idx = 0;
+        int gauge     = 0;
+        int num_wires = 0;
 
-            // Check if the user wants to end the input
-            if (input_line == "end")
-                break;
+        if (std::getline(iss, token, ',')) 
+            cable_idx = std::stoi(token);
+        if (std::getline(iss, token, ',')) 
+            gauge = std::stoi(token);
+        if (std::getline(iss, token, ',')) 
+            num_wires = std::stoi(token);
 
-            // Parse the input line
-            std::istringstream iss(input_line);
-            int gauge, num_wires;
-            if (!(iss >> gauge >> num_wires))
-            {
-                std::print("Invalid input. Please enter two integers (gauge number_of_wires) or 'end'.\n");
-                continue;
-            }
-
-            wires.emplace_back(gauge, num_wires);
-            
-        }
-        
-        if (allocator.add_cable(wires, mode))
+        cable_data[cable_idx].emplace_back(gauge, num_wires);
+    }
+    for (auto& [cable_idx, wires] : cable_data) 
+    {
+        if (allocator.add_cable(wires, mode)) 
         {
             auto allocations = allocator.get_cable_allocations(cable_idx);
-            for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations))
+            for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations)) 
             {
                 const auto& [score, allocation] = allocation_tuple;
-                std::print("Allocation {}, Score :{}\n", i, score);
+                std::print("Cable {} - Allocation {}, Score: {}\n", cable_idx, i, score);
                 for (const auto& cavity_ID : allocation)
-                    std::print("cavity {}\n",  cavity_ID);
+                    std::print("cavity {}\n", cavity_ID);
             }
-            std::cin>>idx;
-            allocator.confirme_allocation(cable_idx,idx);
+
+            int idx;
+            std::print("Choose allocation index for cable {}: ", cable_idx);
+            std::cin >> idx;
+
+            allocator.confirme_allocation(cable_idx, idx);
 
             auto status = allocator.get_connector_status();
-            visualizer.attr("visualize_connector")(status); 
+            visualizer.attr("visualize_connector")(status);
 
-            cable_idx++;
-            mode = cable_idx == 1 ? 0 : 1;
-        }
+            mode = cable_idx == 0 ? 0 : 1;
+        } 
         else 
-        {
-            std::print("Void input.\n");
-            continue;
-        }
+            std::print("Invalid cable input for cable {}.\n", cable_idx);
     }
 }
 
