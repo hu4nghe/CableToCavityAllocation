@@ -19,31 +19,50 @@
 
 bool cable::generate_allocations(int mode)
 {
-    connector searching_range;
-    
     if (_container.empty()) return false; // No wires to allocate
-    else if (auto sp_connector = _wp_connector.lock())
+    if(auto sp_connector = _wp_connector.lock())
     {
-        if (mode == 1)
-        {
-            // Search only the places near the allocated cavities.
-            searching_range = *sp_connector
-                // Find allocated cavities.
-                | std::views::filter([&](const auto& obj){return obj->status() != 0;})
-                // Get their adjacent cavities.
-                | std::views::transform([&](const auto& obj){return sp_connector->get_adj_list(obj->get_ID());})
-                // Flatten the adjacent cavities's index.
-                | std::views::join
-                // Turn result into a cavity index vector.
-                | std::ranges::to<std::vector<int>>()
-                // Retrive the cavity object by ID.
-                | std::views::transform([&](int id){return sp_connector->get_component(id);})
-                // Build the searching searching_range vector.
-                | std::ranges::to<connector>();
-        }
-        else searching_range = *sp_connector;
+        auto define_searching_range = 
+            [&]()
+            {
+                if (mode == 1)
+                    // Search only the places near the allocated cavities.
+                    return std::make_shared<connector>(
+                        *sp_connector
+                        // Find all allocated cavities.
+                        | std::views::filter(   
+                            [&](const auto& obj)
+                            {
+                                return obj->status() != 0; 
+                            })
 
-        for (const auto& path_head_cavity : searching_range)
+                        // Get their neighbors.
+                        | std::views::transform(
+                            [&](const auto& obj)
+                            { 
+                                return sp_connector->get_adj_list(obj->get_ID()); 
+                            })
+
+                        // Flatten the result(neighbor's ID)
+                        | std::views::join
+
+                        // Retrive the cavity object by ID.
+                        | std::views::transform(
+                            [&](int id)
+                            {
+                                return sp_connector->get_component(id);
+                            })
+                            
+                        // Build filter result(searching near the allocated cavities.)
+                        | std::ranges::to<connector>());
+            
+                else 
+                    return sp_connector;
+            };
+    
+        auto searching_range = define_searching_range();
+
+        for (const auto& path_head_cavity : *searching_range)
         {
             std::vector<int> visited_cavity_indices;
             
@@ -89,7 +108,9 @@ void cable::add_wires(const std::vector<std::tuple<int, int>> &wires)
 void cable::confirme_allocation(int current_cable_ID, int allocation_ID)
 {
     auto iter = std::next(_allocations.begin(), allocation_ID);
-    if (iter == _allocations.end()) throw std::out_of_range("Invalid allocation ID.");
+    if (iter == _allocations.end()) 
+        throw std::out_of_range("Invalid allocation ID.");
+        
     auto layout = (*iter).get_layout();
     if (auto sp_connector = _wp_connector.lock())
         for (const auto& chosen_cavity_ID : layout)
