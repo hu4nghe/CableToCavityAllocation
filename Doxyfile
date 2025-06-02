@@ -42,7 +42,7 @@ DOXYFILE_ENCODING      = UTF-8
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "My Project"
+PROJECT_NAME           = "Cable Allocator"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -2872,14 +2872,11 @@ COLLABORATION_GRAPH = YES
 CALL_GRAPH = YES
 CALLER_GRAPH = YES
 
-# 指定图形工具路径（Graphviz）
 DOT_PATH = /usr/bin/dot
 
-# 识别 JavaDoc 风格注释
 JAVADOC_AUTOBRIEF = YES
-EXTRACT_PRIVATE = YES   # 包含私有成员
-RECURSIVE = YES        # 递归处理子目录
+EXTRACT_PRIVATE = YES   
+RECURSIVE = YES       
 
-# 输出格式
-GENERATE_LATEX = NO    # 不需要 LaTeX
-GENERATE_HTML = YES    # 生成 HTML 文档
+GENERATE_LATEX = NO  
+GENERATE_HTML = YES   
