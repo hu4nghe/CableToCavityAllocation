@@ -3,9 +3,9 @@ import numpy as np
 from scipy.spatial import Delaunay
 from cavity_detection import detect_pin
 
-img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/21T16.png') 
+img = cv2.imread('/home/hhg10/CableToCavityAllocation/Resources/Connectors/ConnectorRond.png') 
 
-detectedImg,cavities = detect_pin(img)
+detectedImg,_,cavities = detect_pin(img)
 centers = [pt for pt, _ in cavities]
 cv2.imshow("DetectedImg", detectedImg)
 cv2.waitKey(0)
