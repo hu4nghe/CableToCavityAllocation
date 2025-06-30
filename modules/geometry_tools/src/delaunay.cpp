@@ -12,6 +12,7 @@
 #include <set>
 #include <algorithm>
 #include <ranges>
+#include <iostream>
 
 #include "geometry_tools_base.h"
 #include "delaunay.h"
@@ -46,6 +47,8 @@ auto delaunay_triangulate(const std::vector<point>& points)
 
     for (const auto& p : points) 
     {
+        std::cout << "[INSERT] Point ID=" << p.id << " (" << p.x << ", " << p.y << ")\n";
+
         std::set<edge> polygon;
         std::erase_if(
             all_triangles, 
@@ -53,20 +56,36 @@ auto delaunay_triangulate(const std::vector<point>& points)
             {
                 if (tri.circum_circle().contains(p))
                 {
+                    std::cout << "[REMOVE] Triangle (" << tri.a.id << ", " << tri.b.id << ", " << tri.c.id 
+          << ") circumcircle contains point ID=" << p.id << "\n";
+
                     edge e1{tri.a, tri.b}, 
                          e2{tri.b, tri.c},
                          e3{tri.c, tri.a};
                     for (const auto& e : {e1, e2, e3}) 
+                    {
                         if (!polygon.erase(e)) 
+                        {
+                            std::cout << "[CAVITY] Add edge (" << e.a.id << ", " << e.b.id << ")\n";
                             polygon.insert(e);
+                        } 
+                        else 
+                        {
+                            std::cout << "[CAVITY] Cancel edge (" << e.a.id << ", " << e.b.id << ")\n";
+                        }
+                    }
+
                     return true;
                 }
                 return false;             
             });
                          
         //construct new triangles with current point and edges.                                
-        for (const auto& e : polygon) 
+        for (const auto& e : polygon)
+        {
             all_triangles.emplace_back(p, e);
+            std::cout << "[ADD TRIANGLE] (" << p.id << ", " << e.a.id << ", " << e.b.id << ")\n";
+        }
     }
 
     // Remove triangles that contain any of the super triangle vertices.

@@ -34,7 +34,7 @@ public :
      * @param cavity_data Cavity data to initialize the connector, in format <ID, gauge, Pos_x, Pos_y>.
      */
     cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data) : 
-        _sp_connector(std::make_shared<connector>(cavity_data)) {}
+        _sp_connector(std::make_shared<connector>(cavity_data)) { _sp_connector->print_adjacency_list(); }
 
      /**
      * @brief 
