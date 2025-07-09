@@ -4,8 +4,8 @@
  * HUANG He (he.huang@utt.fr)
  * @brief 
  * Implementation of min_enclosing_circle.h
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  */
 

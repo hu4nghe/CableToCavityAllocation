@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a connector.
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -54,54 +54,5 @@ public :
      * @param ID The ID of cavity that we want to know his adjacent nodes.
      * @return A vector which contains all adjacent nodes.
      */
-    const auto& get_adj_list(int ID) const { return _adjacency_list.at(ID); } 
-
-    /**
-     * @brief Get the a list of cavities's status.
-     * 
-     * @return vector<int> that logs the status of cavities : 0 if available, otherwise the connected cable's ID. 
-     */
-    auto get_status() const
-    {
-        return _container
-            | std::views::transform([](const auto& c){return c->status();})  
-            | std::ranges::to<std::vector>();
-    }
-
-    ///debug functions///
-
-    /**
-     * @brief 
-     * print auto-generated adjacency list.
-     * 
-     */
-    void print_adjacency_list() const
-    {
-        std::map<int, std::vector<int>> ordered_result(_adjacency_list.begin(),_adjacency_list.end());
-        for (const auto& [cavity_ID, neighbors] : ordered_result)
-        {
-            std::print("Cavity {:0>2} is adjacent to: ", cavity_ID);
-            for (const auto& neighbor_ID : neighbors)
-                std::print("{:0>2} ", neighbor_ID);
-            std::print("\n");
-        }
-    }
-    
-    /**
-     * @brief 
-     * print cavities and their status.
-     * 
-     */
-    void print_current_connector_status() const
-    {
-        for (const auto cavity : _container)
-        {
-            auto status = cavity->status();
-            auto text = status ? 
-                            std::format("Occupied by Cable {:<2}", status) :
-                            std::format("Available");            
-            std::print("Cavity {:<2}: {}\n", cavity->get_ID(), text);
-        }
-    }
-   
+    const auto& get_adj_list(int ID) const { return _adjacency_list.at(ID); }   
 };

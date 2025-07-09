@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief
  * Implementation of the cable class.
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -117,5 +117,4 @@ void cable::confirme_allocation(int current_cable_ID, int allocation_ID)
             sp_connector->get_component(chosen_cavity_ID)->allocate_to_cable(current_cable_ID);
     
     _allocations.clear();
-    _is_allocated = true;
 }

@@ -1,10 +1,8 @@
 #include "cable_allocator.h"
 
 #include <print>
-#include <ranges>
 #include <iostream>
 #include <fstream>
-#include <sstream>
 #include <filesystem>
 
 #include <pybind11/embed.h>
@@ -34,9 +32,7 @@ fs::path read_file(const std::string& target_ext,
 
 void console_interaction()
 {
-    /**
-     * prepare python scripts
-     */
+    // prepare python scripts
     auto repository_dir = fs::current_path().parent_path();
     auto python_src_dir = fs::absolute(repository_dir / "Python" / "src");
     py::module_ sys        = py::module_::import("sys");
@@ -44,14 +40,16 @@ void console_interaction()
     py::module_ visualizer = py::module_::import("visualizer");
     
     int cable_idx = 1;
-    int idx = 0;
     int mode = 0;
 
     // Build connector object from a connector image.
     const std::string& connector_hint = "Please enter the image file path: \n";
     const std::string& connector_ext  = ".png";
-    auto image_path = read_file(connector_ext, connector_hint);
-    py::object py_result = visualizer.attr("scan_pins")(image_path.string());
+    py::object py_result = 
+        visualizer.attr("scan_pins")
+                       (read_file(connector_ext, connector_hint).string());
+
+    // Parse python tuple                   
     std::vector<std::tuple<int, int, double, double>> result;
     for (const auto& item_raw : py_result) 
     {
@@ -62,6 +60,7 @@ void console_interaction()
         double y  = item[3].cast<double>();
         result.emplace_back(index, gauge, x, y);
     }
+
     cable_allocator allocator(result);
 
     // Read cable data
@@ -69,8 +68,11 @@ void console_interaction()
     const std::string cable_ext  = ".csv";
     std::ifstream cable_input_file(read_file(cable_ext, cable_hint));
     std::string line;
-    // Ignore first line;
+
+    // Ignore first line
     std::getline(cable_input_file, line);
+
+    // Parse cable data
     std::map<int, std::vector<std::tuple<int, int>>> cable_data;
     while (std::getline(cable_input_file, line)) 
     {
@@ -90,6 +92,8 @@ void console_interaction()
 
         cable_data[cable_idx].emplace_back(gauge, num_wires);
     }
+
+    // Generate and print allocations
     for (auto& [cable_idx, wires] : cable_data) 
     {
         if (allocator.add_cable(wires, mode)) 
@@ -103,11 +107,11 @@ void console_interaction()
                     std::print("cavity {}\n", cavity_ID);
             }
 
-            int idx;
+            int allocation_idx;
             std::print("Choose allocation index for cable {}: ", cable_idx);
-            std::cin >> idx;
+            std::cin >> allocation_idx;
 
-            allocator.confirme_allocation(cable_idx, idx);
+            allocator.confirme_allocation(cable_idx, allocation_idx);
 
             auto status = allocator.get_connector_status();
             visualizer.attr("visualize_connector")(status);
@@ -125,4 +129,3 @@ int main()
     console_interaction();
     return  0;
 }
-

@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Header for allocator who manages connectors, cables and their connections.
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -16,8 +16,6 @@
 
 #include "electronic_container.h"
 #include "electronic_component.h"
-
-#include <ranges>
 
 class cable_allocator
 { 
@@ -34,7 +32,7 @@ public :
      * @param cavity_data Cavity data to initialize the connector, in format <ID, gauge, Pos_x, Pos_y>.
      */
     cable_allocator(const std::vector<std::tuple<int, int, double, double>>& cavity_data) : 
-        _sp_connector(std::make_shared<connector>(cavity_data)) { _sp_connector->print_adjacency_list(); }
+        _sp_connector(std::make_shared<connector>(cavity_data)) {}
 
      /**
      * @brief 
@@ -58,15 +56,8 @@ public :
      * 
      * @throw std::out_of_range If cable_ID is not valid.
      */
-    auto get_cable_allocations(int cable_ID) const
-    {
-        if (cable_ID < 1 || cable_ID > _cable_list.size()) 
-            throw std::out_of_range("Cable index out of range.");
-        else return _cable_list.at(cable_ID - 1).get_allocations()
-            | std::views::transform([](const auto& a){return std::tuple{a.get_score(), a.get_layout()};}) 
-            | std::ranges::to<std::set>();
-    }
-
+    auto get_cable_allocations(int cable_ID) -> std::set<std::tuple<double, std::set<int>>> const;
+    
     /**
      * @brief 
      * To confirme a allocation of a cable.
@@ -86,21 +77,5 @@ public :
      *         - 0 if cavity is available.
      *         - m if cavity is occupied by cable m.
      */
-    auto get_connector_status() const
-    {
-        return *(_sp_connector)
-            | std::views::transform([](const auto& c){return c->status();})  
-            | std::ranges::to<std::vector>();
-    }
-
-    /**
-     * @brief
-     * Debug fonctions to print the status of connector's cavities .
-     * 
-     */
-    void print_connector_status() const 
-    { 
-        _sp_connector->print_current_connector_status(); 
-    }
-
+    auto get_connector_status() -> std::vector<int> const;    
 };

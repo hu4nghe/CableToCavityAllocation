@@ -4,8 +4,8 @@
  * HUANG He (he.huang@utt.fr)
  * @brief
  * This file declares a function that use welzl algorithm to calculate radius of min enclosing circle.
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  */
 #include <vector>

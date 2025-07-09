@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent a cable, who includes multiples wires
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -24,7 +24,6 @@ private :
 
     std::set<cable_allocation>    _allocations;
     std::weak_ptr<connector>      _wp_connector;
-    bool                          _is_allocated;
 
 public :
 
@@ -35,8 +34,7 @@ public :
      * @param _sp_connector The connector's shared_ptr where we allocate the cable.
      */
     cable(std::shared_ptr<connector> _sp_connector) : 
-        _wp_connector(_sp_connector),
-        _is_allocated(false) {}
+        _wp_connector(_sp_connector){}
     
     /**
      * @brief 
@@ -78,14 +76,4 @@ public :
      * @return std::set<cable_allocation> Allocations for current cable.
      */
     const auto& get_allocations() const { return _allocations; }
-
-    /**
-     * @brief 
-     * Get cable status.
-     * 
-     * @return true If cable is allocated.
-     * @return false If cable is not allocated.
-     */
-    bool is_allocated() const { return _is_allocated; }
-
 };

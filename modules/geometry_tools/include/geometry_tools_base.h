@@ -4,8 +4,8 @@
  * HUANG He (he.huang@utt.fr)
  * @brief
  * This file defines serveral basical structure for geometry calculations
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  *
  */
 
@@ -13,6 +13,7 @@
  
 #include <cmath>
 #include <stdexcept>
+
 namespace geo_tools
 {
     static auto get_dbl_delta =
@@ -34,14 +35,6 @@ namespace geo_tools
             auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
             return std::fabs(diff) <= relative_epsilon;
         };
-    static auto dbl_sup =
-        [](double a, 
-           double b, 
-           double epsilon = std::numeric_limits<double>::epsilon())
-        { 
-            auto [diff, relative_epsilon] = get_dbl_delta(a, b, epsilon);
-            return diff > relative_epsilon;
-        };
     static auto dbl_inf = 
         [](double a, 
            double b, 
@@ -60,14 +53,35 @@ namespace geo_tools
         double x, y;
 
         point() = default;
-        point(int id, double x, double y) : id(id), x(x), y(y) {}
+        point(int id, double x, double y) : 
+            id(id), 
+            x(x), 
+            y(y) {}
 
-        bool operator==(const point& p) const { return id == p.id && dbl_eq(x, p.x) && dbl_eq(y, p.y); }
-        bool operator!=(const point& p) const { return !(*this == p); }
-        bool operator< (const point& p) const { return dbl_eq(x, p.x) ? dbl_inf(y, p.y) : dbl_inf(x, p.x); }
-        bool operator> (const point& p) const { return (*this != p) && !(*this < p); }
-        double distance(const point& p) const { return std::sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y)); }
-        double slope   (const point& p) const { return dbl_eq(x, p.x) ? std::numeric_limits<double>::infinity() : (y - p.y) / (x - p.x);}
+        bool operator==(const point& p) const 
+        { 
+            return id == p.id && dbl_eq(x, p.x) && dbl_eq(y, p.y); 
+        }
+        bool operator!=(const point& p) const 
+        { 
+            return !(*this == p); 
+        }
+        bool operator< (const point& p) const 
+        { 
+            return dbl_eq(x, p.x) ? dbl_inf(y, p.y) : dbl_inf(x, p.x); 
+        }
+        bool operator> (const point& p) const 
+        { 
+            return (*this != p) && !(*this < p); 
+        }
+        double distance(const point& p) const 
+        { 
+            return std::sqrt((x - p.x) * (x - p.x) + (y - p.y) * (y - p.y)); 
+        }
+        double slope   (const point& p) const 
+        { 
+            return dbl_eq(x, p.x) ? std::numeric_limits<double>::infinity() : (y - p.y) / (x - p.x);
+        }
         
     };
 
@@ -78,9 +92,19 @@ namespace geo_tools
         point b;
 
         edge() = default;
-        edge(point a, point b) : a(a > b ? a : b), b(a > b ? b : a) {}
-        bool operator==(const edge& p) const { return a == p.a && b == p.b; }
-        bool operator< (const edge& p) const { return a == p.a ? b < p.b : a < p.a; }
+        edge(point a, point b) : 
+            a(a > b ? a : b), 
+            b(a > b ? b : a) {}
+
+        bool operator==(const edge& p) const 
+        { 
+            return a == p.a && b == p.b; 
+        }
+
+        bool operator< (const edge& p) const 
+        { 
+            return a == p.a ? b < p.b : a < p.a; 
+        }
     };
 
     struct circle
@@ -90,8 +114,13 @@ namespace geo_tools
         double radius;
 
         circle() = default; 
-        circle(point center, double radius) : center(center), radius(radius) {}
-        bool contains(const point& p) const{ return center.distance(p) <= radius; }
+        circle(point center, double radius) : 
+            center(center), 
+            radius(radius) {}
+        bool contains(const point& p) const
+        { 
+            return center.distance(p) <= radius; 
+        }
         
     };
 
@@ -101,29 +130,37 @@ namespace geo_tools
         point a, b, c;
 
         triangle() = default;
-        triangle(point a, point b, point c) : a(a), b(b), c(c) {}
-        triangle(const point& a, const edge& e) : a(a), b(e.a), c(e.b) 
+        triangle(point a, point b, point c) : 
+            a(a), 
+            b(b), 
+            c(c) 
+        {
+            if (a == b || a == c || b == c) 
+                throw std::invalid_argument("Invalid triangle");
+        }
+        triangle(const point& a, const edge& e) : 
+            a(a), 
+            b(e.a), 
+            c(e.b) 
         {
             if (a == b || a == c || b == c) 
                 throw std::invalid_argument("Invalid triangle");
         }
             
-        bool containsVertex(const point& p) const { return a == p || b == p || c == p; }
-
-        double surface() const { return std::abs((a.x * (b.y - c.y) + 
-                                                b.x * (c.y - a.y) + 
-                                                c.x * (a.y - b.y)) / 2.0); }
+        bool containsVertex(const point& p) const 
+        { 
+            return a == p || b == p || c == p; 
+        }
 
         circle circum_circle() const
         {
-            double a1 = b.x - a.x, 
-                b1 = b.y - a.y, 
-                c1 = (a1 * a1 + b1 * b1) / 2;
-            double a2 = c.x - a.x, 
-                b2 = c.y - a.y, 
-                c2 = (a2 * a2 + b2 * b2) / 2;
-
-            double d  = a1 * b2 - a2 * b1;
+            double  a1 = b.x - a.x, 
+                    b1 = b.y - a.y, 
+                    c1 = (a1 * a1 + b1 * b1) / 2,
+                    a2 = c.x - a.x, 
+                    b2 = c.y - a.y, 
+                    c2 = (a2 * a2 + b2 * b2) / 2,
+                    d  = a1 * b2 - a2 * b1;
 
             point center;
             center.x = a.x + (c1 * b2 - c2 * b1) / d;

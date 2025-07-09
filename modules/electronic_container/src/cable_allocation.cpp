@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * Implementation of the cable_allocation class.
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -24,7 +24,7 @@ cable_allocation::cable_allocation(const std::vector<int>&          connections,
     std::vector<std::pair<double,double>> coords;
     for (const auto& connected_cavity : connections)
         coords.push_back(sp_connector->get_component(connected_cavity)->get_pos());
-    _score = std::ceil(geo_tools::calculate_min_enclosing_circle_radius(coords));
+    _score = geo_tools::calculate_min_enclosing_circle_radius(coords);
 }
 
 bool cable_allocation::operator<(const cable_allocation &other) const noexcept

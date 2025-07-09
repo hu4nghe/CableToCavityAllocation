@@ -8,8 +8,8 @@ def detect_pin(Img):
     upper_black = np.array([180, 255, 30])
     lower_white = np.array([0, 0, 200])
     upper_white = np.array([180, 30, 255])
-    mask = cv2.inRange(HSV, lower_white, upper_white)
-    #mask = cv2.inRange(HSV, lower_black, upper_black)
+    #mask = cv2.inRange(HSV, lower_white, upper_white)
+    mask = cv2.inRange(HSV, lower_black, upper_black)
 
     Ker = np.ones((3, 3), np.uint8)
     mask = cv2.morphologyEx(mask, cv2.MORPH_OPEN, Ker, iterations=2)

@@ -4,8 +4,8 @@
  * HUANG He (he.huang.intern@3ds.com)
  * @brief 
  * The class that represent cavities on connector
- * @version 1.4
- * @date 2025-04-25
+ * @version 2.0
+ * @date 2025-07-09
  * 
  * @copyright 
  * Dassault Systemes 2025
@@ -15,8 +15,6 @@
 #pragma once
 
 #include "electronic_component_base.h"
-
-#include <cmath>
 
 class cavity : public electronic_component_base
 {
@@ -68,28 +66,6 @@ public :
      * @return cable_ID if the cavity is occupied by a cable.
      */
     int status() const { return _cable_ID; }
-
-    /**
-     * @brief 
-     * Calculate distance between current cavity and another point.
-     * 
-     * @param other Another cavity object.
-     * @return double Distance between two cavity, +∞ if send itself as argument.
-     */
-    double distance(const std::pair<double,double>& point) const
-    {
-        return std::hypot(point.first  - _position.first, 
-                          point.second - _position.second);
-    }
-
-    /**
-     * @brief 
-     * Alias to calculate the distance between two cavities.
-     * 
-     * @param other Another cavity.
-     * @return double Distance between current cavity and other.
-     */
-    double distance(const cavity& other) const { return distance(other._position); }
     
     /**
      * @brief 
