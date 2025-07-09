@@ -17,11 +17,6 @@
 #include "electronic_container_base.h"
 #include "delaunay.h"
 
-#include <map>
-#include <unordered_map>
-#include <ranges>
-#include <print>
-
 class connector : public electronic_container_base<cavity>
 {
 private :

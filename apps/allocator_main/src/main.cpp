@@ -4,6 +4,7 @@
 #include <iostream>
 #include <fstream>
 #include <filesystem>
+#include <ranges>
 
 #include <pybind11/embed.h>
 #include <pybind11/stl.h>

@@ -26,4 +26,3 @@ namespace geo_tools
      */
     auto build_adjacency_list(const std::vector<std::tuple<int, int, double, double>>& point_data) -> std::unordered_map<int, std::vector<int>>;
 }
-
