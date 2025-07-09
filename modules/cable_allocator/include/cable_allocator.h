@@ -14,8 +14,7 @@
 
 #pragma once
 
-#include "electronic_container.h"
-#include "electronic_component.h"
+#include "cable.h"
 
 class cable_allocator
 { 

@@ -14,8 +14,6 @@
 
 #pragma once
 
-#include "electronic_container_base.h"
-#include "connector.h"
 #include "cable_allocation.h"
 
 class cable : public electronic_container_base<wire>

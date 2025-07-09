@@ -14,7 +14,6 @@
 
 #pragma once
 
-#include "electronic_component.h"
 #include "connector.h"
 
 #include <set>
