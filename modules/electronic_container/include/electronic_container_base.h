@@ -17,8 +17,25 @@
 #include "electronic_component.h"
 
 #include <memory>
+#include <concepts>
 
-class cable_allocator;
+/**
+ * @brief 
+ * Define a wire and cavity type concept for difference init data.
+ * std::tuple<int, int> for wire objects.
+ * std::tuple<int, int, double, double> for cavity objects.
+ *  
+ */
+template <typename T>
+concept is_wire_component = std::is_same_v<T, wire>;
+
+template <typename T>
+concept is_cavity_component = std::is_same_v<T, cavity>;
+
+template <typename T, typename tuple_type>
+concept electronic_component_data_type =
+    (is_wire_component  <T> && std::is_same_v<tuple_type, std::tuple<int, int>>) ||
+    (is_cavity_component<T> && std::is_same_v<tuple_type, std::tuple<int, int, double, double>>);
 
 template <typename T>
 class electronic_container_base
@@ -42,21 +59,13 @@ public :
      * @brief 
      * Construct a new electronic container base object.
      * Automatically determines the type of component based on the the parameter type.
-     * std::tuple<int, int> for wire objects.
-     * std::tuple<int, int, double, double> for cavity objects.
+     *
      * @param components A vector containing all components's data.
      */
     template <typename tuple_type>
+        requires electronic_component_data_type<T, tuple_type>
     electronic_container_base(const std::vector<tuple_type>& components)
     {
-        // type checking
-        if constexpr (std::is_same_v<T, wire>)
-            static_assert(std::is_same_v<tuple_type, std::tuple<int, int>>,
-                          "Require tuple<int, int> for wire objects");
-        if constexpr (std::is_same_v<T, cavity>)
-            static_assert(std::is_same_v<tuple_type, std::tuple<int, int, double, double>>,
-                          "Require tuple<int, int, double, double> for cavity objects");
-                          
         for (const auto& p : components)
             _container.push_back(std::make_shared<T>(std::make_from_tuple<T>(p)));
     }
