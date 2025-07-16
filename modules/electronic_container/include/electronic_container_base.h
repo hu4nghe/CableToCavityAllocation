@@ -14,7 +14,8 @@
 
 #pragma once
 
-#include "electronic_component.h"
+#include "cavity.h"
+#include "wire.h"
 
 #include <memory>
 #include <concepts>
