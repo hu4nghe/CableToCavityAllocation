@@ -15,6 +15,8 @@
 #include "cable_allocation.h"
 #include "min_enclosing_circle.h"
 
+#include <cmath>
+
 cable_allocation::cable_allocation(const std::vector<int>&          connections,
                                          std::shared_ptr<connector> sp_connector) :
     _reserved_cavities(connections.begin(),connections.end()),
@@ -24,7 +26,7 @@ cable_allocation::cable_allocation(const std::vector<int>&          connections,
     std::vector<std::pair<double,double>> coords;
     for (const auto& connected_cavity : connections)
         coords.push_back(sp_connector->get_component(connected_cavity)->get_pos());
-    _score = geo_tools::calculate_min_enclosing_circle_radius(coords);
+    _score = std::ceil(geo_tools::calculate_min_enclosing_circle_radius(coords));
 }
 
 bool cable_allocation::operator<(const cable_allocation &other) const noexcept
