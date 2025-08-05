@@ -67,7 +67,8 @@ void console_interaction()
     // Read cable data
     const std::string cable_hint = "Please enter the cable data path.\n";
     const std::string cable_ext  = ".csv";
-    std::ifstream cable_input_file(read_file(cable_ext, cable_hint));
+    std::ifstream cable_input_file("data/cable_data.csv");
+    std::print("Current path : {}", fs::current_path().string());
     std::string line;
 
     // Ignore first line
