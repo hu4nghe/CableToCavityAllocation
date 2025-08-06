@@ -16,6 +16,8 @@
 
 #include "electronic_component_base.h"
 
+#include <concepts>
+
 class cavity : public electronic_component_base
 {
 private :
@@ -75,3 +77,6 @@ public :
      */
     const auto& get_pos() const { return _position; }
 };
+
+template <typename T>
+concept is_cavity_component = std::is_same_v<T, cavity>;

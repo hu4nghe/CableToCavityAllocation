@@ -27,12 +27,6 @@
  * std::tuple<int, int, double, double> for cavity objects.
  *  
  */
-template <typename T>
-concept is_wire_component = std::is_same_v<T, wire>;
-
-template <typename T>
-concept is_cavity_component = std::is_same_v<T, cavity>;
-
 template <typename T, typename tuple_type>
 concept electronic_component_data_type =
     (is_wire_component  <T> && std::is_same_v<tuple_type, std::tuple<int, int>>) ||

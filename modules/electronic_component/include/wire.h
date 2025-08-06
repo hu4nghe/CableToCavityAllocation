@@ -16,6 +16,8 @@
 
 #include "electronic_component_base.h"
 
+#include <concepts>
+
 class wire : public electronic_component_base
 {
 
@@ -31,3 +33,6 @@ public :
     wire(int ID, int wire_gauge) :
         electronic_component_base(ID, wire_gauge) {}
 };
+
+template <typename T>
+concept is_wire_component = std::is_same_v<T, wire>;
