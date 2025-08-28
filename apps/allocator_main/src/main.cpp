@@ -62,7 +62,6 @@ void console_interaction()
         result.emplace_back(index, gauge, x, y);
     }
 
-    std::print("result size{}\n", result.size());
     cable_allocator allocator(result);
 
     // Read cable data
