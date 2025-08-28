@@ -62,12 +62,12 @@ void console_interaction()
         result.emplace_back(index, gauge, x, y);
     }
 
+    std::print("result size{}\n", result.size());
     cable_allocator allocator(result);
 
     // Read cable data
-    const std::string cable_hint = "Please enter the cable data path.\n";
-    const std::string cable_ext  = ".csv";
-    std::ifstream cable_input_file("data/cable_data.csv");
+    auto input_file_path = fs::absolute(repository_dir / "data" / "cable_data.csv");
+    std::ifstream cable_input_file(input_file_path.string());
     std::string line;
 
     // Ignore first line
