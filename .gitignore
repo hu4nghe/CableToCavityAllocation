@@ -1,13 +1,10 @@
+.vscode/
 Resources/
 build/
 lib/
 bin/
 html/
 Python/DSLyon/
-Python/PCHome/
-Python/Surface/
-__pycache__/
-.vscode/
 
 *.pyc
 *.pyo
