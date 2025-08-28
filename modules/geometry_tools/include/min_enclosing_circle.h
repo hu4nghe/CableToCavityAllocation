@@ -9,7 +9,7 @@
  * 
  */
 
-#pragma onece
+#pragma once
 
 #include <vector>
 
