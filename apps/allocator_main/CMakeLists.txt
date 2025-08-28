@@ -1,18 +1,14 @@
-if (VIRTUAL_ENV)
-    message(STATUS "Using virtual environment: ${VIRTUAL_ENV}")
+execute_process(
+    COMMAND "${VIRTUAL_ENV}/Scripts/python.exe" -c
+            "import pybind11; import os; print(os.path.join(os.path.dirname(pybind11.__file__), 'share', 'cmake', 'pybind11'))"
+    OUTPUT_VARIABLE PYBIND11_DIR
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
 
-    find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
+message(STATUS "Found pybind11 CMake dir: ${PYBIND11_DIR}")
+find_package(pybind11 CONFIG REQUIRED PATHS "${PYBIND11_DIR}")
 
-    set(PYBIND11_DIR "${VIRTUAL_ENV}/lib/python3.12/site-packages/pybind11/share/cmake/pybind11")
-    message(STATUS "Looking for pybind11 in: ${PYBIND11_DIR}")
-
-    set(PYBIND11_FINDPYTHON ON)
-    find_package(pybind11 REQUIRED PATHS ${PYBIND11_DIR} NO_DEFAULT_PATH)
-else()
-    message(STATUS "VIRTUAL_ENV is not defined. Skipping Python module build.")
-endif()
-
-
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 add_executable(allocator_main src/main.cpp)
 # Explicitly inherit includes from linked library

@@ -50,7 +50,12 @@ This project is built using GCC 14.2 with CMake as the build system and integrat
 # If a virtual environment is not already set up, the project will attempt to use the default virtual environment located at Python/DSLyon.
 # If the virtual environment does not exist, you can create one:
 python3 -m venv Python/DSLyon
-source Python/DSLyon/bin/activate
+
+# For bash
+source Python/DSLyon/bin/activate 
+
+# For Windows PowerShell
+Python\DSLyon\Scripts\Activate.ps1 
 ```
 ```bash
 # Install Python Dependencies
@@ -66,7 +71,7 @@ cd build
 # Run CMake
 cmake ..
 
-# Compile the Project
+# Compile the Project in Linux
 make
 ```
 
