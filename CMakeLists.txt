@@ -1,20 +1,22 @@
 cmake_minimum_required(VERSION 3.16)
 project(CableAllocationProject)
 
-if(NOT DEFINED ENV{VIRTUAL_ENV})
-    set(_default_venv_path "${CMAKE_SOURCE_DIR}/Python/DSLyon")
-    if(EXISTS "${_default_venv_path}/bin/activate")
-        set(ENV{VIRTUAL_ENV} "${_default_venv_path}")
-        set(VIRTUAL_ENV "${_default_venv_path}" CACHE PATH "Python virtual environment")
-        message(STATUS "✅ Automatically using virtual env at ${_default_venv_path}")
-    else()
-        message(WARNING "❌ VIRTUAL_ENV is not set. Using system Python instead.")
-    endif() 
+set(_default_venv_path "${CMAKE_SOURCE_DIR}/Python/DSLyon")
+
+if(WIN32)
+    set(_python_exe "${_default_venv_path}/Scripts/python.exe")
 else()
-    set(VIRTUAL_ENV "$ENV{VIRTUAL_ENV}" CACHE PATH "Python virtual environment")
-    message(STATUS "✅ Using virtual environment: $ENV{VIRTUAL_ENV}")
+    set(_python_exe "${_default_venv_path}/bin/python")
 endif()
 
+if(EXISTS "${_python_exe}")
+    set(Python3_EXECUTABLE "${_python_exe}" CACHE FILEPATH "Python executable" FORCE)
+    message(STATUS "✅ Using Python from venv: ${_python_exe}")
+else()
+    message(FATAL_ERROR "❌ Virtualenv not found at ${_default_venv_path}, please create it first.")
+endif()
+
+find_package(Python3 COMPONENTS Interpreter Development REQUIRED)
 
 set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)

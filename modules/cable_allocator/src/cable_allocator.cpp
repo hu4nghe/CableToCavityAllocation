@@ -14,6 +14,7 @@
 #include "cable_allocator.h"
 
 #include <ranges>
+#include <stdexcept>
 
 bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires, int mode)
 {

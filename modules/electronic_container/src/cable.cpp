@@ -16,6 +16,7 @@
 
 #include <ranges>
 #include <algorithm>
+#include <stdexcept>
 
 bool cable::generate_allocations(int mode)
 {

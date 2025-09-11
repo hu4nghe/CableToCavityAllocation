@@ -5,7 +5,7 @@ lib/
 bin/
 html/
 Python/DSLyon/
-
+.cache
 *.pyc
 *.pyo
 *.pyd

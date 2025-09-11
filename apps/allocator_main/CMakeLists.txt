@@ -5,13 +5,12 @@ execute_process(
     OUTPUT_VARIABLE PYBIND11_DIR
     OUTPUT_STRIP_TRAILING_WHITESPACE
 )
-
-
 message(STATUS "Found pybind11 CMake dir: ${PYBIND11_DIR}")
-find_package(pybind11 CONFIG REQUIRED PATHS "${PYBIND11_DIR}")
+
+list(APPEND CMAKE_PREFIX_PATH "${PYBIND11_DIR}")
+find_package(pybind11 CONFIG REQUIRED)
 
 add_executable(allocator_main src/main.cpp)
-# Explicitly inherit includes from linked library
 
 target_link_libraries(allocator_main
     PRIVATE

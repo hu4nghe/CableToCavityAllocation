@@ -16,8 +16,6 @@
 
 #include "electronic_component_base.h"
 
-#include <concepts>
-
 class wire : public electronic_component_base
 {
 

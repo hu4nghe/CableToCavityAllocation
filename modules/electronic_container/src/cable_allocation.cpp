@@ -16,6 +16,7 @@
 #include "min_enclosing_circle.h"
 
 #include <cmath>
+#include <stdexcept>
 
 cable_allocation::cable_allocation(const std::vector<int>&          connections,
                                          std::shared_ptr<connector> sp_connector) :
