@@ -9,3 +9,6 @@ Python/DSLyon/
 *.pyc
 *.pyo
 *.pyd
+
+#test data
+*.csv
