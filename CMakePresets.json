@@ -1,46 +1,33 @@
 {
-  "version": 3,
-  "cmakeMinimumRequired": 
-  {
-    "major": 3,
-    "minor": 28
-  },
-  "configurePresets": 
-  [
-    {
-      "name": "default-windows",
-      "description": "Windows Clang + Ninja",
-      "generator": "Ninja",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": 
-      {
-      "Python3_EXECUTABLE": "${sourceDir}/Python/DSLyon/Scripts/python.exe",
-        "CMAKE_C_COMPILER": "C:/Program Files/LLVM/bin/clang.exe",
-        "CMAKE_CXX_COMPILER": "C:/Program Files/LLVM/bin/clang++.exe",
-        "CMAKE_BUILD_TYPE": "Release"
-      },
-      "environment": 
-      {
-        "PATH": "C:/Users/Glibc/Documents/Repos/CableToCavityAllocation/Python/DSLyon/Scripts;C:/Windows/System32;C:/Windows"
-      }
+    "version": 3,
+    "cmakeMinimumRequired": {
+        "major": 3,
+        "minor": 28
     },
-    {
-      "name": "default-linux",
-      "description": "Linux GCC + Make",
-      "generator": "Unix Makefiles",
-      "binaryDir": "${sourceDir}/build",
-      "cacheVariables": 
-      {
-        
-      "Python3_EXECUTABLE": "${sourceDir}/Python/DSLyon/Scripts/python.exe",
-        "CMAKE_C_COMPILER": "/usr/bin/gcc",
-        "CMAKE_CXX_COMPILER": "/usr/bin/g++",
-        "CMAKE_BUILD_TYPE": "Debug"
-      },
-      "environment": 
-      {
-        "PATH": "${env:PATH}"
-      }
-    }
-  ]
+    "configurePresets": [
+        {
+            "name": "default-windows",
+            "description": "Windows - clang + Ninja",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang",
+                "CMAKE_CXX_COMPILER": "clang++",
+                "Python3_EXECUTABLE": "${sourceDir}/Python/venv/Scripts/python.exe"
+            },
+            "environment": {
+                "PATH": "${sourceDir}/Python/DSLyon/Scripts;$penv{PATH}"
+            }
+        },
+        {
+            "name": "default-linux",
+            "description": "Linux - GCC + Make",
+            "generator": "Unix Makefiles",
+            "binaryDir": "${sourceDir}/build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc",
+                "CMAKE_CXX_COMPILER": "g++"
+            }
+        }
+    ]
 }

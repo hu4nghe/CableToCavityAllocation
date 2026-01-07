@@ -12,6 +12,10 @@
 namespace py = pybind11;
 namespace fs = std::filesystem;
 
+const auto repository_dir = fs::absolute(fs::current_path().parent_path());
+const auto python_env_dir = fs::absolute(repository_dir / "Python" / ".venv");
+const auto python_src_dir = fs::absolute(repository_dir / "Python" / "src");
+
 fs::path read_file(const std::string& target_ext,
                    const std::string& hint)
 {
@@ -34,9 +38,8 @@ fs::path read_file(const std::string& target_ext,
 void console_interaction()
 {
     // prepare python scripts
-    auto repository_dir = fs::current_path().parent_path();
-    auto python_src_dir = fs::absolute(repository_dir / "Python" / "src");
     py::module_ sys        = py::module_::import("sys");
+    sys.attr("path").attr("append")((python_env_dir / "Lib/site-packages").string());
     sys.attr("path").attr("append")(python_src_dir.string());
     py::module_ visualizer = py::module_::import("visualizer");
     
@@ -123,9 +126,19 @@ void console_interaction()
     }
 }
 
-int main()
+int main() 
 {
-    py::scoped_interpreter guard{}; 
-    console_interaction();
-    return  0;
+    try 
+    {
+        py::scoped_interpreter guard{};
+        
+        console_interaction();
+
+    } catch (py::error_already_set& e)
+    {
+        std::cerr << "Python error: " << e.what() << "\n";
+        return 1;
+    }
+
+    return 0;
 }
