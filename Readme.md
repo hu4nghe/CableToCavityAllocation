@@ -43,24 +43,15 @@ This project is built using GCC 14.2 with CMake as the build system and integrat
 
 ## Setup 
 
-
-
 ### 1. Set Up Python Environment
 ```bash
-# If a virtual environment is not already set up, the project will attempt to use the default virtual environment located at Python/DSLyon.
-# If the virtual environment does not exist, you can create one:
-python3 -m venv Python/DSLyon
-
-# For bash
-source Python/DSLyon/bin/activate 
-
-# For Windows PowerShell
-Python\DSLyon\Scripts\Activate.ps1 
+# Run the environment setup script
+python Python/env_setup.py
 ```
-```bash
-# Install Python Dependencies
-pip install -r Python/requirements.txt
-```
+
+This script will:
+- Create a virtual environment at `Python/DSLyon` if it doesn't exist
+- Install all dependencies from `Python/requirements.txt`
 
 ### 2. Build the Project
 ```bash
@@ -77,9 +68,11 @@ make
 
 ### 3. Run the Application
 ```bash
-cd ../bin
+cd bin
 ./allocator_main
 ```
+
+The program automatically uses the Python environment from `Python/DSLyon/`, so you don't need to manually activate it.
 
 ---
 

@@ -3,7 +3,7 @@ import subprocess
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
-VENV = ROOT / "Python" / ".venv"
+VENV = ROOT / "Python" / "DSLyon"
 
 def run(cmd):
     print(">", " ".join(cmd))
