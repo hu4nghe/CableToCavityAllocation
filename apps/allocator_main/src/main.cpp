@@ -105,7 +105,8 @@ void console_interaction()
             for (const auto& [i, allocation_tuple] : std::views::enumerate(allocations)) 
             {
                 const auto& [score, allocation] = allocation_tuple;
-                std::print("Cable {} - Allocation {}, Score: {}\n", cable_idx, i, score);
+                std::print("Cable {} - Allocation {}, Score: {:.2f}  (compactness: {:.1f}, adjacency: {}, fragments: {})\n",
+                           cable_idx, i, score.combined(), score.compactness, score.adjacency, score.fragments);
                 for (const auto& cavity_ID : allocation)
                     std::print("cavity {}\n", cavity_ID);
             }

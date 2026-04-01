@@ -44,7 +44,11 @@ public :
 
     /**
      * @brief 
-     * Generate possible allocations for current cable on the conncetor.
+        * Generate possible allocations for current cable on the conncetor.
+        *
+        * The search applies in-loop pruning to keep only high-quality candidates:
+        * - score-based pruning vs current best candidate;
+        * - capped top-k candidate retention.
      * 
      * @param searching_range 1 to search allocations adjacent to placed cables. 
      *                        Others to select all allocations.

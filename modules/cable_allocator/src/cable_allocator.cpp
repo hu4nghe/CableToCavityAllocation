@@ -27,7 +27,7 @@ bool cable_allocator::add_cable(const std::vector<std::tuple<int, int>>& wires, 
     return true;
 }
 
-auto cable_allocator::get_cable_allocations(int cable_ID) -> std::set<std::tuple<double, std::set<int>>> const 
+auto cable_allocator::get_cable_allocations(int cable_ID) -> std::set<std::tuple<AllocationScore, std::set<int>>> const 
 {
     if (cable_ID < 1 || cable_ID > _cable_list.size()) 
         throw std::out_of_range("Cable index out of range.");

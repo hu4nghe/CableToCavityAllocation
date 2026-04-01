@@ -18,11 +18,54 @@
 #include <algorithm>
 #include <stdexcept>
 
+namespace
+{
+    // Keep only high-quality candidates to reduce both memory and UI noise.
+    constexpr std::size_t kMaxCandidateAllocations = 20;
+    constexpr double      kScorePruneFactor        = 1.8;
+}
+
 bool cable::generate_allocations(int mode)
 {
     if (_container.empty()) return false; // No wires to allocate
     if(auto sp_connector = _wp_connector.lock())
     {
+        _allocations.clear();
+
+        auto try_store_candidate = [&](const std::vector<int>& visited)
+        {
+            cable_allocation candidate(visited, sp_connector);
+
+            if (!_allocations.empty())
+            {
+                const double best_score = _allocations.begin()->get_score().combined();
+                const double cand_score = candidate.get_score().combined();
+
+                // Reject candidates that are much worse than the current best.
+                if (cand_score > best_score * kScorePruneFactor)
+                    return;
+            }
+
+            _allocations.emplace(std::move(candidate));
+
+            // Keep only top-k candidates (set is already sorted best -> worst).
+            while (_allocations.size() > kMaxCandidateAllocations)
+                _allocations.erase(std::prev(_allocations.end()));
+
+            // Tighten the set further when a new best appears.
+            if (!_allocations.empty())
+            {
+                const double new_best = _allocations.begin()->get_score().combined();
+                while (!_allocations.empty())
+                {
+                    auto worst_it = std::prev(_allocations.end());
+                    if (worst_it->get_score().combined() <= new_best * kScorePruneFactor)
+                        break;
+                    _allocations.erase(worst_it);
+                }
+            }
+        };
+
         auto define_searching_range = 
             [&]()
             {
@@ -81,7 +124,7 @@ bool cable::generate_allocations(int mode)
                 visited_cavity_indices.push_back(cavity_ID);
                 
                 if (visited_cavity_indices.size() == size()) // Save valid complete regions
-                    _allocations.emplace(visited_cavity_indices, sp_connector);
+                    try_store_candidate(visited_cavity_indices);
                 
                 else // Continue searching through available neighbors
                     for (const auto& neighbor : sp_connector->get_adj_list(cavity_ID))

@@ -45,17 +45,21 @@ public :
     
     /**
      * @brief 
-     * Return a vector of allocations. 
-     * Each allocation contains a score and a occupied cavity ID list.
+     * Return a sorted set of candidate allocations for a given cable.
+     * Each element is a tuple of the composite score and the set of allocated cavity IDs.
+     *
+     * Allocations are ordered from best to worst:
+     *   1. Primary   : adjacency to already-placed cables (descending).
+     *   2. Secondary : internal compactness — MEC radius (ascending).
      *
      * @param cable_ID The cable ID to which the allocations belong.
-     * @return A vector of allocations in tuple format :
-     *         - double : Allocation's score
-     *         - std::set<int> : Indices of cavities allocated.
+     * @return A set of allocations in tuple format :
+     *         - AllocationScore : composite score (compactness + adjacency).
+     *         - std::set<int>   : indices of cavities allocated.
      * 
      * @throw std::out_of_range If cable_ID is not valid.
      */
-    auto get_cable_allocations(int cable_ID) -> std::set<std::tuple<double, std::set<int>>> const;
+    auto get_cable_allocations(int cable_ID) -> std::set<std::tuple<AllocationScore, std::set<int>>> const;
     
     /**
      * @brief 
