@@ -1,17 +1,17 @@
 /**
  * @file min_enclosing_circle.cpp
- * @author 
+ * @author
  * HUANG He (he.huang@utt.fr)
- * @brief 
+ * @brief
  * Implementation of min_enclosing_circle.h
- * @version 2.0
- * @date 2025-07-09
- * 
+ * @version 3.0
+ * @date 2026-04-01
+ *
  */
 
 #include <algorithm>
-#include <random>
 #include <ctime>
+#include <random>
 #include <ranges>
 
 #include "geometry_tools_base.h"
@@ -19,42 +19,56 @@
 
 using namespace geo_tools;
 
-std::vector<point> points_init(const std::vector<std::pair<double, double>>& coords) 
+std::vector<point> points_init(
+    const std::vector<std::pair<
+        double,
+        double>>& coords)
 {
-    return coords 
-        | std::views::enumerate
-        | std::views::transform(
-            [](const auto& pair) 
-            {
-                const auto& [i, coord] = pair;
-                return point{ static_cast<int>(i), coord.first, coord.second };
-            })
-        | std::ranges::to<std::vector>();
+    return coords | std::views::enumerate |
+           std::views::transform(
+               [](const auto& pair)
+               {
+                   const auto& [i, coord] = pair;
+                   return point{
+                       static_cast<int>(i),
+                       coord.first,
+                       coord.second};
+               }) |
+           std::ranges::to<std::vector>();
 }
 
-circle make_circle_two_points(const point& a, const point& b) 
+circle make_circle_two_points(
+    const point& a,
+    const point& b)
 {
     point center(-1, (a.x + b.x) / 2.0, (a.y + b.y) / 2.0);
     return circle(center, center.distance(a));
 }
 
-circle make_circle_three_points(const point& a, const point& b, const point& c) 
+circle make_circle_three_points(
+    const point& a,
+    const point& b,
+    const point& c)
 {
     triangle tri(a, b, c);
     return tri.circum_circle();
 }
 
-circle welzl(std::vector<point>& P, std::vector<point> R, int n) 
+circle welzl(
+    std::vector<point>& P,
+    std::vector<point>  R,
+    int                 n)
 {
-    if (n == 0 || R.size() == 3) 
+    if (n == 0 || R.size() == 3)
     {
         if (R.empty()) return circle(point(-1, 0, 0), 0);
         if (R.size() == 1) return circle(R[0], 0);
-        if (R.size() == 2) return make_circle_two_points(R[0], R[1]);
+        if (R.size() == 2)
+            return make_circle_two_points(R[0], R[1]);
         return make_circle_three_points(R[0], R[1], R[2]);
     }
 
-    point p = P[n - 1];
+    point  p = P[n - 1];
     circle d = welzl(P, R, n - 1);
 
     if (d.contains(p)) return d;
@@ -63,7 +77,10 @@ circle welzl(std::vector<point>& P, std::vector<point> R, int n)
     return welzl(P, R, n - 1);
 }
 
-double geo_tools::calculate_min_enclosing_circle_radius(const std::vector<std::pair<double, double>>& point_set)
+double geo_tools::calculate_min_enclosing_circle_radius(
+    const std::vector<std::pair<
+        double,
+        double>>& point_set)
 {
     std::vector<point> points = points_init(point_set);
     std::mt19937 rng(static_cast<unsigned>(std::time(nullptr)));

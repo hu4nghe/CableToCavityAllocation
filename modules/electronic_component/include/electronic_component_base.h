@@ -1,15 +1,15 @@
 /**
  * @file electronic_component_base.h
- * @author 
+ * @author
  * HUANG He (he.huang.intern@3ds.com)
- * @brief 
+ * @brief
  * Electronic components(wire and cavity) base class
- * @version 2.0
- * @date 2025-07-09
- * 
- * @copyright 
+ * @version 3.0
+ * @date 2026-04-01
+ *
+ * @copyright
  * Dassault Systemes 2025
- * 
+ *
  */
 #pragma once
 
@@ -19,119 +19,147 @@
 
 class electronic_component_base
 {
-protected :
+    protected:
 
     const int _ID;
     const AWG _gauge;
 
-public :
+    public:
 
     /**
-     * @brief 
-     * Deleted default constructor 
+     * @brief
+     * Deleted default constructor
      * Please allocate an ID for every electronic component.
-     * 
+     *
      */
     electronic_component_base() = delete;
 
     /**
-     * @brief 
+     * @brief
      * Default destructor.
-     * 
+     *
      */
     virtual ~electronic_component_base() = default;
 
     /**
-     * @brief 
+     * @brief
      * Base class constructor.
-     * 
+     *
      * @param id Component's ID.
      * @param gauge Component's size in American Wire Gauge.
      */
-    electronic_component_base(int ID, 
-                              int gauge) : 
-        _ID(ID),
-        _gauge(static_cast<AWG>(gauge)) {}
+    electronic_component_base(
+        int ID,
+        int gauge)
+        : _ID(ID),
+          _gauge(static_cast<AWG>(gauge))
+    {}
 
     /**
      * All component is unique, identified with ID.
      * You do not want to copy a component.
      */
-    electronic_component_base           (const electronic_component_base&)  = delete;
-    electronic_component_base& operator=(const electronic_component_base&)  = delete;
-    electronic_component_base& operator=(      electronic_component_base&&) = delete;
+    electronic_component_base(const electronic_component_base&) =
+        delete;
+    electronic_component_base& operator=(
+        const electronic_component_base&) = delete;
+    electronic_component_base& operator=(
+        electronic_component_base&&) = delete;
 
     /**
-     * @brief 
+     * @brief
      * Base move constructor.
-     * 
-     * @param other Another electronic_component_base object to move.
+     *
+     * @param other Another electronic_component_base object to
+     * move.
      */
-    explicit electronic_component_base(electronic_component_base&& other) : 
-        _ID(other._ID),
-        _gauge(std::move(other._gauge)) {}
-    
+    explicit electronic_component_base(
+        electronic_component_base&& other)
+        : _ID(other._ID),
+          _gauge(std::move(other._gauge))
+    {}
+
     /**
-     * @brief 
+     * @brief
      * Overrided operator< for std::set/std::map
-     * 
+     *
      * @param other Another electronic component
-     * @return true If current object's ID is inferior than the other's.
-     * @return false If current object's ID is superior than the other's.
+     * @return true If current object's ID is inferior than the
+     * other's.
+     * @return false If current object's ID is superior than the
+     * other's.
      */
-    bool operator<(const electronic_component_base& other) const { return _ID < other._ID; }
+    bool operator<(const electronic_component_base& other) const
+    {
+        return _ID < other._ID;
+    }
 
     /**
-     * @brief 
+     * @brief
      * Overrided operator==.
-     * 
+     *
      * @param other Another electronic component
-     * @return true If current object's ID is the same to the other's.
-     * @return false If current object's ID is different from the other's.
+     * @return true If current object's ID is the same to the
+     * other's.
+     * @return false If current object's ID is different from the
+     * other's.
      */
-    bool operator==(const electronic_component_base& other) const { return _ID == other._ID; }
+    bool operator==(const electronic_component_base& other) const
+    {
+        return _ID == other._ID;
+    }
 
     /**
-     * @brief 
+     * @brief
      * Check if two component can fit each other.
-     * 
+     *
      * @param other Another electronic_component_base object.
      * @return true If two components have the same gauge.
      * @return false If two components have differents gauges.
      */
-    bool is_compatible(const electronic_component_base& other) const { return _gauge == other._gauge; }
+    bool is_compatible(const electronic_component_base& other) const
+    {
+        return _gauge == other._gauge;
+    }
 
     /**
-     * @brief 
+     * @brief
      * Get current cavity's gauge.
-     * 
+     *
      * @return const AWG Cavity's AWG.
      */
-    const AWG get_gauge() const { return _gauge; }
+    const AWG get_gauge() const
+    {
+        return _gauge;
+    }
 
     /**
-     * @brief 
+     * @brief
      * Get current cavity's ID.
-     * 
+     *
      * @return const int Cavity's ID.
      */
-    const int get_ID()    const { return _ID; }
+    const int get_ID() const
+    {
+        return _ID;
+    }
 };
 
 #include <functional>
-namespace std 
+namespace std
 {
     /**
-     * @brief 
-     * Hash function for electronic_component_base for STL unordered container
-     * 
+     * @brief
+     * Hash function for electronic_component_base for STL unordered
+     * container
+     *
      */
-    template<>
-    struct hash<electronic_component_base> 
+    template <> struct hash<electronic_component_base>
     {
-        size_t operator()(const electronic_component_base& comp) const 
+        size_t operator()(
+            const electronic_component_base& comp) const
         {
             return std::hash<int>()(comp.get_ID());
         }
     };
-}
+} // namespace std

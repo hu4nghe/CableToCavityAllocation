@@ -1,13 +1,13 @@
 /**
  * @file cavity.h
- * @author 
+ * @author
  * HUANG He (he.huang.intern@3ds.com)
- * @brief 
+ * @brief
  * The class that represent cavities on connector
- * @version 2.0
- * @date 2025-07-09
- * 
- * @copyright 
+ * @version 3.0
+ * @date 2026-04-01
+ *
+ * @copyright
  * Dassault Systemes 2025
  *
  */
@@ -20,46 +20,59 @@
 
 class cavity : public electronic_component_base
 {
-private :
+    private:
 
-    const std::pair<double,double> _position;
-    int                            _cable_ID;
+    const std::pair<double, double> _position;
+    int                             _cable_ID;
 
-public :
-    
+    public:
+
     /**
-    * @brief 
-    * Construct a new cavity object.
-    * 
-    * @param ID Cavity ID on the connector.
-    * @param cavity_gauge American Wire Gauge.
-    * @param x x coordinate.
-    * @param y y coordinate.
-    */
-    cavity(int ID, 
-           int cavity_gauge, 
-           double x, 
-           double y) :
-        electronic_component_base(ID, cavity_gauge),
-        _position(x, y),
-        _cable_ID(0) {}
+     * @brief
+     * Construct a new cavity object.
+     *
+     * @param ID Cavity ID on the connector.
+     * @param cavity_gauge American Wire Gauge.
+     * @param x x coordinate.
+     * @param y y coordinate.
+     */
+    cavity(
+        int    ID,
+        int    cavity_gauge,
+        double x,
+        double y)
+        : electronic_component_base(
+              ID,
+              cavity_gauge),
+          _position(
+              x,
+              y),
+          _cable_ID(0)
+    {}
 
     /**
      * @brief Move constructor
-     * 
+     *
      * @param other Cavity object to move.
      */
-    cavity(cavity&& other) :    
-        electronic_component_base(std::move(other)),
-        _position(std::move(other._position)),
-        _cable_ID(std::exchange(other._cable_ID, 0)) {}
-    
+    cavity(cavity&& other)
+        : electronic_component_base(std::move(other)),
+          _position(std::move(other._position)),
+          _cable_ID(
+              std::exchange(
+                  other._cable_ID,
+                  0))
+    {}
+
     /**
      * @brief
      * Allocate the cavity to a cable.
      * @param cable_ID The ID of the cable to allocate.
      */
-    void allocate_to_cable(int cable_ID) { _cable_ID = cable_ID; }
+    void allocate_to_cable(int cable_ID)
+    {
+        _cable_ID = cable_ID;
+    }
 
     /**
      * @brief
@@ -67,15 +80,22 @@ public :
      * @return 0 if the cavity is available.
      * @return cable_ID if the cavity is occupied by a cable.
      */
-    int status() const { return _cable_ID; }
-    
+    int status() const
+    {
+        return _cable_ID;
+    }
+
     /**
-     * @brief 
+     * @brief
      * Get the cavity's coordinate on the connector.
-     * 
-     * @return std::pair<doube, doube> The 2D coordinate pair (x, y). 
+     *
+     * @return std::pair<doube, doube> The 2D coordinate pair (x,
+     * y).
      */
-    const auto& get_pos() const { return _position; }
+    const auto& get_pos() const
+    {
+        return _position;
+    }
 };
 
 template <typename T>
