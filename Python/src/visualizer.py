@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+import os
+from pathlib import Path
 
 from cavity_detection import detect_pin
 
@@ -12,6 +14,7 @@ avoid_colors = [
 
 scaned_image = None
 pins = []
+output_dir = Path("./output")
 
 def scan_pins(image_path):
     global scaned_image, pins
@@ -29,7 +32,6 @@ def get_random_color(min_distance=50):
 
 def visualize_connector(status):
     img = scaned_image.copy()
-
     for i, stat in enumerate(status):
         pos, r = pins[i]
         if stat == 0:
@@ -41,6 +43,14 @@ def visualize_connector(status):
         color = color_map[stat]
         cv2.circle(img, pos, r+1, color, -1)
 
-    cv2.imshow("Connector Status", img)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    output_dir.mkdir(exist_ok=True)
+    output_path = output_dir / "connector_status.png"
+    cv2.imwrite(str(output_path), img)
+    print(f"Visualization saved to: {output_path.resolve()}")
+    
+    try:
+        cv2.imshow("Connector Status", img)
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+    except cv2.error:
+        print("GUI display not available, image saved to file instead")
