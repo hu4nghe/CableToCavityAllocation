@@ -1,5 +1,5 @@
 # ---------- Python / venv ----------
-set(venv_path "${CMAKE_SOURCE_DIR}/Python/.venv")
+set(venv_path "${CMAKE_SOURCE_DIR}/Python/DSLyon")
 
 if(WIN32)
     set(python_exe "${venv_path}/Scripts/python.exe")

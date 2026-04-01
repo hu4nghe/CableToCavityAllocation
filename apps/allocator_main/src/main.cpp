@@ -13,7 +13,7 @@ namespace py = pybind11;
 namespace fs = std::filesystem;
 
 const auto repository_dir = fs::absolute(fs::current_path().parent_path());
-const auto python_env_dir = fs::absolute(repository_dir / "Python" / ".venv");
+const auto python_env_dir = fs::absolute(repository_dir / "Python" / "DSLyon");
 const auto python_src_dir = fs::absolute(repository_dir / "Python" / "src");
 
 fs::path read_file(const std::string& target_ext,
